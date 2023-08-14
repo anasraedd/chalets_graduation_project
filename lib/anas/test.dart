@@ -1,53 +1,47 @@
+
 import 'package:flutter/material.dart';
 
-class SelectedChoicesBox extends StatelessWidget {
-  final List<String> selectedChoices;
+import '../main.dart';
 
-  SelectedChoicesBox({required this.selectedChoices});
-  bool _pickCitiesIsExpanded = false;
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+
+class _MyHomePageState extends State<MyHomePage> {
+  String _lastMessage = "";
+
+  _MyHomePageState() {
+    messageStreamController.listen((message) {
+      setState(() {
+        if (message.notification != null) {
+          _lastMessage = 'Received a notification message:'
+              '\nTitle=${message.notification?.title},'
+              '\nBody=${message.notification?.body},'
+              '\nData=${message.data}';
+        } else {
+          _lastMessage = 'Received a data message: ${message.data}';
+        }
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        margin: EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.grey,
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: GridView.count(
-                shrinkWrap: true,
-                crossAxisCount: 3,
-                childAspectRatio: 3,
-                children: selectedChoices.map((choice) {
-                  return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: Text(
-                        choice,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-    Icon(_pickCitiesIsExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-
+      appBar: AppBar(
+        title: Text('test'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('Last message from Firebase Messaging:',
+                style: Theme.of(context).textTheme.titleLarge),
+            Text(_lastMessage, style: Theme.of(context).textTheme.bodyLarge),
           ],
         ),
       ),

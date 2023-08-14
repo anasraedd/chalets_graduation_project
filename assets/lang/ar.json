@@ -135,7 +135,46 @@
   "block": "حظر",
   "report": "تقرير",
   "type_your_complaint_here": "اكتب شكواك هنا ...",
-  "cancle": "إغلاق"
+  "cancle": "إغلاق",
+
+  "pictures": "الصور",
+  "upload": "تحميل",
+  "pick_imames_to_upload": "التقط صور لرفعها",
+  "something_went_wrong": "هناك خطأ ما",
+  "error_response": "هناك خطأ ما، حاول مرة أخرى",
+
+
+  "add_your_chalet_in": "أضف الشاليه الخاص بك في",
+  "only_4_steps": "4 خطوات فقط",
+
+  "name_of_your_chalet": "اسم الشاليه الخاص بك",
+  "description_of_your_chalet": "اكتب وصف قصير عن الشاليه...",
+  "chalet_space_by_meter": "مساحة الشاليه بالمتر",
+  "chalet_address": "عنوان الشاليه",
+  "property_terms": "شروط الملكية:",
+  "policis": "سياسة الإلغاء والتأجيل:",
+  "add": "أضف",
+
+  "saturday": "السبت",
+  "sunday": "الاحد",
+  "monday": "الاثنين",
+  "thesday": "الثلاثاء",
+  "wednesday": "الأربعاء",
+  "thursday": "الخميس",
+  "friday": "الجمعة",
+  "Reservation_of_chalet": "حجز الشاليه",
+  "options_chalet_addition": "أكمل جميع الخيارات لإكمال إضافة الشاليه",
+
+  "order_notifications" : "إشعارات الطلبات",
+  "home" : "الرئيسية",
+  "coupon": "قسيمة",
+  "chalet_blocked": "الشاليهات المحظورة",
+  "no_data": "لايوجد بيانات"
+
+
+
+
+
 
 
 

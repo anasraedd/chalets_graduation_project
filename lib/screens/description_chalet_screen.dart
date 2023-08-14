@@ -4,6 +4,8 @@ import 'package:chalets/core/my_flutter_app_icons.dart';
 import 'package:chalets/core/theme/app_theme.dart';
 import 'package:chalets/core/utils/my_behavior.dart';
 import 'package:chalets/featuers/main/presentation/widgets/favourites_widget_item.dart';
+import 'package:chalets/get/chalets_getx_Controller.dart';
+import 'package:chalets/models/chalet/chalet_main_facility_sub_facilities.dart';
 import 'package:chalets/widgets/card_chalet_info.dart';
 import 'package:chalets/widgets/random_suggestions.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -12,13 +14,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_getx_widget.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class DescriptionChaletScreen extends StatefulWidget {
   // const DescriptionChaletScreen({Key? key}) : super(key: key);
   ScrollController scrollController;
-
 
   DescriptionChaletScreen(this.scrollController);
 
@@ -37,168 +40,162 @@ class _DescriptionChaletScreenState extends State<DescriptionChaletScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return
-      ScrollConfiguration(
-        behavior: MyBehavior(),
-        child: ListView(
-        physics: NeverScrollableScrollPhysics(),
-    shrinkWrap: true,
-        controller: widget.scrollController,
-        children: [
-          CardChaletInfo(
-            isHsveBorder: true,
-          ),
-          SizedBox(
-            height: 25.h,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 35.w),
-            child: ExpandableContainer(
-              title: 'description'.tr(),
-              subtext:
-                  'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable, or randomised AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaa',
-            ),
-          ),
-          SizedBox(
-            height: 12.h,
-          ),
-          Padding(
-            padding: EdgeInsetsDirectional.symmetric(horizontal: 35.w),
-            child: Row(
+    return GetX<ChaletsGetxController>(
+        init: ChaletsGetxController(),
+        builder: (ChaletsGetxController getxController) {
+          return ScrollConfiguration(
+            behavior: MyBehavior(),
+            child: ListView(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              controller: widget.scrollController,
               children: [
-                Expanded(
-                  child: Text(
-                    'facilities'.tr(),
-                    style: TextStyle(
-                        fontSize: 18.sp, fontWeight: FontWeight.bold),
-                  ),
+                CardChaletInfo(
+                  isHsveBorder: true,
+                  name: getxController.chalet.value.name.toString(),
+                  logo: getxController.chalet.value.logo,
+                  space: getxController.chalet.value.space,
+                  location: getxController.chalet.value.location,
                 ),
                 SizedBox(
+                  height: 25.h,
+                ),
+
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 35.w),
+                  child: ExpandableContainer(
+                    title: 'description'.tr(),
+                    subtext: getxController.chalet.value.description!,
+                  ),
+                ),
+                // SizedBox(
+                //   height: 20.h,
+                // ),
+                getxController.chalet.value.chaletMainFacilities.isNotEmpty
+                    ? Padding(
+                        padding: EdgeInsetsDirectional.only(
+                            start: 35.w, end: 35.w, top: 20.h),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'facilities'.tr(),
+                                style: TextStyle(
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 30.h,
+                              width: 70.w,
+                              child: TextButton(
+                                  onPressed: () {
+                                      setState(() {
+
+                                      });
+                                     // getxController.showFacilities.value = false;
+
+                                  },
+                                  child: Text(
+                                    'Hide All',
+                                    style: TextStyle(
+                                        fontSize: 10.sp, color: Colors.black),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.grey.shade200,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5.r),
+                                      ))),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Container(),
+                Obx(() {
+                  return ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: getxController
+                          .chalet.value.chaletMainFacilities.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsetsDirectional.symmetric(
+                              horizontal: 35.w, vertical: 15.h),
+                          child: Facilitie(
+                            title: getxController
+                                .chalet.value.chaletMainFacilities[index].title,
+                            data: getxController
+                                .chalet
+                                .value
+                                .chaletMainFacilities[index]
+                                .chaletMainFacilitySubFacilities,
+                            showFacilities: false,
+
+                            // [
+                            //   '• Main Living Room (Accommodates 12 Persons)',
+                            //   '• Outdoor Seating (Accommodates 24 Persons)',
+                            //   '• Additional Living Room (Accommodates 8 Persons)'
+                            // ],
+                            icon: Icons.circle,
+                          ),
+                        );
+                      });
+                }),
+                SizedBox(
                   height: 30.h,
-                  width: 70.w,
-                  child: TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Hide All',
-                        style:
-                            TextStyle(fontSize: 10.sp, color: Colors.black),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey.shade200,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.r),
-                          ))),
+                ),
+                Container(
+                    width: double.infinity,
+                    margin: EdgeInsetsDirectional.only(start: 30.w),
+                    child: Text(
+                      'Random Suggestions (City)',
+                      style: GoogleFonts.inter(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15.sp),
+                    )),
+                SizedBox(
+                  height: 15.h,
+                ),
+                Container(
+                  height: 230.h,
+                  child:
+                    ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      RandomSuggestion(
+                          images: images,
+                          titleChalet: 'Best Morocco Chalet',
+                          location: 'Palestine - Gaza Strip - Gaza - AlRemal',
+                          rating: '8.6'),
+                      RandomSuggestion(
+                          images: images,
+                          titleChalet: 'Best Morocco Chalet',
+                          location: 'Palestine - Gaza Strip - Gaza - AlRemal',
+                          rating: '8.6'),
+                      RandomSuggestion(
+                          images: images,
+                          titleChalet: 'Best Morocco Chalet',
+                          location: 'Palestine - Gaza Strip - Gaza - AlRemal',
+                          rating: '8.6')
+                    ],
+                  ),
+
+                  // ListView.builder(
+                  //     // itemCount: getxController.chalet.value.ch,
+                  //     itemBuilder: (context, index){
+                  //
+                  //     })
+
+                ),
+                SizedBox(
+                  height: 10,
                 ),
               ],
             ),
-          ),
-          Padding(
-            padding: EdgeInsetsDirectional.symmetric(
-                horizontal: 35.w, vertical: 15.h),
-            child: Facilitie(
-              title: 'Living Rooms & Seatings ',
-              data: [
-                '• Main Living Room (Accommodates 12 Persons)',
-                '• Outdoor Seating (Accommodates 24 Persons)',
-                '• Additional Living Room (Accommodates 8 Persons)'
-              ],
-              icon: MyFlutterApp.living_rooms____seatings,
-            ),
-          ),
-          Padding(
-            padding: EdgeInsetsDirectional.symmetric(
-                horizontal: 35.w, vertical: 15.h),
-            child: Facilitie(
-              title: 'Bedrooms & Beds',
-              data: [
-                '• 2 Master Rooms (2 Double Beds)',
-                '• 3 Boys Rooms (5 Single Beds & 1 Double Story Bed)',
-                '• 1 Children Room (1 Single Bed & 1 Double Story Bed)'
-              ],
-              icon: MyFlutterApp.bed2,
-            ),
-          ),
-          Padding(
-            padding: EdgeInsetsDirectional.symmetric(
-                horizontal: 35.w, vertical: 15.h),
-            child: Facilitie(
-              title: 'Toilets',
-              data: ['• 2 Master Toilets', '• 1 Guest Toilet'],
-              icon: MyFlutterApp.fluent_emoji_high_contrast_toilet,
-            ),
-          ),
-          Padding(
-            padding: EdgeInsetsDirectional.symmetric(
-                horizontal: 35.w, vertical: 15.h),
-            child: Facilitie(
-              title: 'Kitchen',
-              data: [
-                '• Gas',
-                '• Oven',
-                '• Refrigerator',
-                '• Pots',
-                '• Kettles',
-                '• Spoons & Forks',
-              ],
-              icon: MyFlutterApp.kitchen,
-            ),
-          ),
-          Padding(
-            padding: EdgeInsetsDirectional.symmetric(
-                horizontal: 35.w, vertical: 15.h),
-            child: Facilitie(
-              title: 'Grills',
-              data: [
-                '• Soggy Barrel',
-                '• Grill (length 195 cm)',
-                '• Taboon Oven',
-              ],
-              icon: MyFlutterApp.grills,
-            ),
-          ),
-          SizedBox(
-            height: 30.h,
-          ),
-          Container(
-              width: double.infinity,
-              margin: EdgeInsetsDirectional.only(start: 30.w),
-              child: Text('Random Suggestions (City)',    style: GoogleFonts.inter(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 15.sp
-              ),)),
-          SizedBox(
-            height: 15.h,
-          ),
-          Container(
-            height: 230.h,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: [
-                RandomSuggestion(
-                    images: images,
-                    titleChalet: 'Best Morocco Chalet',
-                    location: 'Palestine - Gaza Strip - Gaza - AlRemal',
-                    rating: '8.6'),
-                RandomSuggestion(
-                    images: images,
-                    titleChalet: 'Best Morocco Chalet',
-                    location: 'Palestine - Gaza Strip - Gaza - AlRemal',
-                    rating: '8.6'),
-                RandomSuggestion(
-                    images: images,
-                    titleChalet: 'Best Morocco Chalet',
-                    location: 'Palestine - Gaza Strip - Gaza - AlRemal',
-                    rating: '8.6')
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 60,
-          ),
-        ],
-    ),
-      );
+          );
+        });
   }
 }
 
@@ -238,7 +235,7 @@ class _ExpandableContainerState extends State<ExpandableContainer> {
                 fontSize: 12.5.sp,
               ),
               children: [
-                if (!expanded)
+                if (!expanded && widget.subtext.length > 217)
                   TextSpan(
                     text: 'more'.tr(),
                     style: TextStyle(
@@ -252,7 +249,7 @@ class _ExpandableContainerState extends State<ExpandableContainer> {
                         });
                       },
                   ),
-                if (expanded)
+                if (expanded && widget.subtext.length > 217)
                   TextSpan(
                     text: 'less'.tr(),
                     style: TextStyle(
@@ -278,9 +275,14 @@ class _ExpandableContainerState extends State<ExpandableContainer> {
 class Facilitie extends StatefulWidget {
   IconData icon;
   String title;
-  List<String> data;
+  List<ChaletMainFacilitySubFacilities> data;
+  late bool showFacilities;
 
-  Facilitie({required this.title, required this.data, required this.icon});
+  Facilitie(
+      {required this.title,
+      required this.data,
+      required this.icon,
+      this.showFacilities = true});
 
   @override
   State<Facilitie> createState() => _FacilitieState();
@@ -295,7 +297,10 @@ class _FacilitieState extends State<Facilitie> {
       children: [
         Row(
           children: [
-            Icon(widget.icon),
+            Icon(
+              widget.icon,
+              size: 15,
+            ),
             SizedBox(
               width: 7.w,
             ),
@@ -310,25 +315,30 @@ class _FacilitieState extends State<Facilitie> {
               ),
             ),
             GestureDetector(
-              child: Icon(Icons.keyboard_arrow_down_rounded),
+              child: !widget.showFacilities || !listIsVisibility ? Icon(Icons.keyboard_arrow_down_rounded): Icon(Icons.keyboard_arrow_up_rounded),
               onTap: () {
-                setState(() {
-                  listIsVisibility = !listIsVisibility;
+
+
+
+                  setState(() {
+                    widget.showFacilities = true;
+                    listIsVisibility = !listIsVisibility;
                 });
               },
             )
           ],
         ),
+
         Padding(
           padding: EdgeInsetsDirectional.only(start: 35.w),
           child: Visibility(
-            visible: listIsVisibility,
+            visible: listIsVisibility && widget.showFacilities,
             child: Column(
               children: widget.data
                   .map((item) => Container(
                         margin: EdgeInsets.only(top: 12.h),
                         child: Text(
-                          item,
+                          item.title,
                           style: GoogleFonts.inter(
                             color: Colors.black,
                             fontSize: 10.sp,
@@ -407,3 +417,70 @@ class _FacilitieState extends State<Facilitie> {
     );
   }
 }
+
+/*
+ Padding(
+              padding: EdgeInsetsDirectional.symmetric(
+                  horizontal: 35.w, vertical: 15.h),
+              child: Facilitie(
+                title: 'Living Rooms & Seatings ',
+                data: [
+                  '• Main Living Room (Accommodates 12 Persons)',
+                  '• Outdoor Seating (Accommodates 24 Persons)',
+                  '• Additional Living Room (Accommodates 8 Persons)'
+                ],
+                icon: MyFlutterApp.living_rooms____seatings,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.symmetric(
+                  horizontal: 35.w, vertical: 15.h),
+              child: Facilitie(
+                title: 'Bedrooms & Beds',
+                data: [
+                  '• 2 Master Rooms (2 Double Beds)',
+                  '• 3 Boys Rooms (5 Single Beds & 1 Double Story Bed)',
+                  '• 1 Children Room (1 Single Bed & 1 Double Story Bed)'
+                ],
+                icon: MyFlutterApp.bed2,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.symmetric(
+                  horizontal: 35.w, vertical: 15.h),
+              child: Facilitie(
+                title: 'Toilets',
+                data: ['• 2 Master Toilets', '• 1 Guest Toilet'],
+                icon: MyFlutterApp.fluent_emoji_high_contrast_toilet,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.symmetric(
+                  horizontal: 35.w, vertical: 15.h),
+              child: Facilitie(
+                title: 'Kitchen',
+                data: [
+                  '• Gas',
+                  '• Oven',
+                  '• Refrigerator',
+                  '• Pots',
+                  '• Kettles',
+                  '• Spoons & Forks',
+                ],
+                icon: MyFlutterApp.kitchen,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.symmetric(
+                  horizontal: 35.w, vertical: 15.h),
+              child: Facilitie(
+                title: 'Grills',
+                data: [
+                  '• Soggy Barrel',
+                  '• Grill (length 195 cm)',
+                  '• Taboon Oven',
+                ],
+                icon: MyFlutterApp.grills,
+              ),
+            ),
+ */

@@ -106,15 +106,15 @@ class _ArchivedConverstationsScreenState
             SliverList(
                 delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
-                return ConversationWidget(
-                  urlImage:
-                      "https://firebasestorage.googleapis.com/v0/b/learning---firebase-flutter.appspot.com/o/forProject%2F-qm2h18.jpg?alt=media&token=e30d4789-7b15-496f-b336-731717c3fc72",
-                  nameSender: 'White Chalet',
-                  lastMessage: 'Hey!! Text me when you\'re back at home',
-                  numberMessages: index + 2,
-                  dateMassage: FormatDateTimeMassage.dateTimeMessage(dateTimeSend),
-                  archivedConversation: true,
-                );
+                // return ConversationWidget(
+                //   urlImage:
+                //       "https://firebasestorage.googleapis.com/v0/b/learning---firebase-flutter.appspot.com/o/forProject%2F-qm2h18.jpg?alt=media&token=e30d4789-7b15-496f-b336-731717c3fc72",
+                //   nameSender: 'White Chalet',
+                //   lastMessage: 'Hey!! Text me when you\'re back at home',
+                //   numberMessages: index + 2,
+                //   dateMassage: FormatDateTimeMassage.dateTimeMessage(dateTimeSend),
+                //   archivedConversation: true,
+                // );
               },
               childCount: 3, // 1000 list items
             )),

@@ -1,21 +1,29 @@
 import 'package:chalets/core/theme/app_theme.dart';
 import 'package:chalets/core/utils/my_behavior.dart';
 import 'package:chalets/featuers/main/presentation/widgets/favourites_widget_item.dart';
+import 'package:chalets/get/chalets_getx_Controller.dart';
+import 'package:chalets/get/user_getx_controller.dart';
 import 'package:chalets/widgets/box_calender.dart';
 import 'package:chalets/widgets/calender_widget.dart';
 import 'package:chalets/widgets/card_chalet_info.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' as lang;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalenderPage extends StatefulWidget {
+  late bool isAdmin;
+
+  CalenderPage({this.isAdmin = false});
+
+  DateTime selectedDate = DateTime.now();
 
 
-  DateTime selectedDate  = DateTime.now();
 
   @override
   State<CalenderPage> createState() => _CalenderPageState();
@@ -26,287 +34,400 @@ class _CalenderPageState extends State<CalenderPage> {
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
 
-/*
-      Padding(
-              padding:  EdgeInsets.symmetric(horizontal: 40.0),
-              child: Stack(
-                children: [
 
-                 Center(
-                   child: Container(
-                     height: 40,
-                     child: Center(
-                       child: ClipOval(
-                         child: Divider(
-                           color: primaryColor,
-                           thickness: 1.6.h,
-                           height: 2,
-                         ),
-                       ),
-                     ),
-                   ),
-                 ),
-                  Center(
-                    child: Container(
-                      color: scaffoldBackGround,
-                      height: 40,
-                      width: 140.w,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          DateFormat('d MMMM yyyy').format(selectedDate),
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ]
-              ),
-            ),
- */
+  @override
+  void initState() {
+    // TODO: implement initState
+
+
+    Get.lazyPut <UserGetxController>(() =>UserGetxController());
+    if(!UserGetxController.to.isGetMyReservations.value){
+      UserGetxController.to.getMyReservations();
+    }
+    //getxController.call();
+    // UserGetxController.to.getMyReservations();
+    // ChaletsGetxController.to.read(id: widget.id);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-        //  mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-
-            Padding(
-              padding:  EdgeInsets.only(top: 25.h, left: 30.w, right: 30.w),
-              child: TableCalendar(
-
-
-                calendarFormat: _calendarFormat,
-                //selectedDay: _selectedDay,
-
-                focusedDay: _focusedDay,
-                onFormatChanged: (format) {
-                  setState(() {
-                    _calendarFormat = format;
-                  });
-                },
-                selectedDayPredicate: (day) {
-                  return isSameDay(_selectedDay, day);
-                },
-
-        calendarStyle: CalendarStyle(
-                  cellAlignment: Alignment.bottomCenter,
-
-                  todayDecoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.transparent,
-                  ),
-                  // todayTextStyle: TextStyle(
-                  // fontSize: 16,
-                  // color: Colors.black,
-                  // )
+    return Column(
+      //  mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        widget.isAdmin
+            ? Container(
+                clipBehavior: Clip.hardEdge,
+                height: 100.h,
+                margin: EdgeInsets.symmetric(
+                  horizontal: 16.w,
                 ),
-          headerStyle: HeaderStyle(
-            titleCentered: true,
-headerPadding: EdgeInsets.symmetric(horizontal: 15.w)
-
-          ),
-                calendarBuilders: CalendarBuilders(
-
-                    dowBuilder: (context, day) {
-                      final text = DateFormat.E().format(day);
-                      if (day.weekday == DateTime.sunday) {
-                        // final text = DateFormat.E().format(day);
-
-                        return Center(
-                          child: Text(
-                            text,
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        );
-                      }
-                      return Container(
-                        height: 40,
-                        child: Center(
-                          child: Text(
-                            text,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.black, fontSize: 15.sp ),
-                          ),
-                        ),
-                      );
-                    },
-
-                    disabledBuilder: (context, _datetime, event){
-                      return  BoxCalender(_datetime.day.toString(),disable: true,);
-                    },
-
-                    // todayBuilder: (context, date, events) => BoxCalender(date.day.toString(), isAvaliable: true, morningReserved: true, eveningReserved: true,),
-
-                    markerBuilder: (context, _datetime, event){
-
-
-                      return  _datetime.year != _selectedDay.year ||
-                          _datetime.month != _selectedDay.month ||
-                          _datetime.day != _selectedDay.day ? BoxCalender(_datetime.day.toString(), isAvaliable: true, morningReserved: true, eveningReserved: true,) : Container();
-
-                    },
-                    // outsideBuilder: (context, _datetime, event){
-                    //   _datetime.year == _selectedDay.year ||
-                    //       _datetime.month != _selectedDay.month ?
-                    //   BoxCalender(_datetime.toString()) : Container();
-                    // },
-
-
-                    selectedBuilder: (context, _datetime, events) =>
-                    _datetime.year == _selectedDay.year &&
-                        _datetime.month == _selectedDay.month &&
-                        _datetime.day == _selectedDay.day ? BoxCalender(_datetime.day.toString(), isAvaliable: true,  isSelected: true, morningReserved: true, eveningReserved: true,) : Container()
-
-
-
-                ),
-
-
-
-
-                // eventLoader: (day) {
-                //   if (day.weekday == DateTime.monday) {
-                //     return [Event('Cyclic event')];
-                //   }
-                //
-                //   return [];
-                // },
-                // eventLoader: (day) {
-                //   return _getEventsForDay(day);
-                // },
-
-                onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    _selectedDay = selectedDay;
-                    _focusedDay = focusedDay; // update `_focusedDay` here as well
-                  });
-                },
-                firstDay: DateTime.now().subtract(Duration(days: 75)),
-                lastDay: DateTime.now().add(
-                  Duration(days: 75),
-                ),
-              ),
-            ),
-
-
-
-            Padding(
-              padding:  EdgeInsets.symmetric(horizontal: 40.0),
-              child: Stack(
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(0.r)),
+                child: Stack(
                   children: [
-
-                    Center(
-                      child: Container(
-                        height: 40,
-                        child: Center(
-                          child: ClipOval(
-                            child: Divider(
-                              color: primaryColor,
-                              thickness: 1.6.h,
-                              height: 2,
-                            ),
+                    SvgPicture.asset('assets/images/app_bar.svg'),
+                    Container(
+                      height: double.infinity,
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          lang.tr('calender'),
+                          style: GoogleFonts.inter(
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
                           ),
                         ),
                       ),
                     ),
-                    Center(
-                      child: Container(
-                        color: scaffoldBackGround,
-                        height: 40,
-                        width: 140.w,
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            DateFormat('d MMMM yyyy').format(widget.selectedDate),
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                    Align(
+                        alignment: AlignmentDirectional.centerEnd,
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.only(end: 18.w),
+                          child: SvgPicture.asset(
+                              'assets/icons/calender_directions.svg'),
+                        ))
+                  ],
+                ),
+              )
+            : Container(),
+        Expanded(
+          child: GetX<UserGetxController>(
+              init: UserGetxController(),
+              builder: (UserGetxController controller) {
+                // if( controller.loading.value) {
+                //   return Center(
+                //     child: CircularProgressIndicator(),
+                //   );
+                if(controller.loadingMyReservations.value){
+                  return Center(child: CircularProgressIndicator());
+                }else{
+                  return
+
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 25.h,
+                        ),
+                        Stack(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: ScrollConfiguration(
+                                behavior: MyBehavior(),
+                                child: TableCalendar(
+                                  calendarFormat: _calendarFormat,
+                                  //selectedDay: _selectedDay,
+
+                                  focusedDay: _focusedDay,
+
+                                  onFormatChanged: (format) {
+                                    setState(() {
+                                      _calendarFormat = format;
+                                    });
+                                  },
+                                  selectedDayPredicate: (day) {
+                                    return isSameDay(_selectedDay, day);
+                                  },
+
+                                  calendarStyle: CalendarStyle(
+                                    cellAlignment: Alignment.bottomCenter,
+
+                                    // selectedDecoration: BoxDecoration(
+                                    //   color: Colors.blue,
+                                    //   shape: BoxShape.circle,
+                                    // ),
+                                    // todayDecoration: BoxDecoration(
+                                    //   color: Colors.yellow,
+                                    //   shape: BoxShape.circle,
+                                    // ),
+                                    selectedTextStyle: TextStyle(color: Colors.white),
+                                    todayTextStyle: TextStyle(color: Colors.black),
+                                    // markersColor: Colors.grey,
+                                    outsideDaysVisible: false, // Hides non-visible days
+                                  ),
+                                  // todayDecoration: BoxDecoration(
+                                  // shape: BoxShape.circle,
+                                  // color: Colors.transparent,
+                                  // ),
+
+                                  availableGestures: AvailableGestures.none,
+
+                                  headerStyle: HeaderStyle(
+                                      headerPadding: EdgeInsets.only(bottom: 10)),
+
+                                  calendarBuilders: CalendarBuilders(
+                                      dowBuilder: (context, day) {
+                                        final text = DateFormat.E().format(day);
+                                        if (day.weekday == DateTime.sunday) {
+                                          // final text = DateFormat.E().format(day);
+
+                                          return Center(
+                                            child: Text(
+                                              text,
+                                              style: TextStyle(color: Colors.red),
+                                            ),
+                                          );
+                                        }
+                                        return Container(
+                                          height: 40,
+                                          child: Center(
+                                            child: Text(
+                                              text,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: Colors.black, fontSize: 15.sp),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      disabledBuilder: (context, _datetime, event) {
+                                        return BoxCalender(
+                                          _datetime.day.toString(),
+                                          disable: true,
+                                        );
+                                      },
+                                      markerBuilder: (context, _datetime, event) {
+                                        bool morningReserved = false;
+                                        bool eveningReserved = false;
+                                        if (_datetime.year != _selectedDay.year ||
+                                            _datetime.month != _selectedDay.month ||
+                                            _datetime.day != _selectedDay.day) {
+                                          // DateTime customDate = DateTime.now().add(Duration(days: 1));
+                                          // if( _datetime.year == customDate.year &&
+                                          //     _datetime.month == customDate.month &&
+                                          //     _datetime.day == customDate.day){
+                                          //
+                                          //   morningReserved =true;
+                                          //   eveningReserved = true;
+                                          // }
+                                          if (controller.myReservations.isNotEmpty) {
+                                            controller.myReservations
+                                                .forEach((element) {
+                                              DateTime startAtDate = DateTime.parse(element.endAt);
+                                              DateTime endAtDate = DateTime.parse(element.startAt);
+                                              // DateTime startAtDate =
+                                              //     DateTime.now().subtract(Duration(days: 5));
+                                              // DateTime endAtDate =
+                                              //     DateTime.now().add(Duration(days: 6));
+                                              if (_datetime.isAfter(startAtDate.add(Duration(days: 1))) &&
+                                                  _datetime.isBefore(endAtDate)) {
+                                                //.add(Duration(days: 1)
+                                                morningReserved = true;
+                                                eveningReserved = true;
+                                              }
+                                              if (_datetime.year == startAtDate.year &&
+                                                  _datetime.month == startAtDate.month &&
+                                                  _datetime.day == startAtDate.day) {
+                                                if (element.periodStart == 'Evening') {
+                                                  eveningReserved = true;
+                                                  morningReserved = false;
+                                                } else {
+                                                  morningReserved = true;
+                                                  eveningReserved = true;
+                                                }
+                                              } else if (_datetime.year == endAtDate.year &&
+                                                  _datetime.month == endAtDate.month &&
+                                                  _datetime.day == endAtDate.day) {
+                                                if (element.periodEnd == 'Evening') {
+                                                  morningReserved = true;
+                                                  eveningReserved = true;
+
+                                                  // morningReserved = false;
+                                                } else {
+                                                  morningReserved = true;
+                                                }
+                                              }
+                                            });
+
+
+                                          }
+
+                                          return BoxCalender(
+                                            _datetime.day.toString(),
+                                            isAvaliable: true,
+                                            morningReserved: morningReserved,
+                                            eveningReserved: eveningReserved,
+                                          );
+                                        } else {
+                                          return Container();
+                                        }
+
+                                      },
+
+                                      // outsideBuilder: (context, _datetime, event){
+                                      //
+                                      //  return
+                                      //    _datetime.year == _selectedDay.year ||
+                                      //       _datetime.month != _selectedDay.month ?
+                                      //   BoxCalender(_datetime.toString()) : Container();
+                                      // },
+
+                                      selectedBuilder: (context, _datetime, events){
+                                        bool morningReserved = false;
+                                        bool eveningReserved = false;
+                                        if (_datetime.year == _selectedDay.year ||
+                                            _datetime.month == _selectedDay.month ||
+                                            _datetime.day == _selectedDay.day) {
+                                          // DateTime customDate = DateTime.now().add(Duration(days: 1));
+                                          // if( _datetime.year == customDate.year &&
+                                          //     _datetime.month == customDate.month &&
+                                          //     _datetime.day == customDate.day){
+                                          //
+                                          //   morningReserved =true;
+                                          //   eveningReserved = true;
+                                          // }
+                                          if (controller.myReservations.isNotEmpty) {
+                                            controller.myReservations
+                                                .forEach((element) {
+                                              DateTime startAtDate = DateTime.parse(element.endAt);
+                                              DateTime endAtDate = DateTime.parse(element.startAt);
+                                              // DateTime startAtDate =
+                                              //     DateTime.now().subtract(Duration(days: 5));
+                                              // DateTime endAtDate =
+                                              //     DateTime.now().add(Duration(days: 6));
+                                              if (_datetime.isAfter(startAtDate.add(Duration(days: 1))) &&
+                                                  _datetime.isBefore(endAtDate)) {
+                                                //.add(Duration(days: 1)
+                                                morningReserved = true;
+                                                eveningReserved = true;
+                                              }
+                                              if (_datetime.year == startAtDate.year &&
+                                                  _datetime.month == startAtDate.month &&
+                                                  _datetime.day == startAtDate.day) {
+                                                if (element.periodStart == 'Evening') {
+                                                  eveningReserved = true;
+                                                  morningReserved = false;
+                                                } else {
+                                                  morningReserved = true;
+                                                  eveningReserved = true;
+                                                }
+                                              } else if (_datetime.year == endAtDate.year &&
+                                                  _datetime.month == endAtDate.month &&
+                                                  _datetime.day == endAtDate.day) {
+                                                if (element.periodEnd == 'Evening') {
+                                                  morningReserved = true;
+                                                  eveningReserved = true;
+
+                                                  // morningReserved = false;
+                                                } else {
+                                                  morningReserved = true;
+                                                }
+                                              }
+                                            });
+
+
+                                          }
+
+                                          return BoxCalender(
+                                            _datetime.day.toString(),
+                                            isAvaliable: true,
+                                            morningReserved: morningReserved,
+                                            eveningReserved: eveningReserved,
+                                            isSelected: true,
+                                          );
+                                        } else {
+                                          return Container();
+                                        }
+                                      }),
+
+                                  onDaySelected: (selectedDay, focusedDay) {
+                                    setState(() {
+                                      _selectedDay = selectedDay;
+                                      _focusedDay =
+                                          focusedDay; // update `_focusedDay` here as well
+                                    });
+                                  },
+
+                                  firstDay: DateTime.now().subtract(Duration(days: 75)),
+                                  lastDay: DateTime.now().add(
+                                    Duration(days: 75),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(right: 50.w, left: 50.w, top: 100),
+                              child: ClipOval(
+                                child: Divider(
+                                  color: const Color(0xFF017C9B),
+                                  thickness: 1.6.h,
+                                  height: 2,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 40.0),
+                          child: Stack(children: [
+                            Center(
+                              child: Container(
+                                height: 40,
+                                child: Center(
+                                  child: ClipOval(
+                                    child: Divider(
+                                      color: primaryColor,
+                                      thickness: 1.6.h,
+                                      height: 2,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Center(
+                              child: Container(
+                                color: scaffoldBackGround,
+                                height: 40.h,
+                                width: 140.w,
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    DateFormat('d MMMM yyyy').format(widget.selectedDate),
+                                    style: TextStyle(
+                                      fontSize: 17.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ]),
+                        ),
+
+                        // Container(
+                        //   height: 270.h,
+                        //child:
+                        Expanded(
+                          child: ScrollConfiguration(
+                            behavior: MyBehavior(),
+                            child: ListView(
+                              children: [
+                                // CardChaletInfo(name: 'll',),
+                                // CardChaletInfo(name: 'll',),
+                                // CardChaletInfo(name: 'll',),
+                              ],
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  ]
-              ),
-            ),
-            // SizedBox(height: 20,),
-           /* Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30.w),
-              child: Row(
-                children: [
-                  Container(
-                    height: 2.0,
-                    width: 100,
-                    child: ClipPath(
-                      clipper: _RightClipper(isRight: true),
-                      child: CustomPaint(
-                        painter: _LinePainter(),
-                        child: Container(
-                          color: primaryColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 140.w,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        DateFormat('d MMMM yyyy').format(selectedDate),
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    height: 2.0,
-                    width: 100,
-                    child: ClipPath(
-                      clipper: _RightClipper(),
-                      child: CustomPaint(
-                        painter: _LinePainter(),
-                        child: Container(
-                          color: primaryColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )*/
+                        //),
+                        SizedBox(
+                          height: 30,
+                        )
+                      ],
+                    );
+                }
+                // }else {
 
-            Container(
-              height: 250,
-              child: ScrollConfiguration(
-                behavior: MyBehavior(),
-                child: ListView(
-
-                    children:  [
-                  CardChaletInfo(),
-                      CardChaletInfo(),
-                      CardChaletInfo(),
-                    ],),
-              ),
-            ),
-            SizedBox(height: 30,)
-          ],
-        ),
-      ),
+  }
+  )
+        )
+      ],
     );
   }
 }
-
-
-
-
-
 
 //   DateTime _selectedDate = DateTime.now();
 //
@@ -518,4 +639,3 @@ headerPadding: EdgeInsets.symmetric(horizontal: 15.w)
 //     return false;
 //   }
 // }
-

@@ -147,10 +147,41 @@
   "un_block": "UnBlock",
   "report": "Report",
   "type_your_complaint_here": "Type your complaint here...",
-  "cancle": "Cancle"
+  "cancle": "Cancle",
+  "pictures": "Pictures",
+
+  "upload": "Upload",
+  "pick_imames_to_upload": "Pick images to upload",
+  "something_went_wrong": "Something Went Wrong",
+  "error_response": "Somthing went wrong, try again",
+
+  "add_your_chalet_in": "Add your chalet in",
+  "only_4_steps": "Only 4 steps",
 
 
+  "name_of_your_chalet": "Name of your chalet",
+  "description_of_your_chalet": "Write a short description of your chalet...",
+  "chalet_space_by_meter": "Chalet space by meter",
+  "chalet_address": "Chalet address",
+  "property_terms": "Property Terms:",
+  "policis": "Cancellation and postponement policy:",
+  "add": "Add",
 
+  "saturday": "Saturday",
+  "sunday": "Sunday",
+  "monday": "Monday",
+  "thesday": "Thesday",
+  "wednesday": "Wednesday",
+  "thursday": "Thursday",
+  "friday": "Friday",
+  "Reservation_of_chalet": "Reservation of the chalet",
+  "options_chalet_addition": "Complete all options to complete the chalet addition",
 
+  "order_notifications" : "Order Notifications",
+  "home" : "Home",
+  "coupon": "Coupon",
+
+  "chalet_blocked": "Blocked Chalets",
+  "no_data": "No Data"
 
 }

@@ -1,22 +1,27 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chalets/core/theme/app_theme.dart';
+import 'package:chalets/screens/chat_screen.dart';
+import 'package:chalets/widgets/shimmer_loading_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 class ConversationWidget extends StatefulWidget {
+  late int idSender;
   late String urlImage;
   String nameSender;
   String lastMessage;
   int numberMessages;
   bool archivedConversation;
+  bool laseConvesation;
   String dateMassage;
-
+late bool isLoaded;
 
   ConversationWidget(
-      {required this.urlImage, required this.nameSender, required this.lastMessage, required this.numberMessages, this.archivedConversation = false, required this.dateMassage
-      });
+      {required this.idSender, required this.urlImage, required this.nameSender, required this.lastMessage, required this.numberMessages, this.archivedConversation = false, this.laseConvesation = false, required this.dateMassage
+      , this.isLoaded =true});
 
   @override
   State<ConversationWidget> createState() => _ConversationWidgetState();
@@ -68,8 +73,8 @@ class _ConversationWidgetState extends State<ConversationWidget> {
                       // )
 
                   ),
-              child:   CachedNetworkImage(
-                height: 228.0,
+              child:  widget.isLoaded ? ShimmerLoadingWidget(height: 80.w, width: 80.w): CachedNetworkImage(
+                // height: 228.0,
                 imageUrl: widget.urlImage,
                 fit: BoxFit.fill,
                 placeholder: (context, url) => SpinKitFadingCircle(
@@ -85,36 +90,42 @@ class _ConversationWidgetState extends State<ConversationWidget> {
               // ),
             ),
             SizedBox(
-              width: 16.w,
+              width: 10.w,
             ),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //chalet Name
-                  Text(
-                    widget.nameSender,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w400),
-                  ),
-                  SizedBox(
-                    height: 5.h,
-                  ),
-                  //chalet last text
-                  Text(
-                    widget.lastMessage,
-                    style: GoogleFonts.inter(
-                        fontSize: 12.sp,
-                        color: const Color(0xB3505050),
-                        fontWeight: FontWeight.w400),
-                  ),
-                ],
+              child:  GestureDetector(
+                onTap: (){
+                  Get.to(ChatScreen(id: widget.idSender,),);
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //chalet Name
+                    widget.isLoaded ? ShimmerLoadingWidget(height: 20.h, width: 100.w, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(5)),) : Text(
+                      widget.nameSender,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w400),
+                    ),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    //chalet last text
+                    widget.isLoaded ? ShimmerLoadingWidget(height: 20.h, width: MediaQuery.of(context).size.width * 0.5, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(5)),): Text(
+                      widget.lastMessage,
+                      style: GoogleFonts.inter(
+                          fontSize: 12.sp,
+                          color: const Color(0xB3505050),
+                          fontWeight: FontWeight.w400),
+                    ),
+                  ],
+                ),
               ),
             ),
+            /*
             widget.archivedConversation ? Text('${widget.dateMassage}', textAlign: TextAlign.center,) : Column(
               children: [
                 SizedBox(
@@ -129,34 +140,35 @@ class _ConversationWidgetState extends State<ConversationWidget> {
                 SizedBox(
                   height: 10.h,
                 ),
-                Container(
-                  height: 25.h,
-                  width: 25.h,
-                  decoration: BoxDecoration(
-                      borderRadius:
-                      BorderRadius.circular(55555),
-                      color: primaryColor),
-                  child: Center(
-                    child: Text(
-                      "${widget.numberMessages}",
-                      style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 13.sp,
-                          color: Colors.white),
-                    ),
-                  ),
-                )
+                // Container(
+                //   height: 25.h,
+                //   width: 25.h,
+                //   decoration: BoxDecoration(
+                //       borderRadius:
+                //       BorderRadius.circular(55555),
+                //       color: primaryColor),
+                //   child: Center(
+                //     child: Text(
+                //       "${widget.numberMessages}",
+                //       style: GoogleFonts.inter(
+                //           fontWeight: FontWeight.w400,
+                //           fontSize: 13.sp,
+                //           color: Colors.white),
+                //     ),
+                //   ),
+                // )
               ],
             ),
             SizedBox(
               width: 30.w,
             )
+            */
           ],
         ),
         SizedBox(
           height: 12.h,
         ),
-        widget.numberMessages != 2
+        !widget.laseConvesation
             ? Container(
           height: 1.h,
           margin: EdgeInsets.only(right: 30.w),
@@ -165,7 +177,7 @@ class _ConversationWidgetState extends State<ConversationWidget> {
             color: Color(0xFFE0E1E3),
           ),
         )
-            : Container()
+           : Container()
       ],
     );
   }

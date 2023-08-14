@@ -1,27 +1,40 @@
+import 'dart:io';
+
 import 'package:chalets/core/my_flutter_app_icons.dart';
 import 'package:chalets/core/theme/app_theme.dart';
+import 'package:chalets/core/utils/context_extetion.dart';
 import 'package:chalets/core/utils/my_behavior.dart';
+import 'package:chalets/get/create_chalet_getx_controller.dart';
+import 'package:chalets/models/chalet/chalet_images.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:get/get.dart';
 
-class TestViewImage extends StatefulWidget {
-  const TestViewImage({Key? key}) : super(key: key);
+class ViewPicturesScreen extends StatefulWidget {
+
+  late int firstIndex;
+  late List<ChaletImages> imagesChalets;
+
+  ViewPicturesScreen({this.firstIndex = 0,  required this.imagesChalets});
 
   @override
-  State<TestViewImage> createState() => _TestViewImageState();
+  State<ViewPicturesScreen> createState() => _ViewPicturesScreenState();
 }
 
-class _TestViewImageState extends State<TestViewImage> {
-  List<String> images = [
-    "https://firebasestorage.googleapis.com/v0/b/learning---firebase-flutter.appspot.com/o/forProject%2Fchalet1.jpg?alt=media&token=e72ecc96-79e0-48a9-b0d5-33102a82b457",
-    "https://firebasestorage.googleapis.com/v0/b/learning---firebase-flutter.appspot.com/o/forProject%2Fchalet2.jpg?alt=media&token=fb87af8c-f320-4f03-90b1-4f25ae0ed8aa",
-    "https://firebasestorage.googleapis.com/v0/b/learning---firebase-flutter.appspot.com/o/forProject%2Fchalet3.jpg?alt=media&token=95ee211f-f8e5-49f4-8656-07ce926b3d45",
-    "https://firebasestorage.googleapis.com/v0/b/learning---firebase-flutter.appspot.com/o/forProject%2Fchalet4.jpg?alt=media&token=015d023e-05b9-425e-89ef-ec883fba2c47"
-  ];
+class _ViewPicturesScreenState extends State<ViewPicturesScreen> {
+  // List<String> images = [
+  //   "https://firebasestorage.googleapis.com/v0/b/learning---firebase-flutter.appspot.com/o/forProject%2Fchalet1.jpg?alt=media&token=e72ecc96-79e0-48a9-b0d5-33102a82b457",
+  //   "https://firebasestorage.googleapis.com/v0/b/learning---firebase-flutter.appspot.com/o/forProject%2Fchalet2.jpg?alt=media&token=fb87af8c-f320-4f03-90b1-4f25ae0ed8aa",
+  //   "https://firebasestorage.googleapis.com/v0/b/learning---firebase-flutter.appspot.com/o/forProject%2Fchalet3.jpg?alt=media&token=95ee211f-f8e5-49f4-8656-07ce926b3d45",
+  //   "https://firebasestorage.googleapis.com/v0/b/learning---firebase-flutter.appspot.com/o/forProject%2Fchalet4.jpg?alt=media&token=015d023e-05b9-425e-89ef-ec883fba2c47",
+  //       "https://firebasestorage.googleapis.com/v0/b/learning---firebase-flutter.appspot.com/o/forProject%2Fchalet4.jpg?alt=media&token=015d023e-05b9-425e-89ef-ec883fba2c47",
+  //       "https://firebasestorage.googleapis.com/v0/b/learning---firebase-flutter.appspot.com/o/forProject%2Fchalet4.jpg?alt=media&token=015d023e-05b9-425e-89ef-ec883fba2c47",
+  //
+  // ];
 
   late PageController _pageController;
   int _currentIndex = 0;
@@ -29,14 +42,17 @@ class _TestViewImageState extends State<TestViewImage> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
-    _pageController.addListener(_pageControllerListener);
+    _pageController = PageController(
+      initialPage: widget.firstIndex,
+    );
+
   }
 
   void _pageControllerListener() {
-    setState(() {
-      _currentIndex = _pageController.page!.toInt();
-    });
+    // setState(() {
+    //   _currentIndex = _pageController.page!.toInt();
+    // CreateChaletGetxController.to.currentIndex.value = _pageController.page!.toInt();
+    // });
   }
 
   @override
@@ -48,18 +64,20 @@ class _TestViewImageState extends State<TestViewImage> {
 
   @override
   Widget build(BuildContext context) {
+    context.settingsStatusBarInScreen(isDark: false, color: Colors.transparent);
+
+    CreateChaletGetxController.to.currentIndex.value = widget.firstIndex;
     // TODO: implement build
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: scaffoldBackGround,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: primaryColor,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: primaryColor,
-          statusBarIconBrightness: Brightness.light,
-          statusBarBrightness:
-          Brightness.light, // For iOS (dark icons)
-        ),
+        // backgroundColor: primaryColor,
+        // systemOverlayStyle: const SystemUiOverlayStyle(
+        //   statusBarColor: primaryColor,
+        //   statusBarIconBrightness: Brightness.light,
+        //   statusBarBrightness: Brightness.light, // For iOS (dark icons)
+        // ),
         toolbarHeight: 80.h,
         title: Text(
           'Pictures',
@@ -70,41 +88,55 @@ class _TestViewImageState extends State<TestViewImage> {
           ),
         ),
         elevation: 0,
-          leading: IconButton(
-            onPressed: () {},
-            icon: Icon(
-              MyFlutterApp.back,
-              color: Colors.white,
-              size: 30,
-            ),
+        leading: IconButton(
+          onPressed: () {
+            Get.back();
+          },
+          icon: Icon(
+            MyFlutterApp.back,
+            color: Colors.white,
+            size: 30,
           ),
+        ),
         actions: [
           Row(
             children: [
-              InkWell(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                child: Text('${_currentIndex+1}/${images.length}', style: GoogleFonts.inter(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white,
-                ) ,)
+              GetX<CreateChaletGetxController>(
+                  init: CreateChaletGetxController(),
+                  builder: (CreateChaletGetxController controller) {
+
+                    return InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        child: Text(
+                          // widget.isAdmin
+                             // ?
+                        //'${controller.currentIndex.value + 1}/${controller.imageFiles.value.length}',
+                              '${controller.currentIndex.value + 1}/${widget.imagesChalets.length}',
+                          style: GoogleFonts.inter(
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white,
+                          ),
+                        )
 //profileReplace.png
-              ),
+
+                        );
+                  }),
               SizedBox(
                 width: 30.w,
               ),
             ],
           )
         ],
-
-
-
-
       ),
       body: Center(
-        child: GalleryWidget(urlImages: images, pageController: _pageController,),
+        child: GalleryWidget(
+          urlImages: widget.imagesChalets,
+          pageController: _pageController,
+
+        ),
         // child: InkWell(
         //   onTap: openGallery,
         //   child: Ink.image(
@@ -123,47 +155,58 @@ class _TestViewImageState extends State<TestViewImage> {
 //         )));
 }
 
-class GalleryWidget extends StatefulWidget {
-  final List<String> urlImages;
+class GalleryWidget extends StatelessWidget {
+  final List<ChaletImages> urlImages;
   final PageController pageController;
 
 
-  GalleryWidget({required this.urlImages, required this.pageController});
+  GalleryWidget(
+      {required this.urlImages,
+      required this.pageController,
+      });
 
-  @override
-  State<GalleryWidget> createState() => _GalleryWidgetState();
-}
-
-class _GalleryWidgetState extends State<GalleryWidget> {
   @override
   Widget build(BuildContext context) {
     return ScrollConfiguration(
       behavior: MyBehavior(),
-      child: PhotoViewGallery.builder(
-
-          backgroundDecoration: BoxDecoration(color: Colors.white),
-          itemCount: widget.urlImages.length,
-          builder: (context, index) {
-
-            final urlImage = widget.urlImages[index];
+      child:
+//           GetX<CreateChaletGetxController>(
+// init: CreateChaletGetxController(),
+//               builder: (CreateChaletGetxController controller) {
+//             return
+          PhotoViewGallery.builder(
+        backgroundDecoration: BoxDecoration(color: scaffoldBackGround),
+        itemCount: //controller.imageFiles.length,
+            urlImages.length,
+        builder: (context, index) {
+          final urlImage = urlImages[index].image;
+          // if (isAdmin) {
             return PhotoViewGalleryPageOptions(
               imageProvider: NetworkImage(
-                urlImage,
-
-              ),
-
+                    urlImage,
+                  ),
               minScale: PhotoViewComputedScale.contained,
               maxScale: PhotoViewComputedScale.contained * 4,
             );
-
-          },
-
+          // } else {
+          //   return PhotoViewGalleryPageOptions(
+          //     imageProvider: NetworkImage(
+          //       urlImage,
+          //     ),
+          //     minScale: PhotoViewComputedScale.contained,
+          //     maxScale: PhotoViewComputedScale.contained * 4,
+          //   );
+         // }
+        },
         onPageChanged: (int index) {
           // This callback will be called when the viewed image changes
           // You can perform additional logic here if needed
+         CreateChaletGetxController.to.currentIndex.value = index;
         },
-        pageController: widget.pageController,
+        pageController: pageController,
       ),
+  //})
+      //   }),
     );
   }
 }

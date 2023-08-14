@@ -16,7 +16,7 @@ class Board2 extends StatelessWidget {
               image: AssetImage("assets/images/board2.jpeg"),
               fit: BoxFit.cover)),
       child: Stack(
-        alignment: Alignment.topLeft,
+        alignment: AlignmentDirectional.topStart,
         children: [
           Container(
             width: 255.w,

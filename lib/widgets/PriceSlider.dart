@@ -26,8 +26,8 @@ class _PriceRangeSliderState extends State<PriceRangeSlider> {
     setState(() {
       _startValue = values.start;
       _endValue = values.end;
-      widget.startPriceController.text = '${_startValue}\$'; // Set the initial value here
-widget.endPriceController.text = '${_endValue}\$';
+      widget.startPriceController.text = '${_startValue}'; // Set the initial value here
+widget.endPriceController.text = '${_endValue}';
 
     });
   }

@@ -1,12 +1,21 @@
+import 'package:chalets/core/api/auth_api_controller.dart';
 import 'package:chalets/core/theme/app_theme.dart';
+import 'package:chalets/core/utils/helpers.dart';
+import 'package:chalets/get/auth_and_routing_controller.dart';
+import 'package:chalets/models/api_response.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_getx_widget.dart';
+import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../widgets/custom_button_material.dart';
 import '../widgets/custom_text_form_field.dart';
+
+enum LoginWayKeys { email, username, mobile }
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -15,18 +24,19 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController controllerText = TextEditingController();
-  final TextEditingController controlleremail = TextEditingController();
-  final TextEditingController controllernumber = TextEditingController();
+class _LoginScreenState extends State<LoginScreen> with Helpers {
+  final TextEditingController _usernameTextController = TextEditingController();
+  final TextEditingController _emailEditingController = TextEditingController();
+  final TextEditingController _numberPhoneTextController =
+      TextEditingController();
 
+  final FocusNode _usernameFocasNode = FocusNode();
+  final FocusNode _emailFocasNode = FocusNode();
+  final FocusNode _numberPhoneFocasNode = FocusNode();
 
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController _passwordTextController = TextEditingController();
 
-  bool loginByImail = true;
-  bool loginByUsername = false;
-
-  bool loginByNumberPhone = false;
+  LoginWayKeys selectedKey = LoginWayKeys.email;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
           statusBarIconBrightness: Brightness.light,
           statusBarBrightness: Brightness.light, // For iOS (dark icons)
         ),
+        leading: Container(),
         toolbarHeight: 80.h,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
@@ -57,7 +68,9 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
+        physics: BouncingScrollPhysics(
+          decelerationRate: ScrollDecelerationRate.fast,
+        ),
         child: Column(
           children: [
             Padding(
@@ -114,20 +127,29 @@ class _LoginScreenState extends State<LoginScreen> {
                             alignment: Alignment.center,
                             children: [
                               GestureDetector(
-                                onTap: (){
+                                onTap: () {
                                   setState(() {
-                                    loginByImail = true;
-                                    loginByUsername = false;
-                                    loginByNumberPhone =false;
-                                  });
+                                    selectedKey = LoginWayKeys.email;
+                                    // _currentKeyboardType =
+                                    //     TextInputType.emailAddress;
 
+                                    final currentFocus = FocusScope.of(context);
+                                    if (!currentFocus.hasPrimaryFocus) {
+                                      currentFocus.unfocus();
+                                    }
+                                    _emailFocasNode.requestFocus();
+
+                                    // loginByImail = true;
+                                    // loginByUsername = false;
+                                    // loginByNumberPhone =false;
+                                  });
                                 },
                                 child: Container(
                                   child: Text(
                                     'email'.tr(),
                                     textAlign: TextAlign.center,
                                     style: GoogleFonts.inter(
-                                        color: loginByImail
+                                        color: selectedKey == LoginWayKeys.email
                                             ? Color(0xFF2C8095)
                                             : Color(0xFF404040),
                                         fontSize: 19.sp,
@@ -141,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   height: 2,
                                   margin: const EdgeInsets.only(bottom: 4),
                                   decoration: BoxDecoration(
-                                      color: loginByImail
+                                      color: selectedKey == LoginWayKeys.email
                                           ? Color(0xFF2C8095)
                                           : Color(0xBFE6E6E6),
                                       borderRadius:
@@ -159,12 +181,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             alignment: Alignment.center,
                             children: [
                               GestureDetector(
-                                onTap: (){
-
+                                onTap: () {
                                   setState(() {
-                                    loginByImail = false;
-                                    loginByUsername = true;
-                                    loginByNumberPhone =false;
+                                    selectedKey = LoginWayKeys.username;
+                                    // _currentKeyboardType = TextInputType.text;
+
+                                    final currentFocus = FocusScope.of(context);
+                                    if (!currentFocus.hasPrimaryFocus) {
+                                      currentFocus.unfocus();
+                                    }
+                                    _usernameFocasNode.requestFocus();
                                   });
                                 },
                                 child: Container(
@@ -172,9 +198,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                     'username'.tr(),
                                     textAlign: TextAlign.center,
                                     style: GoogleFonts.inter(
-                                        color: loginByUsername
-                                            ? Color(0xFF2C8095)
-                                            : Color(0xFF404040),
+                                        color:
+                                            selectedKey == LoginWayKeys.username
+                                                ? Color(0xFF2C8095)
+                                                : Color(0xFF404040),
                                         fontSize: 19.sp,
                                         fontWeight: FontWeight.w500),
                                   ),
@@ -186,9 +213,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   height: 2,
                                   margin: EdgeInsets.only(bottom: 4),
                                   decoration: BoxDecoration(
-                                      color: loginByUsername
-                                          ? Color(0xFF2C8095)
-                                          : Color(0xBFE6E6E6),
+                                      color:
+                                          selectedKey == LoginWayKeys.username
+                                              ? Color(0xFF2C8095)
+                                              : Color(0xBFE6E6E6),
                                       borderRadius:
                                           BorderRadius.circular(10.r)),
                                 ),
@@ -204,13 +232,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             alignment: Alignment.center,
                             children: [
                               GestureDetector(
-                                onTap: (){
-
+                                onTap: () {
                                   setState(() {
-                                    loginByImail = false;
-                                    loginByUsername = false;
-                                    loginByNumberPhone =true;
+                                    //_currentKeyboardType = TextInputType.number;
 
+                                    selectedKey = LoginWayKeys.mobile;
+                                    final currentFocus = FocusScope.of(context);
+                                    if (!currentFocus.hasPrimaryFocus) {
+                                      currentFocus.unfocus();
+                                    }
+                                    _numberPhoneFocasNode.requestFocus();
                                   });
                                 },
                                 child: Container(
@@ -218,7 +249,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     'phone'.tr(),
                                     textAlign: TextAlign.center,
                                     style: GoogleFonts.inter(
-                                        color: loginByNumberPhone
+                                        color: selectedKey ==
+                                                LoginWayKeys.mobile
                                             ? Color(0xFF2C8095)
                                             : Color(0xFF404040),
                                         fontSize: 19.sp,
@@ -232,7 +264,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   height: 2,
                                   margin: EdgeInsets.only(bottom: 4),
                                   decoration: BoxDecoration(
-                                      color: loginByNumberPhone
+                                      color: selectedKey ==
+                                              LoginWayKeys.mobile
                                           ? Color(0xFF2C8095)
                                           : Color(0xBFE6E6E6),
                                       borderRadius:
@@ -266,33 +299,57 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     height: 5.h,
                   ),
-                  loginByUsername
+                  selectedKey == LoginWayKeys.username
                       ? CustomTextFormField(
-                          controller: controllerText,
+                          controller: _usernameTextController,
                           hint: 'username'.tr(),
                           context: context,
-                          keyboardType: TextInputType.text)
-                      : loginByNumberPhone
+                          keyboardType: TextInputType.text,
+                          focusNode: _usernameFocasNode,
+                        )
+                      : selectedKey == LoginWayKeys.mobile
                           ? CustomTextFormField(
-                              controller: controllernumber,
+                              controller: _numberPhoneTextController,
                               hint: 'phone'.tr(),
                               context: context,
-                              keyboardType: TextInputType.number)
+                              keyboardType: TextInputType.number,
+                              focusNode: _numberPhoneFocasNode,
+                            )
                           : CustomTextFormField(
-                              controller: controlleremail,
+                              controller: _emailEditingController,
                               hint: 'email'.tr(),
                               context: context,
-                              keyboardType: TextInputType.emailAddress),
+                              keyboardType: TextInputType.emailAddress,
+                              //selectedKey == LoginWayKeys.numberPhone ? TextInputType.number :TextInputType.emailAddress,
+                              focusNode: _emailFocasNode,
+                            ),
                   SizedBox(
                     height: 5.h,
                   ),
-                  CustomTextFormField(
-                    controller: passwordController,
-                    hint: 'password'.tr(),
-                    context: context,
-                    suffixIcon: Icons.remove_red_eye_outlined,
-                    keyboardType: TextInputType.visiblePassword,
-                  ),
+                  GetX<AuthAndRoutingGetxController>(
+                      init: AuthAndRoutingGetxController(),
+                      builder: (AuthAndRoutingGetxController controller) {
+                        return CustomTextFormField(
+                          controller: _passwordTextController,
+                          hint: 'password'.tr(),
+                          context: context,
+                         // suffixIcon: controller.visablePassword.value ? Icons.remove_red_eye_outlined :null,
+                          keyboardType: TextInputType.visiblePassword,
+                            obscureText: !controller.visablePassword.value,
+                          suffix: controller.visablePassword.value ? GestureDetector(
+                              onTap: (){
+                                controller.visablePassword.value = false;
+
+                              },
+                              child: Icon(Icons.remove_red_eye_outlined, color: secondaryColor, size: 21,)) :  GestureDetector(
+                              onTap: (){
+                                controller.visablePassword.value = true;
+
+                              },
+                              child: SvgPicture.asset('assets/icons/password_eye.svg')) ,
+                        );
+                      }),
+
 
                   Container(
                     margin:
@@ -322,7 +379,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   CustomButtonMaterial(
                     buttonText: 'justLogin'.tr(),
-                    onTab: () {},
+                    onTab: () {
+                      _performLogin();
+                    },
                   ),
                   SizedBox(
                     height: 16.h,
@@ -344,6 +403,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: 3.w,
                       ),
                       InkWell(
+                        onTap: () {
+                          Get.toNamed('/verification_by_mobile_screen');
+                        },
                         splashColor: Colors.transparent,
                         focusColor: Colors.transparent,
                         highlightColor: Colors.transparent,
@@ -375,5 +437,74 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _performLogin() async {
+    // if(selectedKey == LoginWayKeys.email){
+    //
+    // }else if(selectedKey == LoginWayKeys.username){
+    //
+    // }else{
+    //
+    // }
+    if (_checkDate()) {
+      await _login();
+    }
+  }
+
+  bool _checkDate() {
+    if (_passwordTextController.text.isNotEmpty) {
+      if (selectedKey == LoginWayKeys.email &&
+          _emailEditingController.text.isNotEmpty) {
+        return true;
+      } else if (selectedKey == LoginWayKeys.username &&
+          _usernameTextController.text.isNotEmpty) {
+        return true;
+      } else if (selectedKey == LoginWayKeys.mobile &&
+          _numberPhoneTextController.text.isNotEmpty) {
+        return true;
+      }
+    }
+
+    showSnackBarByGet(title: 'Enter required data!', error: true);
+    return false;
+  }
+
+  Future<void> _login() async {
+    showLoadingDialog(context);
+
+    // Future.delayed(Duration(seconds: 5), () {
+    //   Get.back();
+    // });
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
+    print(fcmToken);
+    late ApiResponse apiResponse;
+    if(selectedKey == LoginWayKeys.email){
+      apiResponse = await AuthApiController().login(
+        keyLogin: LoginWayKeys.email.name,
+          valueLogin: _emailEditingController.text,
+          password: _passwordTextController.text);
+    }else if(selectedKey == LoginWayKeys.mobile){
+      apiResponse = await AuthApiController().login(
+          keyLogin: LoginWayKeys.mobile.name,
+          valueLogin: _numberPhoneTextController.text,
+          password: _passwordTextController.text);
+      // apiResponse = await AuthApiController().loginByNumberPhone(mobile: _numberPhoneTextController.text, password: _passwordTextController.text);
+    }else if(selectedKey == LoginWayKeys.username){
+      apiResponse = await AuthApiController().login(
+          keyLogin: LoginWayKeys.username.name,
+          valueLogin: _usernameTextController.text,
+          password: _passwordTextController.text);
+      // apiResponse = await AuthApiController().loginByUsername(username: _usernameTextController.text, password: _passwordTextController.text);
+    }
+
+    // showSnackBarByGet(title: apiResponse.message, error: false);
+
+    if (apiResponse.success) {
+      Get.offAllNamed('/main_screen');
+    } else {
+      Get.back();
+      showSnackBarByGet(title: apiResponse.message, error: !apiResponse.success);
+    }
   }
 }

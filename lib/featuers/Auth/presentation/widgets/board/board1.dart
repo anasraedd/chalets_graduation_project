@@ -16,7 +16,7 @@ class Board1 extends StatelessWidget {
               image: AssetImage("assets/images/board1.jpeg"),
               fit: BoxFit.cover)),
       child: Stack(
-        alignment: Alignment.bottomLeft,
+        alignment: AlignmentDirectional.bottomStart,
         children: [
           Container(
             constraints: const BoxConstraints(
@@ -24,7 +24,7 @@ class Board1 extends StatelessWidget {
               maxHeight: 100
             ),
             margin: EdgeInsetsDirectional.only(bottom: 166.h,start: 32.w),
-            alignment: Alignment.bottomLeft,
+            alignment: AlignmentDirectional.bottomStart,
              child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,7 +33,7 @@ class Board1 extends StatelessWidget {
                     style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                          color: const Color(0xFFF5F8FF), fontWeight: FontWeight.w500)),
                 Container(
-                 margin: EdgeInsets.only(left: 64.w ),
+                 margin: EdgeInsetsDirectional.only(start: 64.w ),
                   child: Text(
                     'txtWithTheFamily'.tr(),
                     style: Theme.of(context).textTheme.headlineLarge!.copyWith(

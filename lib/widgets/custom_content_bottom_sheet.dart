@@ -65,8 +65,8 @@ class CustomContentBottomSheet extends StatelessWidget {
                 if(onClicked != null){
                   onClicked!();
                 }
-
-                Navigator.pop(context);
+                //
+                // Navigator.pop(context);
               },
               child: Text(
                 'Confirm',

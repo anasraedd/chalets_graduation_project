@@ -3,10 +3,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 // import 'package:google_fonts/google_fonts.dart';
 
-const primaryColor = Color(0xFF017C9B);
+const primaryColor = Color(0xFF2C8095);//Color(0xFF017C9B);
 const primaryColorDisable = Color(0x5C017C9B);
 const secondaryColor = Color(0xFFABABAB);
 const scaffoldBackGround = Color(0xFFF5F8FF);
+const color1 = Color(0xFFE5E5E5);
+
+const textGray = Color(0xFF959595);
+
+const customButtonColor = Color(0xFF2DC653);
 
 
 
@@ -14,10 +19,18 @@ const scaffoldBackGround = Color(0xFFF5F8FF);
 
 
 final appTheme = ThemeData(
+
     appBarTheme: const AppBarTheme(
       backgroundColor: primaryColor,
       centerTitle: true,
     ),
+  buttonBarTheme: ButtonBarThemeData(
+    buttonMinWidth: 0, // To remove the minimum width constraint on buttons
+    alignment: MainAxisAlignment.spaceBetween, // To align buttons to the edges
+    mainAxisSize: MainAxisSize.max, // To take the full width
+
+  ),
+
     brightness: Brightness.light,
     primaryColor: primaryColor,
     colorScheme: const ColorScheme.light(
@@ -61,6 +74,7 @@ final appTheme = ThemeData(
 
 
 ThemeData  buildLightTheme() {
+
   final baseTheme = ThemeData(
     scaffoldBackgroundColor: scaffoldBackGround,
     appBarTheme: const AppBarTheme(
@@ -71,6 +85,10 @@ ThemeData  buildLightTheme() {
     primaryColor: primaryColor,
     colorScheme: const ColorScheme.light(
       primary: primaryColor,
+    ),
+    scrollbarTheme: ScrollbarThemeData(
+      thumbColor: MaterialStateProperty.all(primaryColor),
+      // crossAxisMargin: 50
     ),
     progressIndicatorTheme: const ProgressIndicatorThemeData(color: primaryColor),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(

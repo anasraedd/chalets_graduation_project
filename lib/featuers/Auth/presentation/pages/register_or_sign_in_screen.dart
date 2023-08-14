@@ -1,13 +1,35 @@
 import 'package:chalets/core/theme/app_theme.dart';
+import 'package:chalets/featuers/Auth/presentation/pages/login_screen.dart';
+import 'package:chalets/featuers/Auth/presentation/pages/register_account_screen.dart';
+import 'package:chalets/featuers/Auth/presentation/pages/register_account_screen2.dart';
+import 'package:chalets/get/auth_and_routing_controller.dart';
+import 'package:chalets/prefs/shared_pref_controller.dart';
+import 'package:easy_localization/easy_localization.dart' as lang;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+class RegisterOrSignInScreen extends StatefulWidget {
+  @override
+  State<RegisterOrSignInScreen> createState() => _RegisterOrSignInScreenState();
+}
 
-class RegisterOrSignInScreen extends StatelessWidget {
-  const RegisterOrSignInScreen({Key? key}) : super(key: key);
+class _RegisterOrSignInScreenState extends State<RegisterOrSignInScreen> {
+  final authGetxController = Get.put(
+    () => AuthAndRoutingGetxController(),
+  );
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    // SharedPrefController().setLanguage(language: '${EasyLocalization.of(context).locale}');
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +62,7 @@ class RegisterOrSignInScreen extends StatelessWidget {
                 top: 100.h,
               ),
               child: Text(
-                'txtEnjoyThe'.tr(),
+                lang.tr('txtEnjoyThe'),
                 style: GoogleFonts.inter(
                   color: primaryColor,
                   fontSize: 30.sp,
@@ -56,7 +78,7 @@ class RegisterOrSignInScreen extends StatelessWidget {
                 left: 36.5.w,
               ),
               child: Text(
-                'txtExploreTheMost'.tr(),
+                lang.tr('txtExploreTheMost'),
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
                   color: const Color(0xFF666666),
@@ -90,15 +112,16 @@ class RegisterOrSignInScreen extends StatelessWidget {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           elevation: 0,
-                          minimumSize:   Size(0, 44.h),
+                          minimumSize: Size(0, 44.h),
                           primary: primaryColor,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.r))),
                       onPressed: () async {
+                        Get.toNamed('/verification_by_mobile_screen');
                         // Navigator.push(context, )
                       },
                       child: Text(
-                        'register'.tr(),
+                        lang.tr('register'),
                         style: GoogleFonts.inter(
                           color: Colors.white,
                           fontSize: 18.sp,
@@ -111,20 +134,20 @@ class RegisterOrSignInScreen extends StatelessWidget {
                   ),
                   Expanded(
                     child: ElevatedButton(
-
                       style: ElevatedButton.styleFrom(
                         minimumSize: Size(0, 44.h),
-                      elevation: 0,
+                        elevation: 0,
                         primary: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.r),
                         ),
                       ),
                       onPressed: () async {
+                        Get.off(() => LoginScreen());
                         // Navigator.push(context, )
                       },
                       child: Text(
-                        'signIn'.tr(),
+                        lang.tr('signIn'),
                         style: GoogleFonts.inter(
                           color: primaryColor,
                           fontSize: 18.sp,
@@ -151,7 +174,6 @@ class RegisterOrSignInScreen extends StatelessWidget {
                       height: 2,
                     ),
                   ),
-
                 ),
                 SizedBox(
                   width: 25.w,
@@ -164,7 +186,7 @@ class RegisterOrSignInScreen extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(
-                      'or'.tr(),
+                      lang.tr('or'),
                       style: GoogleFonts.inter(
                         color: Colors.black38,
                       ),
@@ -182,7 +204,6 @@ class RegisterOrSignInScreen extends StatelessWidget {
                       height: 2,
                     ),
                   ),
-
                 ),
                 SizedBox(
                   width: 102.w,
@@ -193,7 +214,7 @@ class RegisterOrSignInScreen extends StatelessWidget {
               margin: EdgeInsets.only(top: 30.h),
               //symmetric(vertical: 30, horizontal: 35),
               child: Text(
-                'txtContinueAs'.tr(),
+                lang.tr('txtContinueAs'),
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(fontSize: 20.sp, color: primaryColor),
               ),

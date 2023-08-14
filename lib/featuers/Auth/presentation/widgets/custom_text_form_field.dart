@@ -1,3 +1,4 @@
+import 'package:chalets/core/theme/app_theme.dart';
 import 'package:chalets/core/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,21 +8,32 @@ class CustomTextFormField extends StatelessWidget with Helpers {
   CustomTextFormField({
     Key? key,
     required this.hint,
+
     required this.keyboardType,
     required this.context,
     this.maxLength,
     this.suffixIcon,
+    this.prefix,
+    this.suffix,
     this.fieldValue,
+
     this.fieldEdit,
     this.isEnable = true,
     required this.controller,
     this.childBottomSheet,
     this.onClicked,
+    this.onChanged,
+    this.focusNode,
+    this.height= 56,
+    this.hintStyle,
+    this.obscureText = false,
   }) : super(key: key);
   final String hint;
   final TextInputType keyboardType;
   bool isEnable;
   final IconData? suffixIcon;
+  final Widget? suffix;
+  final Widget? prefix;
   final int? maxLength;
   final BuildContext context;
   final String? fieldValue;
@@ -30,18 +42,39 @@ class CustomTextFormField extends StatelessWidget with Helpers {
 
   final Widget? childBottomSheet;
   void Function()? onClicked;
+  void Function(String value)? onChanged;
+  final FocusNode? focusNode;
+  final double height ;
+  final TextStyle? hintStyle;
+  final bool obscureText;
 
   TextEditingController customControllerBottomSheet = TextEditingController();
+
   //FocusNode _focusNode = FocusNode();
 
   TextEditingController currentPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController reTypeNewPasswordController = TextEditingController();
 
-
   // void onClicked(void Function() onClicked){
   //
   // }
+
+  String? _errorMessage(String? str) {
+    if (str!.isEmpty) {
+      // switch (hint) {
+      //   case 'Enter Email':
+      //     return 'Email is required';
+      //   case 'Enter Password':
+      //     return 'Password is required';
+      //   case 'Enter Full Name':
+      //     return 'Full Name is required';
+      // }
+      return '$hint is required';
+    } else {
+      return '$hint is required';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +84,7 @@ class CustomTextFormField extends StatelessWidget with Helpers {
     return Stack(
       children: [
         Container(
-          height: 56.h,
+          height: height.h,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.r),
               color: Colors.white,
@@ -65,25 +98,30 @@ class CustomTextFormField extends StatelessWidget with Helpers {
         TextFormField(
           readOnly: !isEnable,
           //enabled: isEnable,
+          onChanged: onChanged,
 
+
+         focusNode: focusNode,
           onEditingComplete: () {
             FocusScope.of(context).nextFocus();
           },
           controller: controller,
-          validator: (value) {
-            // if (value!.isEmpty) return lang!.password;
-            return null;
-          },
+          validator: _errorMessage,
           maxLines: 1,
           keyboardType: keyboardType,
-          obscureText: hint == 'Password' ? true : false,
+          obscureText: obscureText,
 
           maxLength: maxLength,
           decoration: InputDecoration(
+            prefixIcon:  prefix ,
             suffixIcon: suffixIcon != null
                 ? GestureDetector(
                     onTap: () {
-                      onClicked != null ? onClicked!():Center(child: Text('Nothing'),);
+                      onClicked != null
+                          ? onClicked!()
+                          : Center(
+                              child: Text('Nothing'),
+                            );
                     },
                     child: Icon(
                       suffixIcon,
@@ -92,9 +130,10 @@ class CustomTextFormField extends StatelessWidget with Helpers {
                     ),
                   )
                 : null,
-            suffixIconConstraints: BoxConstraints(minHeight: 40, minWidth: 40),
+            suffix:  suffix,
+            suffixIconConstraints: BoxConstraints(minHeight: 56, minWidth: 40),
             hintText: hint,
-            hintStyle: GoogleFonts.inter(
+            hintStyle: hintStyle != null ? hintStyle : GoogleFonts.inter(
                 fontWeight: FontWeight.w700,
                 fontSize: 15.sp,
                 color: const Color(0x80ABABAB)),
