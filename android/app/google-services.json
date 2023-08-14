@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "598242862467",
+    "project_id": "chalets-flutter",
+    "storage_bucket": "chalets-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:598242862467:android:f7ea107bb68e21112042b6",
+        "android_client_info": {
+          "package_name": "com.example.chalets"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "598242862467-hkapqhju6n8qrmj1s31b2vq7h2l7ef6l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-V-dKBYzpwE-JmRsTkxsLkDsViaZfu3A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "598242862467-hkapqhju6n8qrmj1s31b2vq7h2l7ef6l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
