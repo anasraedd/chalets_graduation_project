@@ -41,53 +41,65 @@ class _ConversationsPageState extends State<ConversationsPage> {
   @override
   Widget build(BuildContext context) {
     //var lang = AppLocalizations.of(context)!;
-    return !isExsistConversations
+    return !ChatGetxController.to.conversations.isNotEmpty
         ? Padding(
-            padding: const EdgeInsets.all(30.0),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    lang.tr('thereNoConversationsSoFar'),
-                    style: GoogleFonts.inter(
-                      fontSize: 17.5.sp,
-                      fontWeight: FontWeight.w700,
-                      color: const Color(0xFFABABAB),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 3.h,
-                  ),
-                  Text(
-                    lang.tr('txtChatOver'),
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(
-                      fontSize: 17.5.sp,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0xFFABABAB),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 80.h,
-                  ),
-                  Image(
-                    image: const AssetImage("assets/images/chatsImage.png"),
-                    height: 230.h,
-                    width: 280.w,
-                  ),
-                  SizedBox(
-                    height: 25.h,
-                  ),
-                  SizedBox(
-                      width: 150.w,
-                      child: CustomButtonMaterial(
-                          buttonText: lang.tr('exploreNow'), onTab: () {})),
-                ],
+      padding: const EdgeInsets.all(30.0),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+
+            Text(
+              lang.tr('thereNoConversationsSoFar'),
+              style: GoogleFonts.inter(
+                fontSize: 17.5.sp,
+                fontWeight: FontWeight.w700,
+                color: const Color(0xFFABABAB),
               ),
             ),
-          )
+            SizedBox(
+              height: 3.h,
+            ),
+            Text(
+              lang.tr('txtChatOver'),
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(
+                fontSize: 17.5.sp,
+                fontWeight: FontWeight.w400,
+                color: const Color(0xFFABABAB),
+              ),
+            ),
+            SizedBox(
+              height: 80.h,
+            ),
+            Image(
+              image: const AssetImage("assets/images/chatsImage.png"),
+              height: 230.h,
+              width: 280.w,
+            ),
+            SizedBox(
+              height: 25.h,
+            ),
+            Container(
+                width: 130.w,
+                padding: EdgeInsetsDirectional.all(15),
+                decoration: BoxDecoration(
+                    color: primaryColor, borderRadius: BorderRadius.circular(15.r)
+                ),
+                child: Center(
+                  child: Row(
+                    children: [
+                      Icon(Icons.chat, color: Colors.white,),
+                      SizedBox(width: 15.w,),
+                      Text(lang.tr('chat'), style: GoogleFonts.inter(fontSize: 18.sp, color: Colors.white, fontWeight: FontWeight.w700),)
+                    ],
+                  ),
+                )),
+          ],
+        ),
+      ),
+    )
         : ScrollConfiguration(
             behavior: MyBehavior(),
             child: CustomScrollView(
@@ -176,13 +188,15 @@ class _ConversationsPageState extends State<ConversationsPage> {
                   (BuildContext context, int index) {
                     return ConversationWidget(
                       idSender: controller.loadingConversation.value ? 0 : controller.conversations[index].id,
-                        urlImage:  controller.loadingConversation.value ? '' : controller.conversations[index].logo,
+                        logoOrPicture:  controller.loadingConversation.value ? '' : controller.conversations[index].logo,
                          //   "https://firebasestorage.googleapis.com/v0/b/learning---firebase-flutter.appspot.com/o/forProject%2F-qm2h18.jpg?alt=media&token=e30d4789-7b15-496f-b336-731717c3fc72",
                         nameSender:  controller.loadingConversation.value ? '':controller.conversations[index].name,
                         lastMessage: 'message', // 'Hey!! Text me when you\'re back at home',
                         numberMessages: index + 2,
                       dateMassage: FormatDateTimeMassage.dateTimeMessage(dateTimeSend),
-                      isLoaded: controller.loadingConversation.value
+                      isLoaded: controller.loadingConversation.value,
+                        isAdmin: false
+
 
                     );
                   },

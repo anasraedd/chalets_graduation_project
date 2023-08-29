@@ -11,11 +11,13 @@ import 'package:chalets/get/admin/admin_chalets_getx_Controller.dart';
 import 'package:chalets/get/create_chalet_getx_controller.dart';
 import 'package:chalets/models/api_response.dart';
 import 'package:chalets/models/create_chalet.dart';
+import 'package:chalets/screens/app_admin/select_chalet_location.dart';
 import 'package:easy_localization/easy_localization.dart' as localization;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_getx_widget.dart';
@@ -222,9 +224,19 @@ class _ChaletInformationScreenState extends State<ChaletInformationScreen> with 
                                     controller: controller.addressChaletController,
                                     hint: localization.tr('chalet_address'),
                                     isEnable: true,
-                                    prefix: Icon(
-                                      Icons.gps_fixed,
-                                      color: primaryColor,
+                                    prefix: GestureDetector(
+                                      onTap: ()async{
+
+                                       var result = await  _determinePosition();
+                                       print(result);
+                                       CreateChaletGetxController.to.latitude.value = result.latitude;
+                                       CreateChaletGetxController.to.longitude.value = result.longitude;
+Get.to(SelectChaletLocation(latitude: result.latitude, longitude: result.longitude));
+                                      },
+                                      child: Icon(
+                                        Icons.gps_fixed,
+                                        color: primaryColor,
+                                      ),
                                     ),
                                     context: context,
                                     keyboardType: TextInputType.text,
@@ -553,6 +565,7 @@ class _ChaletInformationScreenState extends State<ChaletInformationScreen> with 
                                                   controller: controller
                                                       .textEditingControllerPolicy
                                                       .value[index],
+
                                                   onChanged: (value) {
                                                     controller.textPolicy
                                                             .value[index] =
@@ -565,6 +578,7 @@ class _ChaletInformationScreenState extends State<ChaletInformationScreen> with 
                                                       // localization.tr('There are many variations of passages of Lorem'),
                                                       'There are many variations of passages of Lorem',
                                                   isEnable: true,
+
                                                   prefix: Icon(
                                                     Icons.circle,
                                                     color: Colors.black,
@@ -754,11 +768,20 @@ class _ChaletInformationScreenState extends State<ChaletInformationScreen> with 
         CreateChaletGetxController.to.textEditingControllerTerms.isNotEmpty &&
         CreateChaletGetxController.to.textEditingControllerPolicy.isNotEmpty
 
+
     ){
       if(CreateChaletGetxController.to.isPickedImage.isTrue || widget.edit){
 
 
-        return true;
+        if(CreateChaletGetxController.to.latitude != 0.0 &&
+            CreateChaletGetxController.to.longitude != 0.0){
+          return true;
+        }else{
+          showSnackBarByGet(title: 'Select location for chalet' , error: true);
+
+
+        }
+
       }else{
         showSnackBarByGet(title: 'Enter logo for this chalet' , error: true);
         return false;
@@ -823,7 +846,42 @@ class _ChaletInformationScreenState extends State<ChaletInformationScreen> with 
     }
   }
 
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
 
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    // if (!serviceEnabled) {
+    //   // Location services are not enabled don't continue
+    //   // accessing the position and request users of the
+    //   // App to enable the location services.
+    //   return Future.error('Location services are disabled.');
+    // }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    return await Geolocator.getCurrentPosition();
+  }
 
 
 }

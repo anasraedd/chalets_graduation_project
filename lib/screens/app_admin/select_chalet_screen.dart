@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chalets/core/theme/app_theme.dart';
 import 'package:chalets/core/utils/context_extetion.dart';
 import 'package:chalets/get/admin/admin_chalets_getx_Controller.dart';
+import 'package:chalets/get/chat_getx_controller.dart';
 import 'package:chalets/prefs/shared_pref_controller.dart';
 import 'package:chalets/screens/app_admin/main_admin_screen/main_admin_screen.dart';
 import 'package:chalets/screens/app_admin/start_create_chalet_screen.dart';
@@ -31,6 +32,8 @@ class _SelectChaletScreenState extends State<SelectChaletScreen> {
   void initState() {
     // TODO: implement initState
     Get.put<AdminChaletsGetxController>(AdminChaletsGetxController());
+    Get.put<ChatGetxController>(ChatGetxController());
+
     super.initState();
   }
 
@@ -249,16 +252,21 @@ class _SelectChaletScreenState extends State<SelectChaletScreen> {
                                           ),
                                         ),
                                   SizedBox(
-                                    height: 11.h,
+                                    height: 5.h,
                                   ),
-                                  index < 4
-                                      ? Center(child: ShimmerLoadingWidget(height: 20, width: 40, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),))
-                                      : Text(
-                                          'Add Chalet',
-                                          style: GoogleFonts.inter(
-                                              fontSize: 14.sp),
-                                          textAlign: TextAlign.center,
-                                        )
+                                  index < 3
+                                      ? Center(child: ShimmerLoadingWidget(height: 20.h, width: 60.w, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(5)),))
+                                      :
+                                  Padding(
+                                    padding:  EdgeInsets.only(top: 10.h),
+                                    child: Text(
+                                            'Add Chalet',
+                                            style: GoogleFonts.inter(
+                                                fontSize: 14.sp),
+                                            textAlign: TextAlign.center,
+
+                                          ),
+                                  )
                                 ],
                               ),
                             );
@@ -291,6 +299,7 @@ class _SelectChaletScreenState extends State<SelectChaletScreen> {
                                       ? GestureDetector(
                                           onTap: () {
                                             int id = controller.chaletsInfoIAdmin.value[index].id;
+                                            ChatGetxController.to.typeAccount.value = AccountType.Admin.name;
                                             // controller.getchaletToManage(
                                             //     id: controller.chaletsInfoIAdmin
                                             //         .value[index].id);

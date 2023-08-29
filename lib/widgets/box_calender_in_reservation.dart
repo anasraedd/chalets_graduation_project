@@ -63,20 +63,26 @@ class BoxCalenderInReservation extends StatelessWidget {
       children: [
           Center(
             child: SvgPicture.asset(
+              morningReserved && eveningReserved
+                  ? 'assets/images/morning_and_evening_reservation.svg'  :
               morningSelectToReservation && eveningSelectToReservation
                   ? 'assets/images/select_morning&evening.svg' :
-              eveningReserved && morningSelectToReservation ? 'assets/images/evening_reserved&morning_select_to_reservation.svg': morningReserved && eveningSelectToReservation ? 'assets/images/mornning_reserved&evening_selected.svg' :
-              morningReserved && eveningReserved
-                  ? 'assets/images/morning_and_evening_reservation.svg': morningSelectToReservation && !eveningSelectToReservation
-                  ? 'assets/images/morning_select.svg'
+              eveningReserved && morningSelectToReservation ? 'assets/images/evening_reserved&morning_select_to_reservation.svg':
+              morningReserved && eveningSelectToReservation ? 'assets/images/mornning_reserved&evening_selected.svg' :
+              // morningSelectToReservation && !eveningSelectToReservation
+              //     ? 'assets/images/morning_select.svg':
+
+              eveningReserved && !morningReserved
+                  ? 'assets/images/evening_reseved.svg' :
+              morningReserved && !eveningReserved
+                  ? 'assets/images/morning_reseved.svg'
+
                   : eveningSelectToReservation && !morningSelectToReservation
-                  ? 'assets/images/evening_select.svg' : morningReserved
-                  ? 'assets/images/morning_reserved.svg'
-                  : eveningReserved
-                  ? 'assets/images/evening_reseved.svg' :   morningSelectToReservation
-                  ? 'assets/images/card_morning_reserved.svg'
+                  ? 'assets/images/evening_select.svg' :    morningSelectToReservation && !eveningSelectToReservation
+                  ? 'assets/images/morning_select.svg'
                   // : eveningSelectToReservation
                   // ? 'assets/images/card_evening_reserved.svg'
+
                   : 'assets/images/not_reseved.svg',
               height: 45.w,
               width: 45.w,

@@ -129,18 +129,60 @@ class _CalendarChaletScreenState extends State<CalendarChaletScreen>
                     .to.chalet.value.chaletReservations.isNotEmpty) {
                   ChaletsGetxController.to.chalet.value.chaletReservations
                       .forEach((element) {
-                    DateTime startAtDate = DateTime.parse(element.endAt);
-                    DateTime endAtDate = DateTime.parse(element.startAt);
+                    DateTime startAtDate = DateTime.parse(element.startAt);
+                    DateTime endAtDate = DateTime.parse(element.endAt);
                     // DateTime startAtDate =
                     //     DateTime.now().subtract(Duration(days: 5));
                     // DateTime endAtDate =
                     //     DateTime.now().add(Duration(days: 6));
+
+
+
                     if (_datetime.isAfter(startAtDate.add(Duration(days: 1))) &&
                         _datetime.isBefore(endAtDate)) {
                       //.add(Duration(days: 1)
                       morningReserved = true;
                       eveningReserved = true;
-                    }
+                    }else  if ((_datetime.year == startAtDate.year &&
+                        _datetime.month == startAtDate.month &&
+                        _datetime.day == startAtDate.day) && (
+                        _datetime.year == endAtDate.year &&
+                            _datetime.month == endAtDate.month &&
+                            _datetime.day == endAtDate.day
+                    )) {
+                      if (element.periodStart == 'Morning' && element.periodEnd == 'Evening') {
+                        eveningReserved = true;
+                        morningReserved = true;
+                      } else   if (element.periodStart == 'Morning' && element.periodEnd == 'Morning'){
+                        //
+                        // bool isExsist = false;
+                        // for(int i =0; i <  ChaletsGetxController.to.chalet.value.chaletReservations.length; i++ ){
+                        //   if(DateTime.parse(element.endAt).day == DateTime.parse(ChaletsGetxController.to.chalet.value.chaletReservations[i].startAt).day &&
+                        //       DateTime.parse(element.endAt).month == DateTime.parse(ChaletsGetxController.to.chalet.value.chaletReservations[i].startAt).month){
+                        //     isExsist = true;
+                        //     // break;
+                        //     print('lllgggggggggggggggggggggggggggggggggggggggggggggggggggggggggmk');
+                        //
+                        //   }
+                        // }
+                        // if(isExsist){
+                        //   morningReserved = true;
+                        //   eveningReserved = true;
+                        //   print('nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn');
+                        //
+                        // }else{
+                          morningReserved = true;
+                          eveningReserved = false;
+
+                        //}
+                        //
+
+                      }
+                      else   if (element.periodStart == 'Evening' && element.periodEnd == 'Evening'){
+                        morningReserved = false;
+                        eveningReserved = true;
+                      }
+                    } else
                     if (_datetime.year == startAtDate.year &&
                         _datetime.month == startAtDate.month &&
                         _datetime.day == startAtDate.day) {
@@ -164,6 +206,43 @@ class _CalendarChaletScreenState extends State<CalendarChaletScreen>
                       }
                     }
                   });
+                  // ChaletsGetxController.to.chalet.value.chaletReservations
+                  //     .forEach((element) {
+                  //   DateTime startAtDate = DateTime.parse(element.startAt);
+                  //   DateTime endAtDate = DateTime.parse(element.endAt);
+                  //   // DateTime startAtDate =
+                  //   //     DateTime.now().subtract(Duration(days: 5));
+                  //   // DateTime endAtDate =
+                  //   //     DateTime.now().add(Duration(days: 6));
+                  //   if (_datetime.isAfter(startAtDate.add(Duration(days: 1))) &&
+                  //       _datetime.isBefore(endAtDate)) {
+                  //     //.add(Duration(days: 1)
+                  //     morningReserved = true;
+                  //     eveningReserved = true;
+                  //   }else
+                  //   if (_datetime.year == startAtDate.year &&
+                  //       _datetime.month == startAtDate.month &&
+                  //       _datetime.day == startAtDate.day) {
+                  //     if (element.periodStart == 'Evening') {
+                  //       eveningReserved = true;
+                  //       morningReserved = false;
+                  //     } else {
+                  //       morningReserved = true;
+                  //       eveningReserved = true;
+                  //     }
+                  //   } else if (_datetime.year == endAtDate.year &&
+                  //       _datetime.month == endAtDate.month &&
+                  //       _datetime.day == endAtDate.day) {
+                  //     if (element.periodEnd == 'Evening') {
+                  //       morningReserved = true;
+                  //       eveningReserved = true;
+                  //
+                  //       // morningReserved = false;
+                  //     } else {
+                  //       morningReserved = true;
+                  //     }
+                  //   }
+                  // });
 
 
                 }

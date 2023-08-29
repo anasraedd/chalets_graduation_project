@@ -1,11 +1,14 @@
 
 
+import 'dart:ffi';
+
 import 'package:chalets/core/api/api_settings.dart';
 import 'package:chalets/core/api/user_api_controller.dart';
 import 'package:chalets/models/Chat.dart';
 import 'package:chalets/models/FavoriteChalet.dart';
 import 'package:chalets/models/api_response.dart';
 import 'package:chalets/models/chalet.dart';
+import 'package:chalets/models/financial_transaction.dart';
 import 'package:chalets/prefs/shared_pref_controller.dart';
 import 'package:get/get.dart';
 
@@ -36,6 +39,13 @@ class UserGetxController extends GetxController {
   RxString   balance = ''.obs;
 
   RxBool isGetInfoProfile = false.obs;
+
+  RxBool loadingGetInfoAccountBalance = false.obs;
+  RxList<FinancialTransaction> financialTransactions = <FinancialTransaction>[].obs;
+  RxInt indexSelected = 0.obs;
+
+
+  RxDouble totalBalance = 0.0.obs;
 
 
   Rx<String> firstName = '${SharedPrefController().getValueFor<String>(key: PrefKeys.firstName.name)}'.obs;
@@ -93,6 +103,21 @@ class UserGetxController extends GetxController {
   }
 
 
+Future<void> getInfoAccountBalance() async {
+    loadingGetInfoAccountBalance.value = true;
+    ApiResponse apiResponse = await UserApiController().getInfoAccountBalance();
+    if(apiResponse.success){
+      financialTransactions.value = apiResponse.object;
+      financialTransactions.value.forEach((element) {
+        totalBalance.value += double.parse(element.balance);
+      });
+      loadingGetInfoAccountBalance.value =false;
+    }
+
+
+
+
+}
 
   Future<void> getInfoProfile() async {
     loadingMyInfoProfile.value = true;

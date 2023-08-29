@@ -380,7 +380,7 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
                   CustomButtonMaterial(
                     buttonText: 'justLogin'.tr(),
                     onTab: () {
-                      _performLogin();
+                     _performLogin();
                     },
                   ),
                   SizedBox(
@@ -448,7 +448,7 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
     //
     // }
     if (_checkDate()) {
-      await _login();
+       _login();
     }
   }
 
@@ -476,14 +476,16 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
     // Future.delayed(Duration(seconds: 5), () {
     //   Get.back();
     // });
-    String? fcmToken = await FirebaseMessaging.instance.getToken();
-    print(fcmToken);
+    print('lmlk');
+    // String? fcmToken = await FirebaseMessaging.instance.getToken();
+    // print(fcmToken);
     late ApiResponse apiResponse;
     if(selectedKey == LoginWayKeys.email){
       apiResponse = await AuthApiController().login(
         keyLogin: LoginWayKeys.email.name,
           valueLogin: _emailEditingController.text,
           password: _passwordTextController.text);
+      //      apiResponse = await AuthApiController().loginByUsername(username: _usernameTextController.text, password: _passwordTextController.text);
     }else if(selectedKey == LoginWayKeys.mobile){
       apiResponse = await AuthApiController().login(
           keyLogin: LoginWayKeys.mobile.name,
@@ -492,7 +494,7 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
       // apiResponse = await AuthApiController().loginByNumberPhone(mobile: _numberPhoneTextController.text, password: _passwordTextController.text);
     }else if(selectedKey == LoginWayKeys.username){
       apiResponse = await AuthApiController().login(
-          keyLogin: LoginWayKeys.username.name,
+          keyLogin: 'username',
           valueLogin: _usernameTextController.text,
           password: _passwordTextController.text);
       // apiResponse = await AuthApiController().loginByUsername(username: _usernameTextController.text, password: _passwordTextController.text);

@@ -20,7 +20,6 @@ class AuthAndRoutingGetxController extends GetxController {
 
   RxString userNameValue = ''.obs;
 
-
   static AuthAndRoutingGetxController get to => Get.find();
 
 }

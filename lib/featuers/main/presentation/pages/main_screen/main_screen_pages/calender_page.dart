@@ -55,43 +55,43 @@ class _CalenderPageState extends State<CalenderPage> {
     return Column(
       //  mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        widget.isAdmin
-            ? Container(
-                clipBehavior: Clip.hardEdge,
-                height: 100.h,
-                margin: EdgeInsets.symmetric(
-                  horizontal: 16.w,
-                ),
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(0.r)),
-                child: Stack(
-                  children: [
-                    SvgPicture.asset('assets/images/app_bar.svg'),
-                    Container(
-                      height: double.infinity,
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          lang.tr('calender'),
-                          style: GoogleFonts.inter(
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Align(
-                        alignment: AlignmentDirectional.centerEnd,
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.only(end: 18.w),
-                          child: SvgPicture.asset(
-                              'assets/icons/calender_directions.svg'),
-                        ))
-                  ],
-                ),
-              )
-            : Container(),
+        // widget.isAdmin
+        //     ? Container(
+        //         clipBehavior: Clip.hardEdge,
+        //         height: 100.h,
+        //         margin: EdgeInsets.symmetric(
+        //           horizontal: 16.w,
+        //         ),
+        //         decoration:
+        //             BoxDecoration(borderRadius: BorderRadius.circular(0.r)),
+        //         child: Stack(
+        //           children: [
+        //             SvgPicture.asset('assets/images/app_bar.svg'),
+        //             Container(
+        //               height: double.infinity,
+        //               width: double.infinity,
+        //               child: Center(
+        //                 child: Text(
+        //                   lang.tr('calender'),
+        //                   style: GoogleFonts.inter(
+        //                     fontSize: 20.sp,
+        //                     fontWeight: FontWeight.w700,
+        //                     color: Colors.white,
+        //                   ),
+        //                 ),
+        //               ),
+        //             ),
+        //             Align(
+        //                 alignment: AlignmentDirectional.centerEnd,
+        //                 child: Padding(
+        //                   padding: EdgeInsetsDirectional.only(end: 18.w),
+        //                   child: SvgPicture.asset(
+        //                       'assets/icons/calender_directions.svg'),
+        //                 ))
+        //           ],
+        //         ),
+        //       )
+        //     : Container(),
         Expanded(
           child: GetX<UserGetxController>(
               init: UserGetxController(),
@@ -108,7 +108,7 @@ class _CalenderPageState extends State<CalenderPage> {
                     Column(
                       children: [
                         SizedBox(
-                          height: 25.h,
+                          height: 15.h,
                         ),
                         Stack(
                           children: [
@@ -202,6 +202,115 @@ class _CalenderPageState extends State<CalenderPage> {
                                           //   morningReserved =true;
                                           //   eveningReserved = true;
                                           // }
+                                          if (  controller.myReservations.isNotEmpty) {
+                                            controller.myReservations
+                                                .forEach((element) {
+                                              DateTime startAtDate = DateTime.parse(element.startAt);
+                                              DateTime endAtDate = DateTime.parse(element.endAt);
+                                              // DateTime startAtDate =
+                                              //     DateTime.now().subtract(Duration(days: 5));
+                                              // DateTime endAtDate =
+                                              //     DateTime.now().add(Duration(days: 6));
+
+
+
+                                              if (_datetime.isAfter(startAtDate.add(Duration(days: 1))) &&
+                                                  _datetime.isBefore(endAtDate)) {
+                                                //.add(Duration(days: 1)
+                                                morningReserved = true;
+                                                eveningReserved = true;
+                                              }else  if ((_datetime.year == startAtDate.year &&
+                                                  _datetime.month == startAtDate.month &&
+                                                  _datetime.day == startAtDate.day) && (
+                                                  _datetime.year == endAtDate.year &&
+                                                      _datetime.month == endAtDate.month &&
+                                                      _datetime.day == endAtDate.day
+                                              )) {
+                                                if (element.periodStart == 'Morning' && element.periodEnd == 'Evening') {
+                                                  eveningReserved = true;
+                                                  morningReserved = true;
+                                                } else   if (element.periodStart == 'Morning' && element.periodEnd == 'Morning'){
+                                                  //
+                                                  // bool isExsist = false;
+                                                  // for(int i =0; i <  ChaletsGetxController.to.chalet.value.chaletReservations.length; i++ ){
+                                                  //   if(DateTime.parse(element.endAt).day == DateTime.parse(ChaletsGetxController.to.chalet.value.chaletReservations[i].startAt).day &&
+                                                  //       DateTime.parse(element.endAt).month == DateTime.parse(ChaletsGetxController.to.chalet.value.chaletReservations[i].startAt).month){
+                                                  //     isExsist = true;
+                                                  //     // break;
+                                                  //     print('lllgggggggggggggggggggggggggggggggggggggggggggggggggggggggggmk');
+                                                  //
+                                                  //   }
+                                                  // }
+                                                  // if(isExsist){
+                                                  //   morningReserved = true;
+                                                  //   eveningReserved = true;
+                                                  //   print('nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn');
+                                                  //
+                                                  // }else{
+                                                  morningReserved = true;
+                                                  eveningReserved = false;
+
+                                                  //}
+                                                  //
+
+                                                }
+                                                else   if (element.periodStart == 'Evening' && element.periodEnd == 'Evening'){
+                                                  morningReserved = false;
+                                                  eveningReserved = true;
+                                                }
+                                              } else
+                                              if (_datetime.year == startAtDate.year &&
+                                                  _datetime.month == startAtDate.month &&
+                                                  _datetime.day == startAtDate.day) {
+                                                if (element.periodStart == 'Evening') {
+                                                  eveningReserved = true;
+                                                  morningReserved = false;
+                                                } else {
+                                                  morningReserved = true;
+                                                  eveningReserved = true;
+                                                }
+                                              } else if (_datetime.year == endAtDate.year &&
+                                                  _datetime.month == endAtDate.month &&
+                                                  _datetime.day == endAtDate.day) {
+                                                if (element.periodEnd == 'Evening') {
+                                                  morningReserved = true;
+                                                  eveningReserved = true;
+
+                                                  // morningReserved = false;
+                                                } else {
+                                                  morningReserved = true;
+                                                }
+                                              }
+                                            });
+
+                                          }
+
+                                          return BoxCalender(
+                                            _datetime.day.toString(),
+                                            isAvaliable: true,
+                                            morningReserved: morningReserved,
+                                            eveningReserved: eveningReserved,
+                                          );
+                                        } else {
+                                          return Container();
+                                        }
+
+                                      },
+                /*
+                                      markerBuilder: (context, _datetime, event) {
+                                        bool morningReserved = false;
+                                        bool eveningReserved = false;
+                                        if (_datetime.year != _selectedDay.year ||
+                                            _datetime.month != _selectedDay.month ||
+                                            _datetime.day != _selectedDay.day) {
+                                          // DateTime customDate = DateTime.now().add(Duration(days: 1));
+                                          // if( _datetime.year == customDate.year &&
+                                          //     _datetime.month == customDate.month &&
+                                          //     _datetime.day == customDate.day){
+                                          //
+                                          //   morningReserved =true;
+                                          //   eveningReserved = true;
+                                          // }
                                           if (controller.myReservations.isNotEmpty) {
                                             controller.myReservations
                                                 .forEach((element) {
@@ -255,6 +364,7 @@ class _CalenderPageState extends State<CalenderPage> {
                                         }
 
                                       },
+                                      */
 
                                       // outsideBuilder: (context, _datetime, event){
                                       //
@@ -278,6 +388,89 @@ class _CalenderPageState extends State<CalenderPage> {
                                           //   morningReserved =true;
                                           //   eveningReserved = true;
                                           // }
+                                          if (controller.myReservations.isNotEmpty) {
+                                            controller.myReservations
+                                                .forEach((element) {
+                                              DateTime startAtDate = DateTime.parse(element.startAt);
+                                              DateTime endAtDate = DateTime.parse(element.endAt);
+                                              // DateTime startAtDate =
+                                              //     DateTime.now().subtract(Duration(days: 5));
+                                              // DateTime endAtDate =
+                                              //     DateTime.now().add(Duration(days: 6));
+
+
+
+                                              if (_datetime.isAfter(startAtDate.add(Duration(days: 1))) &&
+                                                  _datetime.isBefore(endAtDate)) {
+                                                //.add(Duration(days: 1)
+                                                morningReserved = true;
+                                                eveningReserved = true;
+                                              }else  if ((_datetime.year == startAtDate.year &&
+                                                  _datetime.month == startAtDate.month &&
+                                                  _datetime.day == startAtDate.day) && (
+                                                  _datetime.year == endAtDate.year &&
+                                                      _datetime.month == endAtDate.month &&
+                                                      _datetime.day == endAtDate.day
+                                              )) {
+                                                if (element.periodStart == 'Morning' && element.periodEnd == 'Evening') {
+                                                  eveningReserved = true;
+                                                  morningReserved = true;
+                                                } else   if (element.periodStart == 'Morning' && element.periodEnd == 'Morning'){
+                                                  //
+                                                  // bool isExsist = false;
+                                                  // for(int i =0; i <  ChaletsGetxController.to.chalet.value.chaletReservations.length; i++ ){
+                                                  //   if(DateTime.parse(element.endAt).day == DateTime.parse(ChaletsGetxController.to.chalet.value.chaletReservations[i].startAt).day &&
+                                                  //       DateTime.parse(element.endAt).month == DateTime.parse(ChaletsGetxController.to.chalet.value.chaletReservations[i].startAt).month){
+                                                  //     isExsist = true;
+                                                  //     // break;
+                                                  //     print('lllgggggggggggggggggggggggggggggggggggggggggggggggggggggggggmk');
+                                                  //
+                                                  //   }
+                                                  // }
+                                                  // if(isExsist){
+                                                  //   morningReserved = true;
+                                                  //   eveningReserved = true;
+                                                  //   print('nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn');
+                                                  //
+                                                  // }else{
+                                                  morningReserved = true;
+                                                  eveningReserved = false;
+
+                                                  //}
+                                                  //
+
+                                                }
+                                                else   if (element.periodStart == 'Evening' && element.periodEnd == 'Evening'){
+                                                  morningReserved = false;
+                                                  eveningReserved = true;
+                                                }
+                                              } else
+                                              if (_datetime.year == startAtDate.year &&
+                                                  _datetime.month == startAtDate.month &&
+                                                  _datetime.day == startAtDate.day) {
+                                                if (element.periodStart == 'Evening') {
+                                                  eveningReserved = true;
+                                                  morningReserved = false;
+                                                } else {
+                                                  morningReserved = true;
+                                                  eveningReserved = true;
+                                                }
+                                              } else if (_datetime.year == endAtDate.year &&
+                                                  _datetime.month == endAtDate.month &&
+                                                  _datetime.day == endAtDate.day) {
+                                                if (element.periodEnd == 'Evening') {
+                                                  morningReserved = true;
+                                                  eveningReserved = true;
+
+                                                  // morningReserved = false;
+                                                } else {
+                                                  morningReserved = true;
+                                                }
+                                              }
+                                            });
+
+                                          }
+                                          /*
                                           if (controller.myReservations.isNotEmpty) {
                                             controller.myReservations
                                                 .forEach((element) {
@@ -319,6 +512,7 @@ class _CalenderPageState extends State<CalenderPage> {
 
 
                                           }
+                                          */
 
                                           return BoxCalender(
                                             _datetime.day.toString(),

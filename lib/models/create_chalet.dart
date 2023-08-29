@@ -3,8 +3,8 @@ class ChaletCreated{
   late String name;
   late String logo;
   late String location;
-  late String latitude;
-  late String longitude;
+  late double latitude;
+  late double longitude;
   late String country;
   late String city;
   late String description;

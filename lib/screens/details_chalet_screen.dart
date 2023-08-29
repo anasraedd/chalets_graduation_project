@@ -293,7 +293,7 @@ class _DetailsChaletScreenState extends State<DetailsChaletScreen>
                                           children: [
                                         //     DescriptionChaletScreen(),
                                             CalendarChaletScreen(),
-                                            MapChaletScreen(),
+                                           // MapChaletScreen(lat: , long: long),
                                             TermsChaletScreen(),
 
                                           ]),

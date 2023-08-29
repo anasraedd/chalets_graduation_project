@@ -189,6 +189,7 @@ class _DescriptionChaletScreenState extends State<DescriptionChaletScreen> {
                   //     })
 
                 ),
+
                 SizedBox(
                   height: 10,
                 ),

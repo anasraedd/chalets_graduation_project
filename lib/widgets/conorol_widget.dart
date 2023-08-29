@@ -84,7 +84,7 @@ class ControlWidget extends StatelessWidget with Helpers {
                         Get.to(DetailsScreen(
                           id: AdminChaletsGetxController
                               .to.chaletForManage.value.id,
-                          numberPage: 3,
+                          //numberPage: 3,
                           isAdmin: true,
                         ));
                       } else if (numberPage == 4) {
@@ -171,11 +171,12 @@ class ControlWidget extends StatelessWidget with Helpers {
 
                         // Get.to(DetailsScreen(id: AdminChaletsGetxController.to.chaletForManage.value.id ,));
                       } else if (numberPage == 3) {
+
                         CreateChaletGetxController.to.editChaletFacility(
                             chalet: AdminChaletsGetxController
                                 .to.chaletForManage.value);
 
-                        Get.to(AddFacilitiesChaletScreen());
+                        Get.to(AddFacilitiesChaletScreen(edit: true,));
                         // Get.to(DetailsScreen(
                         //   id: AdminChaletsGetxController
                         //       .to.chaletForManage.value.id,

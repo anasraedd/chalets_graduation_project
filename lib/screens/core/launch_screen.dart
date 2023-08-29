@@ -4,6 +4,7 @@ import 'package:chalets/get/auth_and_routing_controller.dart';
 import 'package:chalets/main.dart';
 import 'package:chalets/models/message.dart';
 import 'package:chalets/prefs/shared_pref_controller.dart';
+import 'package:chalets/screens/app_admin/chat_admin_screen.dart';
 import 'package:chalets/screens/chat_screen.dart';
 import 'package:chalets/screens/personal_information_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -17,6 +18,7 @@ import 'package:get/route_manager.dart';
 class LaunchScreen extends StatefulWidget {
   // const LaunchScreen({Key? key}) : super(key: key);
   static String route = '';
+  static Map<String, dynamic> data = {};
   static bool isOpenedChat = false;
 
   @override
@@ -26,21 +28,37 @@ class LaunchScreen extends StatefulWidget {
 class _LaunchScreenState extends State<LaunchScreen> with FbNotifications {
   @override
   void initState() {
-    if (LaunchScreen.route.isNotEmpty) {
+    if (LaunchScreen.data['sender'] != null) {
       //print(ModalRoute.of(context)?.settings?.name);
       // if(LaunchScreen.route != ModalRoute.of(context)?.settings?.name){
       //goScreen();
-      if(!LaunchScreen.isOpenedChat){
-        Future.delayed(Duration(milliseconds: 10), () {
-          // Get.offNamed(LaunchScreen.route);
-          Get.off(()=> ChatScreen(id: 5));
-          LaunchScreen.route = '';
-        });
+      if(LaunchScreen.data['sender'] == AccountType.Admin.name){
+        if(!LaunchScreen.isOpenedChat){
+          Future.delayed(Duration(milliseconds: 10), () {
+            // Get.offNamed(LaunchScreen.route);
+            Get.off(()=> ChatScreen(id: int.parse(LaunchScreen.data['chaletId']), name: LaunchScreen.data['nameSender'], logo:  LaunchScreen.data['imageSender'],));
+            LaunchScreen.route = '';
+          });
 
+        }else{
+          Get.back();
+
+        }
       }else{
-        Get.back();
+        if(!LaunchScreen.isOpenedChat){
+          Future.delayed(Duration(milliseconds: 10), () {
+            // Get.offNamed(LaunchScreen.route);
+            Get.off(()=> ChatAdminScreen(userId:  int.parse(LaunchScreen.data['userId']), chaletId: int.parse(LaunchScreen.data['chaletId']), name: LaunchScreen.data['nameSender'], logo: LaunchScreen.data['imageSender'], nameMyChalet:  LaunchScreen.data['to_name'], logoMyChalet: LaunchScreen.data['to_image']));
+                //ChatScreen(id: int.parse(LaunchScreen.data['chaletId']), name: LaunchScreen.data['nameSender'], logo:  LaunchScreen.data['imageSender'],));
+          //  LaunchScreen.route = '';
+          });
 
+        }else{
+          Get.back();
+
+        }
       }
+
 
       // }
     } else {

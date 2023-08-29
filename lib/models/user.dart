@@ -3,9 +3,9 @@ import 'dart:ffi';
 
 class User{
   late int id;
-  String? email, password, gender;
-  late String username, firstName, lastName, mobile, datebirth, token, fcmToket;
-  late int balance;
+  String? email, password, gender,  datebirth;
+  late String username, firstName, lastName, mobile, token, fcmToket;
+  late num balance;
   late String accountPicture;
   String? updatedAt;
   String? createdAt;

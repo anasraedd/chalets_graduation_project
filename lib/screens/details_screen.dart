@@ -11,6 +11,7 @@ import 'package:chalets/models/chalet.dart';
 import 'package:chalets/screens/calender_chalet_screen.dart';
 import 'package:chalets/screens/chalet_pictures_screen.dart';
 import 'package:chalets/screens/chat_screen.dart';
+import 'package:chalets/screens/choose_your_reservation_date.dart';
 import 'package:chalets/screens/description_chalet_screen.dart';
 import 'package:chalets/screens/map_chalet_screen.dart';
 import 'package:chalets/screens/prices_screen.dart';
@@ -35,7 +36,7 @@ class DetailsScreen extends StatefulWidget {
   late int  numberPage;
   late bool isAdmin;
 
-  DetailsScreen({this.id = 8, this.numberPage =0, this.isAdmin = false});
+  DetailsScreen({required this.id, this.numberPage =0, this.isAdmin = false});
 
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
@@ -63,11 +64,13 @@ class _DetailsScreenState extends State<DetailsScreen>
   void initState() {
     super.initState();
 
+
     final getxController =
         Get.put<ChaletsGetxController>(ChaletsGetxController());
     //getxController.call();
     ChaletsGetxController.to.read(id: widget.id);
     Get.lazyPut<UserGetxController>(() => UserGetxController());
+
     // if (!UserGetxController.to.isGetFavoriteChalets.value) {
     //   UserGetxController.to.getFavoriteChaltes();
     // }
@@ -99,7 +102,7 @@ class _DetailsScreenState extends State<DetailsScreen>
         body: GetX<ChaletsGetxController>(
             init: ChaletsGetxController(),
             builder: (ChaletsGetxController getxController) {
-              if (getxController.loading.value) {
+              if (getxController.loading.isTrue) {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
@@ -324,7 +327,7 @@ class _DetailsScreenState extends State<DetailsScreen>
                             ),
                             GestureDetector(
                               onTap: (){
-                                Get.to(ChatScreen(id: ChaletsGetxController.to.chalet.value.id));
+                                Get.to(ChatScreen(id: ChaletsGetxController.to.chalet.value.id, name: ChaletsGetxController.to.chalet.value.name, logo: ChaletsGetxController.to.chalet.value.logo,));
 
                               },
                               child: SvgPicture.asset(
@@ -429,7 +432,7 @@ class _DetailsScreenState extends State<DetailsScreen>
                       scrllController,
                     ),
                     CalendarChaletScreen(),
-                    MapChaletScreen(),
+                    MapChaletScreen(latitude:  double.parse(ChaletsGetxController.to.chalet.value.latitude), longitude: double.parse(ChaletsGetxController.to.chalet.value.longitude)),
                     TermsChaletScreen(),
                   ]),
                 ),

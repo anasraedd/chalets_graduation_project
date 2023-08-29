@@ -78,6 +78,7 @@ dependencies:
   # Local cache
   shared_preferences: ^2.2.0
 
+
   get: ^4.6.5
 
   firebase_core: ^2.14.0
@@ -98,6 +99,9 @@ dependencies:
   country_state_city: ^0.1.6
   network_to_file_image: ^4.0.1
   path_provider: ^2.1.0
+  google_maps_flutter: ^2.4.0
+  geolocator: ^10.0.0
+
 
 
 

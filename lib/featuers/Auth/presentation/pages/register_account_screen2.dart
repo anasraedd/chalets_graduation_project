@@ -562,8 +562,8 @@ class _RegisterAccountScreen2State extends State<RegisterAccountScreen2>
         .verifyNumberMobile(numberPhone: AuthAndRoutingGetxController.to.phoneCodeCuontry.value+controller.text);
 
     if (apiResponse.success) {
-      AuthAndRoutingGetxController.to.requestId.value = apiResponse.requestId!;
-      Get.offAllNamed('/code_verification_screen');
+      // AuthAndRoutingGetxController.to.requestId.value = apiResponse.object!;
+      Get.offAll(RegisterAccountScreen3(requestId: apiResponse.object!, numberPhone: AuthAndRoutingGetxController.to.phoneCodeCuontry.value+controller.text,));
       //  Get.to( ()=> RegisterAccountScreen3());
 
 

@@ -182,6 +182,10 @@
   "coupon": "Coupon",
 
   "chalet_blocked": "Blocked Chalets",
-  "no_data": "No Data"
+  "no_data": "No Data",
+  "reservation": "Reservation",
+  "total_balance":  "Total Balance",
+  "deposit": "Deposit",
+  "chatNow": "Chat"
 
 }

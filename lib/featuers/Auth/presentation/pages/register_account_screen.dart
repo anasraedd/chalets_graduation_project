@@ -25,6 +25,10 @@ import '../widgets/custom_button_material.dart';
 import '../widgets/custom_text_form_field.dart';
 
 class RegisterAccountScreen extends StatefulWidget {
+  late String numberPhone;
+
+  RegisterAccountScreen({required this.numberPhone});
+
   @override
   State<RegisterAccountScreen> createState() => _RegisterAccountScreenState();
 }
@@ -394,13 +398,13 @@ class _RegisterAccountScreenState extends State<RegisterAccountScreen>
 
   User get user {
     User user = User();
-    // String? fcmToken = await FirebaseMessaging.instance.getToken();
 
     user.firstName = firstNameController.text;
     user.lastName = lastNameController.text;
     user.username = userNameController.text;
     user.password = passwordController.text;
-    user.mobile = '0595345880';
+    user.email = emailController.text;
+    user.mobile = widget.numberPhone;
     user.fcmToket = fcmToken!;
 
     return user;

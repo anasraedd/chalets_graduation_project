@@ -8,6 +8,7 @@ import 'package:chalets/models/FavoriteChalet.dart';
 import 'package:chalets/models/api_response.dart';
 import 'package:chalets/models/chalet.dart';
 import 'package:chalets/models/chalet/chalet_reservations.dart';
+import 'package:chalets/models/financial_transaction.dart';
 import 'package:http/http.dart' as http;
 
 class UserApiController with ApiHelper{
@@ -21,9 +22,10 @@ class UserApiController with ApiHelper{
     if (response.statusCode == 200) {
       var json = jsonDecode(response.body);
      List  reservations = json['chalet_automatic_reservations'];
-      print(json.toString());
+
+      print(reservations.toString());
       return ApiResponse<List<ChaletReservations>>('Successfully', json['status'],
-          object: reservations.map((e) => ChaletReservations.fromJson(e)).toList() );
+          object: reservations.map((e) => ChaletReservations.fromJson(e['chalet_reservation'])).toList() );
     } else if (response.statusCode == 400) {
       var json = jsonDecode(response.body);
       print(json.toString());
@@ -180,6 +182,47 @@ class UserApiController with ApiHelper{
     return errorResponse;
   }
 
+
+  Future<ApiResponse> DepositMony(FinancialTransaction financialTransaction) async {
+    Uri uri = Uri.parse(ApiSettings.userBalanceDetails);
+    var response = await http.post(uri,
+        body: {
+          'balance': '${financialTransaction.balance}',
+          'details': '${financialTransaction.details}',
+          'type': '${financialTransaction.type}'
+        },
+        headers: headers);
+
+    if (response.statusCode == 200) {
+      var json = jsonDecode(response.body);
+      return ApiResponse('Successfully', json['status']);
+
+    } else if (response.statusCode == 400) {
+      var json = jsonDecode(response.body);
+
+      return ApiResponse(json['message'], json['status']);
+    }
+    return errorResponse;
+  }
+
+  Future<ApiResponse> getInfoAccountBalance() async {
+    Uri uri = Uri.parse(ApiSettings.userBalanceDetails);
+    var response = await http.get(uri,
+        headers: headers);
+
+    if (response.statusCode == 200) {
+      var json = jsonDecode(response.body);
+      List transactions = json['user_balance_details'];
+      print(transactions);
+      return ApiResponse<List<FinancialTransaction>>('Successfully', json['status'], object: transactions.map((e) => FinancialTransaction.fromJson(e)).toList());
+
+    } else if (response.statusCode == 400) {
+      var json = jsonDecode(response.body);
+
+      return ApiResponse(json['message'], json['status']);
+    }
+    return errorResponse;
+  }
 
 
 

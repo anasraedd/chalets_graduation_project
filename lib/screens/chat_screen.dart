@@ -29,8 +29,11 @@ import 'package:google_fonts/google_fonts.dart';
 
 class ChatScreen extends StatefulWidget {
   late int id;
+  late String name;
+  late String logo;
+  // String? title;
 
-  ChatScreen({required this.id}); // late String urlImage;
+  ChatScreen({required this.id, required this.name, required this.logo}); // late String urlImage;
 
 
   // late String nameSender;
@@ -228,15 +231,17 @@ class _ChatScreenState extends State<ChatScreen> with Helpers {
                               ],
                               borderRadius: BorderRadius.circular(55555.w),
                             ),
-                            child: controller.loadingChat.isTrue
-                                ? ShimmerLoadingWidget(
-                              height: 87.w,
-                              width: 87.w,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle),
-                            )
-                                : Container(
+                            child:
+                          //  controller.loadingChat.isTrue
+                            //     ? ShimmerLoadingWidget(
+                            //   height: 87.w,
+                            //   width: 87.w,
+                            //   decoration: BoxDecoration(
+                            //       color: Colors.white,
+                            //       shape: BoxShape.circle),
+                            // )
+                      //          :
+                      Container(
                               height: 87.w,
                               width: 87.w,
                               decoration: BoxDecoration(
@@ -255,8 +260,7 @@ class _ChatScreenState extends State<ChatScreen> with Helpers {
                               ),
                               child: CachedNetworkImage(
                                 height: 228.0,
-                                imageUrl: controller
-                                    .chaletInfoChat.value.logo ??
+                                imageUrl: widget.logo ??
                                     '',
                                 fit: BoxFit.fill,
                                 placeholder: (context, url) =>
@@ -269,12 +273,13 @@ class _ChatScreenState extends State<ChatScreen> with Helpers {
                         SizedBox(
                           width: 10.w,
                         ),
-                        controller.loadingChat.isTrue
-                            ? ShimmerLoadingWidget(height: 20.h, width: 100.w)
-                            : SizedBox(
+                        // controller.loadingChat.isTrue
+                        //     ? ShimmerLoadingWidget(height: 20.h, width: 100.w)
+                      //      :
+                      SizedBox(
                           width: MediaQuery.of(context).size.width *0.42,
                               child: Text(
-                          controller.chaletInfoChat.value.name,
+                          widget.name,
                           style: GoogleFonts.inter(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
@@ -853,7 +858,7 @@ class _ChatScreenState extends State<ChatScreen> with Helpers {
                                   // String message = messageEditingController.text;
                                   messageEditingController.clear();
                                   ApiResponse result = await controller
-                                      .sendMessage(
+                                      .sendMessageToChalet(
                                       id: widget.id,
                                       message: message.textMessage);
                                   if (result.success) {
@@ -868,7 +873,15 @@ class _ChatScreenState extends State<ChatScreen> with Helpers {
                                             .getValueFor<String>(
                                             key: PrefKeys.lastName.name)}',
                                         body: message.textMessage,
-                                        token: 'cWXO5tsBRKi1KpNJB8qlwt:APA91bHx1_o-ScmRZqTHuwQRNUEgaRihcUPdQ68s8EB4JaqG5Zzm6iaOoc_ygcuO8svvcvnIZm66UNL26a5omFFzURrUB_TUnK1L0WlfgiRbyL8QlKQB9XojOOyjRdu8sINNOecnF-Fs');
+
+                                        token: controller.chaletInfoChat.value.fcmToken,
+                                      userId: SharedPrefController().getValueFor<int>(key:PrefKeys.id.name)!, chaletId: widget.id, sender: AccountType.User.name, nameSender: '${SharedPrefController()
+                                        .getValueFor<String>(
+                                        key: PrefKeys.firstName
+                                            .name)} ${SharedPrefController()
+                                        .getValueFor<String>(
+                                        key: PrefKeys.lastName.name)}', imageSender: '${SharedPrefController().getValueFor<String>(key: PrefKeys.accountPicture.name)}', toName: widget.name, toImage: widget.logo  );
+                                        //'cWXO5tsBRKi1KpNJB8qlwt:APA91bHx1_o-ScmRZqTHuwQRNUEgaRihcUPdQ68s8EB4JaqG5Zzm6iaOoc_ygcuO8svvcvnIZm66UNL26a5omFFzURrUB_TUnK1L0WlfgiRbyL8QlKQB9XojOOyjRdu8sINNOecnF-Fs');
                                   }
 
                                   ChaletInfoChat newConversations = ChaletInfoChat();
@@ -883,8 +896,8 @@ class _ChatScreenState extends State<ChatScreen> with Helpers {
                                 }
                                  // controller.conversations.where((p0) => p0.id != controller.chaletInfoChat.value.id);
 
-                                  showSnackBarByGet(title: '${result.message}',
-                                      error: !result.success);
+                                  // showSnackBarByGet(title: '${result.message}',
+                                  //     error: !result.success);
 // setState(() {
 //
 // });

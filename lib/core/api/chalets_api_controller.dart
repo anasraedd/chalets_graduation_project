@@ -92,7 +92,7 @@ class ChaletsApiController with ApiHelper {
 
 
 
-  Future<ApiResponse> reserveChalet({required ChaletReservations chaletReservations}) async {
+  Future<ApiResponse> reserveChalet({required ChaletReservations chaletReservations, required double totalPrice}) async {
     Uri uri = Uri.parse(ApiSettings.reserveChalet);
     var response = await http.post(uri,
         body: {
@@ -102,7 +102,8 @@ class ChaletsApiController with ApiHelper {
           'end_at': chaletReservations.endAt,
           'period_end': chaletReservations.periodEnd,
           'details': 'no details',
-          'total_price': '100'
+          'chalet_price_discount_codes_id': '',
+          'total_price': totalPrice.toString()
 
         },
 

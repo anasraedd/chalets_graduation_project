@@ -527,7 +527,7 @@ class _PricesScreenState extends State<PricesScreen> with Helpers{
   void _performEditPrices() async {
     if(checkData()){
       showLoadingDialog(context);
-      ApiResponse result = await AdminChaletsApiController().edaitPricesChalet(chaletId: AdminChaletsGetxController.to.chaletForManage.value.id,
+      ApiResponse result = await AdminChaletsApiController().editPricesChalet(chaletId: AdminChaletsGetxController.to.chaletForManage.value.id,
         pricesSaturdayAm:
         double.parse('${CreateChaletGetxController.to.listPricesOfAMAndPM[0].priceInAM!.text}'),
         pricesSaturdayPm:

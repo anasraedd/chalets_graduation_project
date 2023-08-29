@@ -1056,7 +1056,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
     ApiResponse result4 =
     await UserApiController().changeField(
         nameKey: 'email',
-        field: customControllerBottomSheet.text,
+        field: emailController.text,
         url: 'user_profile_change_email');
 
     ApiResponse result5 =
@@ -1088,7 +1088,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen>
 
     // if (result.success) {
     SharedPrefController().editData(firstName: firstName, lastName: lastName, username: userNameController.text,
-        email: email,  gender: genderController.text, datebirth:  dateBirthController.text,);
+        email: emailController.text,  gender: genderController.text, datebirth:  dateBirthController.text,);
     UserGetxController.to.firstName.value = firstName;
     UserGetxController.to.lastName.value = lastName;
     UserGetxController.to.email.value = email;

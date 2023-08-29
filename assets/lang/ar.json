@@ -169,7 +169,12 @@
   "home" : "الرئيسية",
   "coupon": "قسيمة",
   "chalet_blocked": "الشاليهات المحظورة",
-  "no_data": "لايوجد بيانات"
+  "no_data": "لايوجد بيانات",
+  "reservation": "حجز الشاليه",
+  "total_balance":  "إجمالي الرصيد",
+  "deposit": "إيداع",
+  "chatNow": "دردشة"
+
 
 
 

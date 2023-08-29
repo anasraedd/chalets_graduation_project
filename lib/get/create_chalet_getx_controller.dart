@@ -25,6 +25,9 @@ class CreateChaletGetxController extends GetxController with Helpers {
   RxBool isPickedImage = false.obs;
   // final BehaviorSubject<XFile?> _rxFile = BehaviorSubject<XFile?>.seeded(null);
 
+  RxDouble latitude = 0.0.obs;
+  RxDouble longitude = 0.0.obs;
+
   RxBool loadingPickedImages = false.obs;
   // @override
   // void onInit() {
@@ -207,8 +210,8 @@ class CreateChaletGetxController extends GetxController with Helpers {
       name: nameChaletController.text,
       logo: pickedImage.value.path,
       location: addressChaletController.text,
-      latitude: '14.023',
-      longitude: '38.1',
+      latitude: latitude.value,
+      longitude: longitude.value,
       country: 'Palestine',
       city: 'Gaza',
       description: descriptionChaletController.text,
@@ -278,10 +281,13 @@ class CreateChaletGetxController extends GetxController with Helpers {
   }
 
 
+
+
+
   Future<ApiResponse> updateChaletInformation() async {
 
   ApiResponse apiResponse = await  AdminChaletsApiController().updateChaletInformation(id: idChalet.value, logo: pickedImage.value.path,
-        name: nameChaletController.text, location: addressChaletController.text, latitude: 51.248, longitude: 47.265,
+        name: nameChaletController.text, location: addressChaletController.text, latitude: latitude.value, longitude: longitude.value,
         country: 'Palestine', city: 'Gaza', description: descriptionChaletController.text, space: spaceChaletController.text,
       terms: textEditingControllerTerms
           .map((element) => element.text.toString())
@@ -327,6 +333,26 @@ class CreateChaletGetxController extends GetxController with Helpers {
   return apiResponse;
   }
 
+
+  Future<ApiResponse> updateFacilitiesChalet({required String icon}) async {
+    convertSubFacilitiesToString();
+    // mainFacilities.map((element) => element.text.toString()).toList(),
+    //chaletMainFacilitieschaletSubFacilities: subFacilitiesTypeText,
+    // chaletMainFacilitiesIcons: [imageFiles[0].path, imageFiles[1].path,],
+    ApiResponse result = await AdminChaletsApiController().editFacilitiesChalet(chaletId: idChalet.value, pathIcon: icon, chaletMainFacilitiesTitles:  mainFacilities.map((element) => element.text.toString()).toList(), chaletMainFacilitieschaletSubFacilities: subFacilitiesTypeText);
+
+    print(result.message);
+    if (result.success) {
+      Get.back();
+      showSnackBarByGet(title: 'Successfully');
+      return result;
+    } else {
+      Get.back();
+      showSnackBarByGet(title: result.message, error: true);
+      return result;
+    }
+  }
+
  void editChaletInformation({required Chalet chalet}){
 
    idChalet.value = chalet.id;
@@ -335,6 +361,9 @@ class CreateChaletGetxController extends GetxController with Helpers {
     descriptionChaletController.text = chalet.description;
     spaceChaletController.text = chalet.space;
     addressChaletController.text = chalet.location;
+    latitude.value = double.parse(chalet.latitude);
+   longitude.value = double.parse(chalet.longitude);
+
 
    // for(int i =0; i < textEditingControllerTerms.length; i++){
    //   textEditingControllerTerms[i].text =chalet.chaletTerms[i].term;
@@ -367,8 +396,8 @@ class CreateChaletGetxController extends GetxController with Helpers {
 
   void editChaletFacility({required Chalet chalet}){
 
-    // idChalet.value = chalet.id;
-    // logo.value = chalet.logo;
+    idChalet.value = chalet.id;
+   //  logo.value = chalet.logo;
     // nameChaletController.text = chalet.name;
     // descriptionChaletController.text = chalet.description;
     // spaceChaletController.text = chalet.space;
@@ -378,21 +407,23 @@ class CreateChaletGetxController extends GetxController with Helpers {
     //   textEditingControllerTerms[i].text =chalet.chaletTerms[i].term;
     // }
 
-    for(int i =0; i < chalet.chaletMainFacilities.length; i++){
-      if(i >= mainFacilities.length){
-        mainFacilities.add(TextEditingController(text: chalet.chaletMainFacilities[i].title));
-      }else{
-        mainFacilities[i].text =chalet.chaletMainFacilities[i].title;
-      }
+    mainFacilities.clear();
+    subFacilities.clear();
 
-      // for(int j =0; j< chalet.chaletMainFacilities[i].chaletMainFacilitySubFacilities.length;j++){
-      //   if(j >= subFacilities.length){ //chalet.chaletMainFacilities[i].chaletMainFacilitySubFacilities.length
-      //     subFacilities[i].listTextEditingControllers.add(TextEditingController(text: chalet.chaletMainFacilities[i].chaletMainFacilitySubFacilities[j].title));
-      //   }else{
-      //     subFacilities[i].listTextEditingControllers[j].text =chalet.chaletMainFacilities[i].chaletMainFacilitySubFacilities[j].title;
-      //
-      //   }
-      // }
+
+    for(int i =0; i < chalet.chaletMainFacilities.length; i++){
+
+          mainFacilities.add(TextEditingController(text: chalet.chaletMainFacilities[i].title));
+          SubFacilities subFacility =  SubFacilities();
+          subFacility.listTextEditingControllers.clear();
+          for(int j = 0; j<  chalet.chaletMainFacilities[i].chaletMainFacilitySubFacilities.length; j++){
+
+            subFacility.listTextEditingControllers.add(TextEditingController(text: chalet.chaletMainFacilities[i].chaletMainFacilitySubFacilities[j].title));
+          }
+          // subFacility.listTextEditingControllers =  chalet.chaletMainFacilities[i].chaletMainFacilitySubFacilities;
+          subFacilities.add(subFacility);
+
+
     }
 
     // for(int i =0; i < chalet.chaletPolicies.length; i++){

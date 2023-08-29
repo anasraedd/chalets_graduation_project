@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chalets/core/theme/app_theme.dart';
+import 'package:chalets/get/admin/admin_chalets_getx_Controller.dart';
+import 'package:chalets/screens/app_admin/chat_admin_screen.dart';
 import 'package:chalets/screens/chat_screen.dart';
 import 'package:chalets/widgets/shimmer_loading_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -10,18 +12,20 @@ import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 class ConversationWidget extends StatefulWidget {
   late int idSender;
-  late String urlImage;
+  late String logoOrPicture;
   String nameSender;
+  // late String logoSender;
   String lastMessage;
   int numberMessages;
   bool archivedConversation;
   bool laseConvesation;
   String dateMassage;
 late bool isLoaded;
+late bool isAdmin;
 
   ConversationWidget(
-      {required this.idSender, required this.urlImage, required this.nameSender, required this.lastMessage, required this.numberMessages, this.archivedConversation = false, this.laseConvesation = false, required this.dateMassage
-      , this.isLoaded =true});
+      {required this.idSender, required this.logoOrPicture, required this.nameSender, required this.lastMessage, required this.numberMessages, this.archivedConversation = false, this.laseConvesation = false, required this.dateMassage
+      , this.isLoaded =true, required this.isAdmin});
 
   @override
   State<ConversationWidget> createState() => _ConversationWidgetState();
@@ -75,7 +79,7 @@ class _ConversationWidgetState extends State<ConversationWidget> {
                   ),
               child:  widget.isLoaded ? ShimmerLoadingWidget(height: 80.w, width: 80.w): CachedNetworkImage(
                 // height: 228.0,
-                imageUrl: widget.urlImage,
+                imageUrl: widget.logoOrPicture,
                 fit: BoxFit.fill,
                 placeholder: (context, url) => SpinKitFadingCircle(
                   color: Colors.blue,
@@ -95,7 +99,13 @@ class _ConversationWidgetState extends State<ConversationWidget> {
             Expanded(
               child:  GestureDetector(
                 onTap: (){
-                  Get.to(ChatScreen(id: widget.idSender,),);
+                  if(widget.isAdmin){
+                    Get.to(ChatAdminScreen(userId: widget.idSender, chaletId: AdminChaletsGetxController.to.chaletForManage.value.id, name: widget.nameSender, logo: widget.logoOrPicture, nameMyChalet: AdminChaletsGetxController.to.chaletForManage.value.name, logoMyChalet: AdminChaletsGetxController.to.chaletForManage.value.logo,),);
+
+                  }else{
+                    Get.to(ChatScreen(id: widget.idSender, name: widget.nameSender, logo: widget.logoOrPicture,),);
+
+                  }
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

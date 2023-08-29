@@ -1,6 +1,7 @@
 import 'package:chalets/core/api/auth_api_controller.dart';
 import 'package:chalets/core/theme/app_theme.dart';
 import 'package:chalets/core/utils/helpers.dart';
+import 'package:chalets/featuers/Auth/presentation/pages/register_account_screen.dart';
 import 'package:chalets/models/api_response.dart';
 import 'package:easy_localization/easy_localization.dart' as lang;
 import 'package:flutter/material.dart';
@@ -14,8 +15,10 @@ import 'package:pinput/pinput.dart';
 import '../../../../get/auth_and_routing_controller.dart';
 
 class RegisterAccountScreen3 extends StatefulWidget {
-  RegisterAccountScreen3({Key? key}) : super(key: key);
+  late String requestId;
+  late String numberPhone;
 
+  RegisterAccountScreen3({required this.requestId, required this.numberPhone});
 
   @override
   State<RegisterAccountScreen3> createState() => _RegisterAccountScreen3State();
@@ -364,12 +367,15 @@ class _RegisterAccountScreen3State extends State<RegisterAccountScreen3>
     // String? fcmToken = await FirebaseMessaging.instance.getToken();
     // print(fcmToken);
     ApiResponse apiResponse = await AuthApiController().verifyCheckCode(
-        requestId: AuthAndRoutingGetxController.to.requestId.value,
+        requestId: widget.requestId,
         verifyCode: pinController.text);
 
     if (apiResponse.success) {
       // AuthAndRoutingGetxController.to.requestId.value = apiResponse.object;
-      Get.offAllNamed('/regiter_screen');
+      // Get.back();
+      Get.offAll(RegisterAccountScreen(numberPhone: widget.numberPhone));
+      showSnackBarByGet(
+          title: apiResponse.message, error: !apiResponse.success);
     } else {
       Get.back();
       showSnackBarByGet(

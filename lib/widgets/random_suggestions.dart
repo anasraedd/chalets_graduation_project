@@ -165,31 +165,31 @@ class RandomSuggestion extends StatelessWidget {
                           ],
                         ),
                       ),
-                      Container(
-                        // padding: EdgeInsets.symmetric(vertical: 15.h),
-
-                        color: Colors.white,
-                        child: Column(
-
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            //RATE
-                            Center(child: Icon(Icons.star, color: Colors.amber,)),
-                            // TEXT RATE
-                            Text("8.6",
-
-                              style: GoogleFonts.inter(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 15.sp
-                              ),
-                            ),
-
-
-
-                          ],
-                        ),
-                      )
+                      // Container(
+                      //   // padding: EdgeInsets.symmetric(vertical: 15.h),
+                      //
+                      //   color: Colors.white,
+                      //   child: Column(
+                      //
+                      //     mainAxisAlignment: MainAxisAlignment.start,
+                      //     children: [
+                      //       //RATE
+                      //       Center(child: Icon(Icons.star, color: Colors.amber,)),
+                      //       // TEXT RATE
+                      //       Text("8.6",
+                      //
+                      //         style: GoogleFonts.inter(
+                      //             color: Colors.black,
+                      //             fontWeight: FontWeight.w700,
+                      //             fontSize: 15.sp
+                      //         ),
+                      //       ),
+                      //
+                      //
+                      //
+                      //     ],
+                      //   ),
+                      // )
                     ],
                   ),
                 ),

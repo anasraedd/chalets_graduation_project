@@ -4,6 +4,7 @@ import 'package:chalets/core/utils/my_behavior.dart';
 import 'package:chalets/get/user_getx_controller.dart';
 import 'package:chalets/main.dart';
 import 'package:chalets/prefs/shared_pref_controller.dart';
+import 'package:chalets/screens/account_balance_screen.dart';
 import 'package:chalets/screens/personal_information_screen.dart';
 import 'package:chalets/widgets/shimmer_loading_widget.dart';
 import 'package:easy_localization/easy_localization.dart' as lang;
@@ -50,9 +51,7 @@ class _ProfilePageState extends State<ProfilePage>  with Helpers {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(
-                height: 15.h,
-              ),
+
               Row(
                 children: [
                   Padding(
@@ -141,7 +140,8 @@ class _ProfilePageState extends State<ProfilePage>  with Helpers {
                   children: [
                     Row(
                       children: [
-                        controller.loadingMyInfoProfile.isTrue ?  ShimmerLoadingWidget(height: 15.h, width: 80.w):Text(
+                        // controller.loadingMyInfoProfile.isTrue ?  ShimmerLoadingWidget(height: 15.h, width: 80.w):
+                        Text(
                           lang.tr('resevations'),
                           style: Theme.of(context)
                               .textTheme
@@ -163,7 +163,8 @@ class _ProfilePageState extends State<ProfilePage>  with Helpers {
                     ),
                     Row(
                       children: [
-                        controller.loadingMyInfoProfile.isTrue ?  ShimmerLoadingWidget(height: 15.h, width: 100.w) :Text(
+                        // controller.loadingMyInfoProfile.isTrue ?  ShimmerLoadingWidget(height: 15.h, width: 100.w) :
+                        Text(
                           lang.tr('walletBalance'),
                           style: Theme.of(context)
                               .textTheme
@@ -191,47 +192,47 @@ class _ProfilePageState extends State<ProfilePage>  with Helpers {
                     SizedBox(
                       height: 9.h,
                     ),
-                    Row(
-                      children: [
-                        Text(
-                          lang.tr('ratingFromChalets'),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(fontSize: 18.sp, fontWeight: FontWeight.w400),
-                        ),
-                        const Spacer(),
-                        Text(
-                          "9/10",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(fontSize: 15.sp, fontWeight: FontWeight.w400),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 9.h,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          lang.tr('chaletsWhoBannedYou'),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(fontSize: 18.sp, fontWeight: FontWeight.w400),
-                        ),
-                        const Spacer(),
-                        Text(
-                          "10",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(fontSize: 15.sp, fontWeight: FontWeight.w400),
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   children: [
+                    //     Text(
+                    //       lang.tr('ratingFromChalets'),
+                    //       style: Theme.of(context)
+                    //           .textTheme
+                    //           .bodyMedium!
+                    //           .copyWith(fontSize: 18.sp, fontWeight: FontWeight.w400),
+                    //     ),
+                    //     const Spacer(),
+                    //     Text(
+                    //       "9/10",
+                    //       style: Theme.of(context)
+                    //           .textTheme
+                    //           .bodyMedium!
+                    //           .copyWith(fontSize: 15.sp, fontWeight: FontWeight.w400),
+                    //     ),
+                    //   ],
+                    // ),
+                    // SizedBox(
+                    //   height: 9.h,
+                    // ),
+                    // Row(
+                    //   children: [
+                    //     Text(
+                    //       lang.tr('chaletsWhoBannedYou'),
+                    //       style: Theme.of(context)
+                    //           .textTheme
+                    //           .bodyMedium!
+                    //           .copyWith(fontSize: 18.sp, fontWeight: FontWeight.w400),
+                    //     ),
+                    //     const Spacer(),
+                    //     Text(
+                    //       "10",
+                    //       style: Theme.of(context)
+                    //           .textTheme
+                    //           .bodyMedium!
+                    //           .copyWith(fontSize: 15.sp, fontWeight: FontWeight.w400),
+                    //     ),
+                    //   ],
+                    // ),
                     Container(
                       height: 2.h,
                       margin: EdgeInsets.symmetric(vertical: 19.h),
@@ -325,7 +326,7 @@ class _ProfilePageState extends State<ProfilePage>  with Helpers {
                           highlightColor: Colors.transparent,
                           focusColor: Colors.transparent,
                           onTap: (){
-
+                            Get.to(AccountBalanceScreen());
                           },
                           child: Icon(
                             Icons.arrow_forward_ios_rounded,

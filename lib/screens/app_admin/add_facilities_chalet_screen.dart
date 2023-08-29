@@ -2,6 +2,7 @@ import 'package:chalets/core/theme/app_theme.dart';
 import 'package:chalets/core/utils/context_extetion.dart';
 import 'package:chalets/core/utils/helpers.dart';
 import 'package:chalets/featuers/Auth/presentation/widgets/custom_text_form_field.dart';
+import 'package:chalets/get/admin/admin_chalets_getx_Controller.dart';
 import 'package:chalets/get/create_chalet_getx_controller.dart';
 import 'package:chalets/models/api_response.dart';
 import 'package:chalets/models/sub_facilities.dart';
@@ -16,7 +17,9 @@ import 'package:easy_localization/easy_localization.dart' as localization;
 import 'package:image_picker/image_picker.dart';
 
 class AddFacilitiesChaletScreen extends StatefulWidget {
-  const AddFacilitiesChaletScreen({Key? key}) : super(key: key);
+  late bool edit;
+
+  AddFacilitiesChaletScreen({this.edit = false});
 
   @override
   State<AddFacilitiesChaletScreen> createState() =>
@@ -27,6 +30,13 @@ class _AddFacilitiesChaletScreenState extends State<AddFacilitiesChaletScreen>
     with Helpers {
   late ImagePicker _imagePicker;
   XFile? _pickedImage;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -722,7 +732,7 @@ class _AddFacilitiesChaletScreenState extends State<AddFacilitiesChaletScreen>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            GestureDetector(
+            widget.edit ? Container():  GestureDetector(
               onTap: () {
                 print('prev');
                 Get.back();
@@ -746,26 +756,37 @@ class _AddFacilitiesChaletScreenState extends State<AddFacilitiesChaletScreen>
             GestureDetector(
               onTap: () {
                 print('next');
-                _performCreateChalet();
+               if( widget.edit){
+                 _performEditFacilitiesChalet();
+
+               }else{
+                 _performCreateChalet();
+
+               }
               },
               child: Container(
-                margin: EdgeInsetsDirectional.only(bottom: 25.h, end: 25.w),
-                decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage("assets/icons/FTBPK.png"),
-                        fit: BoxFit.cover)),
-                padding: EdgeInsets.only(bottom: 8.h),
-                height: 70.h,
-                width: 70.w,
-                child: Transform.flip(
-                  child: Icon(
-                    Icons.arrow_back_outlined,
-                    size: 33.r,
-                    color: Colors.white,
-                  ),
-                  flipX: true,
-                ),
-              ),
+                // height: 85.w,
+                //  width: 80.w,
+                   margin: EdgeInsetsDirectional.only(bottom: 25.h, end: 25.w),child: SvgPicture.asset('assets/icons/btn_go.svg', ))
+
+              // Container(
+              //   margin: EdgeInsetsDirectional.only(bottom: 25.h, end: 25.w),
+              //   decoration: const BoxDecoration(
+              //       image: DecorationImage(
+              //           image: AssetImage("assets/icons/FTBPK.png"),
+              //           fit: BoxFit.cover)),
+              //   padding: EdgeInsets.only(bottom: 8.h),
+              //   height: 70.h,
+              //   width: 70.w,
+              //   child: Transform.flip(
+              //     child: Icon(
+              //       Icons.arrow_back_outlined,
+              //       size: 33.r,
+              //       color: Colors.white,
+              //     ),
+              //     flipX: true,
+              //   ),
+              // ),
             ),
           ],
         ),
@@ -776,10 +797,38 @@ class _AddFacilitiesChaletScreenState extends State<AddFacilitiesChaletScreen>
   void _performCreateChalet() async {
     if (checkData()) {
       showLoadingDialog(context);
+      print('lat: ${CreateChaletGetxController.to.latitude.value}');
+      print('lat: ${CreateChaletGetxController.to.longitude.value}');
+
       ApiResponse result = await CreateChaletGetxController.to.createChalet();
+      // print('lat: ${CreateChaletGetxController.to.latitude.value}');
 
       if (result.success) {
         Get.offAll(SelectChaletScreen());
+      }
+// Get.toNamed('add_facilities_chalet_screen');
+    }
+  }
+
+  void _performEditFacilitiesChalet() async {
+    if (checkData()) {
+      showLoadingDialog(context);
+      ApiResponse result = await CreateChaletGetxController.to.updateFacilitiesChalet(icon: CreateChaletGetxController.to.imageFiles[0].path);
+
+      if(result.success){
+        AdminChaletsGetxController.to.getchaletToManage(id: AdminChaletsGetxController.to.chaletForManage.value.id);
+
+        Get.back();
+        Get.back();
+
+        showSnackBarByGet(title: result.message, error: !result.success);
+
+
+      }else{
+        Get.back();
+
+        showSnackBarByGet(title: result.message, error: !result.success);
+
       }
 // Get.toNamed('add_facilities_chalet_screen');
     }

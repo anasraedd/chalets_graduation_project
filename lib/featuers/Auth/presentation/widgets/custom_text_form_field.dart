@@ -101,6 +101,7 @@ class CustomTextFormField extends StatelessWidget with Helpers {
           onChanged: onChanged,
 
 
+
          focusNode: focusNode,
           onEditingComplete: () {
             FocusScope.of(context).nextFocus();
@@ -131,7 +132,7 @@ class CustomTextFormField extends StatelessWidget with Helpers {
                   )
                 : null,
             suffix:  suffix,
-            suffixIconConstraints: BoxConstraints(minHeight: 56, minWidth: 40),
+            suffixIconConstraints: BoxConstraints(minHeight: height, minWidth: 40),
             hintText: hint,
             hintStyle: hintStyle != null ? hintStyle : GoogleFonts.inter(
                 fontWeight: FontWeight.w700,

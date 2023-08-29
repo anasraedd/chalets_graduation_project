@@ -9,6 +9,7 @@ import 'package:chalets/get/calender_getx_controller.dart';
 import 'package:chalets/get/chalets_getx_Controller.dart';
 import 'package:chalets/models/api_response.dart';
 import 'package:chalets/models/chalet/chalet_reservations.dart';
+import 'package:chalets/screens/chalet_reservation_screen.dart';
 import 'package:chalets/screens/details_screen.dart';
 import 'package:chalets/widgets/box_calender.dart';
 import 'package:chalets/widgets/box_calender_in_reservation.dart';
@@ -32,10 +33,11 @@ class ChooseYourReservationDate extends StatefulWidget {
       _ChooseYourReservationDateState();
 }
 
-class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> with Helpers{
+class _ChooseYourReservationDateState extends State<ChooseYourReservationDate>
+    with Helpers {
   CalendarFormat _calendarFormat = CalendarFormat.month;
 
-  // DateTime _selectedDay = DateTime.now().add(Duration(days: 1));
+  // DateTime _selectedDay = DateTime.now().add(Duration(days: 100));
   DateTime _focusedDay = DateTime.now().add(Duration(days: 1));
 
   // final createChaletGetxController = Get.lazyPut<CalenderGetxController>(
@@ -49,7 +51,6 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         appBar: AppBar(
             backgroundColor: primaryColor,
@@ -405,10 +406,10 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                                               children: [
                                                 Padding(
                                                     padding:
-                                                        const EdgeInsets.all(
-                                                            7.5),
+                                                         EdgeInsets.all(
+                                                            5.w),
                                                     child: Text(
-                                                      '7:00 ${controller.selectReservedPeriodStart.value == 'Evening' ? 'PM' : 'AM'}',
+                                                      '${controller.selectReservedPeriodStart.value == 'Evening' ? '7:00 ' : '8:00 '}',
                                                       style: GoogleFonts.inter(
                                                         fontSize: 15.sp,
                                                         fontWeight:
@@ -422,92 +423,254 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                                                 ),
                                                 SizedBox(
                                                   height: 28.h,
-                                                  width: 60.w,
+                                                  width: 56.w,
                                                   child: controller
                                                           .allowChangeEndPeriod
                                                           .value
-                                                      ? ElevatedButton(
-                                                          onPressed: () {
-                                                            if (controller
-                                                                .allowChangeStartPeriod
-                                                                .value) {
-                                                              if (DateTime.parse(controller
-                                                                              .selectReservedDateStart
-                                                                              .value)
-                                                                          .day ==
-                                                                      DateTime.parse(controller
-                                                                              .selectReservedDateEnd
-                                                                              .value)
-                                                                          .day &&
-                                                                  DateTime.parse(controller
-                                                                              .selectReservedDateStart
-                                                                              .value)
-                                                                          .month ==
-                                                                      DateTime.parse(controller
-                                                                              .selectReservedDateEnd
-                                                                              .value)
-                                                                          .month) {
-                                                                if (controller
-                                                                        .selectReservedPeriodStart
-                                                                        .value ==
-                                                                    'Evening') {
-                                                                  controller
-                                                                          .selectReservedPeriodStart
-                                                                          .value =
-                                                                      'Morning';
-                                                                  controller
-                                                                          .selectReservedPeriodEnd
-                                                                          .value =
-                                                                      'Morning';
-                                                                } else {
-                                                                  controller
-                                                                          .selectReservedPeriodStart
-                                                                          .value =
-                                                                      'Evening';
-                                                                  controller
-                                                                          .selectReservedPeriodEnd
-                                                                          .value =
-                                                                      'Evening';
-                                                                }
-                                                                setState(() {});
-                                                              } else {
-                                                                if (controller
-                                                                        .selectReservedPeriodStart ==
-                                                                    'Evening') {
-                                                                  controller
-                                                                          .selectReservedPeriodStart
-                                                                          .value =
-                                                                      'Morning';
-                                                                } else {
-                                                                  controller
-                                                                          .selectReservedPeriodStart
-                                                                          .value =
-                                                                      'Evening';
-                                                                }
-                                                                setState(() {});
-                                                              }
-                                                            }
+                                                      ? Container(
+                                                          width: 56.w,
+                                                          height: 40.w,
+                                                          decoration: BoxDecoration(
+                                                              border: Border.all(
+                                                                  color:
+                                                                      secondaryColor),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          6)),
+                                                          child: Row(
+                                                            children: [
+                                                              Expanded(
+                                                                child:
+                                                                    GestureDetector(
+                                                                  onTap: () {
+                                                                    if (controller
+                                                                        .allowChangeStartPeriod
+                                                                        .value) {
+                                                                      setState(
+                                                                          () {
+                                                                        controller
+                                                                            .selectReservedPeriodStart
+                                                                            .value = 'Morning';
+                                                                      });
+                                                                    }
+                                                                  },
+                                                                  child:
+                                                                      Container(
+                                                                    // width: 28.w,
+                                                                    height:
+                                                                        40.h,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      color: controller.selectReservedPeriodStart.value ==
+                                                                              'Morning'
+                                                                          ? primaryColor.withOpacity(
+                                                                              0.7)
+                                                                          : Colors
+                                                                              .white,
+                                                                      borderRadius: BorderRadiusDirectional.only(
+                                                                          topStart: Radius.circular(
+                                                                              5),
+                                                                          bottomStart:
+                                                                              Radius.circular(5)),
+                                                                    ),
+                                                                    child: Center(
+                                                                        child: Text(
+                                                                      'AM',
+                                                                      style: GoogleFonts.inter(
+                                                                          fontSize: 12
+                                                                              .sp,
+                                                                          color: controller.selectReservedPeriodStart.value == 'Morning'
+                                                                              ? Colors.white
+                                                                              : Colors.black),
+                                                                    )),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Container(
+                                                                width: 1,
+                                                                height: 40.h,
+                                                                color: secondaryColor,
+                                                              ),
+                                                              // VerticalDivider(
+                                                              //   width: 1,
+                                                              //   color:
+                                                              //       secondaryColor,
+                                                              // ),
+                                                              Expanded(
+                                                                child:
+                                                                    GestureDetector(
+                                                                  onTap: () {
+                                                                    if (controller
+                                                                        .allowChangeStartPeriod
+                                                                        .value) {
+                                                                      if (DateTime.parse(controller.selectReservedDateStart.value).day ==
+                                                                          DateTime.parse(controller.selectReservedDateEnd.value)
+                                                                              .day &&
+                                                                          DateTime.parse(controller.selectReservedDateStart.value).month ==
+                                                                              DateTime.parse(controller.selectReservedDateEnd.value).month) {
+                                                                        setState(
+                                                                                () {
+                                                                              if(controller.selectReservedPeriodEnd == 'Evening'){
+                                                                                setState(() {
+                                                                                  controller
+                                                                                      .selectReservedPeriodStart
+                                                                                      .value = 'Evening';
+                                                                                });
+                                                                              }
 
-                                                            // setState(() {
-                                                            //
-                                                            // });
-                                                          },
-                                                          style: ElevatedButton
-                                                              .styleFrom(
-                                                                  padding:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              0)),
-                                                          child: Text(
-                                                            controller.selectReservedPeriodStart ==
-                                                                    'Evening'
-                                                                ? 'Morning'
-                                                                : 'Evening',
-                                                            style: GoogleFonts
-                                                                .inter(
-                                                                    fontSize:
-                                                                        12.sp),
-                                                          ))
+                                                                            });
+                                                                      }else{
+                                                                        setState(() {
+                                                                          controller
+                                                                              .selectReservedPeriodStart
+                                                                              .value = 'Evening';
+                                                                        });
+                                                                      }
+
+                                                                      // setState(
+                                                                      //         () {
+                                                                      //       setState(() {
+                                                                      //         controller
+                                                                      //             .selectReservedPeriodStart
+                                                                      //             .value = 'Evening';
+                                                                      //       });
+                                                                      //     });
+                                                                    }
+                                                                    // if (DateTime.parse(controller.selectReservedDateStart.value).day !=
+                                                                    //         DateTime.parse(controller.selectReservedDateEnd.value)
+                                                                    //             .day ||
+                                                                    //     DateTime.parse(controller.selectReservedDateStart.value).month !=
+                                                                    //         DateTime.parse(controller.selectReservedDateEnd.value).month) {
+                                                                    //   setState(
+                                                                    //       () {
+                                                                    //     controller
+                                                                    //         .selectReservedPeriodStart
+                                                                    //         .value = 'Evening';
+                                                                    //   });
+                                                                    // }
+                                                                  },
+                                                                  child:
+                                                                      Container(
+                                                                    // width: 28.w,
+                                                                    height:
+                                                                        40.h,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      color: controller.selectReservedPeriodStart.value ==
+                                                                              'Evening'
+                                                                          ? primaryColor.withOpacity(
+                                                                              0.7)
+                                                                          : Colors
+                                                                              .white,
+
+                                                                      // border: BorderDirectional(              bottom: BorderSide(width: 1.5, color: Colors.grey),
+                                                                      //  ),
+                                                                      borderRadius: BorderRadiusDirectional.only(
+                                                                          topEnd: Radius.circular(
+                                                                              5),
+                                                                          bottomEnd:
+                                                                              Radius.circular(5)),
+                                                                    ),
+                                                                    child: Center(
+                                                                        child: Text(
+                                                                      'PM',
+                                                                      style: GoogleFonts.inter(
+                                                                          fontSize: 12
+                                                                              .sp,
+                                                                          color: controller.selectReservedPeriodStart.value == 'Evening'
+                                                                              ? Colors.white
+                                                                              : Colors.black),
+                                                                    )),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                      // ElevatedButton(
+                                                      //         onPressed: () {
+                                                      //           if (controller
+                                                      //               .allowChangeStartPeriod
+                                                      //               .value) {
+                                                      //             if (DateTime.parse(controller
+                                                      //                             .selectReservedDateStart
+                                                      //                             .value)
+                                                      //                         .day ==
+                                                      //                     DateTime.parse(controller
+                                                      //                             .selectReservedDateEnd
+                                                      //                             .value)
+                                                      //                         .day &&
+                                                      //                 DateTime.parse(controller
+                                                      //                             .selectReservedDateStart
+                                                      //                             .value)
+                                                      //                         .month ==
+                                                      //                     DateTime.parse(controller
+                                                      //                             .selectReservedDateEnd
+                                                      //                             .value)
+                                                      //                         .month) {
+                                                      //               if (controller
+                                                      //                       .selectReservedPeriodStart
+                                                      //                       .value ==
+                                                      //                   'Evening') {
+                                                      //                 controller
+                                                      //                         .selectReservedPeriodStart
+                                                      //                         .value =
+                                                      //                     'Morning';
+                                                      //                 controller
+                                                      //                         .selectReservedPeriodEnd
+                                                      //                         .value =
+                                                      //                     'Morning';
+                                                      //               } else {
+                                                      //                 controller
+                                                      //                         .selectReservedPeriodStart
+                                                      //                         .value =
+                                                      //                     'Evening';
+                                                      //                 controller
+                                                      //                         .selectReservedPeriodEnd
+                                                      //                         .value =
+                                                      //                     'Evening';
+                                                      //               }
+                                                      //               setState(() {});
+                                                      //             } else {
+                                                      //
+                                                      //               if (controller
+                                                      //                       .selectReservedPeriodStart ==
+                                                      //                   'Evening') {
+                                                      //                 controller
+                                                      //                         .selectReservedPeriodStart
+                                                      //                         .value =
+                                                      //                     'Morning';
+                                                      //               } else {
+                                                      //                 controller
+                                                      //                         .selectReservedPeriodStart
+                                                      //                         .value =
+                                                      //                     'Evening';
+                                                      //               }
+                                                      //               setState(() {});
+                                                      //             }
+                                                      //           }
+                                                      //
+                                                      //           // setState(() {
+                                                      //           //
+                                                      //           // });
+                                                      //         },
+                                                      //         style: ElevatedButton
+                                                      //             .styleFrom(
+                                                      //                 padding:
+                                                      //                     EdgeInsets
+                                                      //                         .all(
+                                                      //                             0)),
+                                                      //         child: Text(
+                                                      //           controller.selectReservedPeriodStart ==
+                                                      //                   'Evening'
+                                                      //               ? 'Morning'
+                                                      //               : 'Evening',
+                                                      //           style: GoogleFonts
+                                                      //               .inter(
+                                                      //                   fontSize:
+                                                      //                       12.sp),
+                                                      //         ))
                                                       : Container(),
                                                 )
                                               ],
@@ -537,10 +700,10 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                                               children: [
                                                 Padding(
                                                     padding:
-                                                        const EdgeInsets.all(
-                                                            7.5),
+                                                         EdgeInsets.all(
+                                                            5.w),
                                                     child: Text(
-                                                      '6:00 ${controller.selectReservedPeriodEnd.value == 'Evening' ? 'PM' : 'AM'}',
+                                                      '${controller.selectReservedPeriodStart.value == 'Evening' ? '8:00 ' : '7:00 '}',
                                                       style: GoogleFonts.inter(
                                                         fontSize: 15.sp,
                                                         fontWeight:
@@ -556,86 +719,239 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                                                         .value
                                                     ? SizedBox(
                                                         height: 28.h,
-                                                        width: 60.w,
-                                                        child: ElevatedButton(
-                                                            onPressed: () {
-                                                              if (controller
-                                                                  .allowChangeEndPeriod
-                                                                  .value) {
-                                                              if (DateTime.parse(controller
-                                                                              .selectReservedDateStart
-                                                                              .value)
-                                                                          .day ==
-                                                                      DateTime.parse(controller
-                                                                              .selectReservedDateEnd
-                                                                              .value)
-                                                                          .day &&
-                                                                  DateTime.parse(controller
-                                                                              .selectReservedDateStart
-                                                                              .value)
-                                                                          .month ==
-                                                                      DateTime.parse(controller
-                                                                              .selectReservedDateEnd
-                                                                              .value)
-                                                                          .month) {
-                                                                if (controller
-                                                                        .selectReservedPeriodEnd
-                                                                        .value ==
-                                                                    'Evening') {
-                                                                  controller
-                                                                          .selectReservedPeriodStart
-                                                                          .value =
-                                                                      'Morning';
-                                                                  controller
-                                                                          .selectReservedPeriodEnd
-                                                                          .value =
-                                                                      'Morning';
-                                                                } else {
-                                                                  controller
-                                                                          .selectReservedPeriodStart
-                                                                          .value =
-                                                                      'Evening';
-                                                                  controller
-                                                                          .selectReservedPeriodEnd
-                                                                          .value =
-                                                                      'Evening';
-                                                                }
-                                                                setState(() {});
-                                                              } else {
+                                                        width: 56.w,
+                                                        child:
+                                                        Container(
+                                                          width: 56.w,
+                                                          height: 40.w,
+                                                          decoration: BoxDecoration(
+                                                              border: Border.all(
+                                                                  color:
+                                                                  secondaryColor),
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                  6)),
+                                                          child: Row(
+                                                            children: [
+                                                              Expanded(
+                                                                child:
+                                                                GestureDetector(
+                                                                  onTap: () {
+                                                                    if (controller
+                                                                        .allowChangeEndPeriod
+                                                                        .value) {
+                                                                      if (DateTime.parse(controller.selectReservedDateStart.value).day ==
+                                                                                            DateTime.parse(controller.selectReservedDateEnd.value)
+                                                                                                .day &&
+                                                                                        DateTime.parse(controller.selectReservedDateStart.value).month ==
+                                                                                            DateTime.parse(controller.selectReservedDateEnd.value).month) {
+                                                                                      setState(
+                                                                                          () {
+                                                                                            if(controller.selectReservedPeriodStart != 'Evening'){
+                                                                                              setState(() {
+                                                                                                controller
+                                                                                                    .selectReservedPeriodEnd
+                                                                                                    .value = 'Morning';
+                                                                                              });
+                                                                                            }
 
-                                                                  if (controller
-                                                                          .selectReservedPeriodEnd ==
-                                                                      'Evening') {
-                                                                    controller
-                                                                            .selectReservedPeriodEnd
-                                                                            .value =
-                                                                        'Morning';
-                                                                  } else {
-                                                                    controller
-                                                                            .selectReservedPeriodEnd
-                                                                            .value =
-                                                                        'Evening';
-                                                                  }
-                                                                  setState(
-                                                                      () {});
-                                                                }
-                                                              }
-                                                            },
-                                                            style: ElevatedButton
-                                                                .styleFrom(
-                                                                    padding:
-                                                                        EdgeInsets.all(
-                                                                            0)),
-                                                            child: Text(
-                                                              controller.selectReservedPeriodEnd ==
-                                                                      'Evening'
-                                                                  ? 'Morning'
-                                                                  : 'Evening',
-                                                              style: GoogleFonts
-                                                                  .inter(
-                                                                      fontSize:
-                                                                          12.sp),
-                                                            )),
+                                                                                      });
+                                                                                    }else{
+                                                                                  setState(() {
+                                                                                    controller
+                                                                                        .selectReservedPeriodEnd
+                                                                                        .value = 'Morning';
+                                                                                    controller
+                                                                                        .selectReservedPeriodStart
+                                                                                        .value = 'Morning';
+                                                                                  });
+                                                                                }
+
+                                                                               // }
+
+                                                                    }
+                                                                  },
+                                                                  child:
+                                                                  Container(
+                                                                    // width: 28.w,
+                                                                    height:
+                                                                    40.h,
+                                                                    decoration:
+                                                                    BoxDecoration(
+                                                                      color: controller.selectReservedPeriodEnd.value ==
+                                                                          'Morning'
+                                                                          ? primaryColor.withOpacity(
+                                                                          0.7)
+                                                                          : Colors
+                                                                          .white,
+                                                                      borderRadius: BorderRadiusDirectional.only(
+                                                                          topStart: Radius.circular(
+                                                                              5),
+                                                                          bottomStart:
+                                                                          Radius.circular(5)),
+                                                                    ),
+                                                                    child: Center(
+                                                                        child: Text(
+                                                                          'AM',
+                                                                          style: GoogleFonts.inter(
+                                                                              fontSize: 12
+                                                                                  .sp,
+                                                                              color: controller.selectReservedPeriodEnd.value == 'Morning'
+                                                                                  ? Colors.white
+                                                                                  : Colors.black),
+                                                                        )),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Container(
+                                                                width: 1,
+                                                                height: 40.h,
+                                                                color: secondaryColor,
+                                                              ),
+                                                              // VerticalDivider(
+                                                              //   width: 1,
+                                                              //   color:
+                                                              //       secondaryColor,
+                                                              // ),
+                                                              Expanded(
+                                                                child:
+                                                                GestureDetector(
+                                                                  onTap: () {
+                                                                    if (controller
+                                                                        .allowChangeEndPeriod
+                                                                        .value) {
+                                                                      setState(
+                                                                              () {
+                                                                            setState(() {
+                                                                              controller
+                                                                                  .selectReservedPeriodEnd
+                                                                                  .value = 'Evening';
+                                                                            });
+                                                                          });
+                                                                    }
+                                                                    // if (DateTime.parse(controller.selectReservedDateStart.value).day !=
+                                                                    //         DateTime.parse(controller.selectReservedDateEnd.value)
+                                                                    //             .day ||
+                                                                    //     DateTime.parse(controller.selectReservedDateStart.value).month !=
+                                                                    //         DateTime.parse(controller.selectReservedDateEnd.value).month) {
+                                                                    //   setState(
+                                                                    //       () {
+                                                                    //     controller
+                                                                    //         .selectReservedPeriodStart
+                                                                    //         .value = 'Evening';
+                                                                    //   });
+                                                                    // }
+                                                                  },
+                                                                  child:
+                                                                  Container(
+                                                                    // width: 28.w,
+                                                                    height:
+                                                                    40.h,
+                                                                    decoration:
+                                                                    BoxDecoration(
+                                                                      color: controller.selectReservedPeriodEnd.value ==
+                                                                          'Evening'
+                                                                          ? primaryColor.withOpacity(
+                                                                          0.7)
+                                                                          : Colors
+                                                                          .white,
+
+                                                                      // border: BorderDirectional(              bottom: BorderSide(width: 1.5, color: Colors.grey),
+                                                                      //  ),
+                                                                      borderRadius: BorderRadiusDirectional.only(
+                                                                          topEnd: Radius.circular(
+                                                                              5),
+                                                                          bottomEnd:
+                                                                          Radius.circular(5)),
+                                                                    ),
+                                                                    child: Center(
+                                                                        child: Text(
+                                                                          'PM',
+                                                                          style: GoogleFonts.inter(
+                                                                              fontSize: 12
+                                                                                  .sp,
+                                                                              color: controller.selectReservedPeriodEnd.value == 'Evening'
+                                                                                  ? Colors.white
+                                                                                  : Colors.black),
+                                                                        )),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        // ElevatedButton(
+                                                        //     onPressed: () {
+                                                        //       if (controller
+                                                        //           .allowChangeEndPeriod
+                                                        //           .value) {
+                                                        //         if (DateTime.parse(controller.selectReservedDateStart.value)
+                                                        //                     .day ==
+                                                        //                 DateTime.parse(controller.selectReservedDateEnd.value)
+                                                        //                     .day &&
+                                                        //             DateTime.parse(controller.selectReservedDateStart.value)
+                                                        //                     .month ==
+                                                        //                 DateTime.parse(controller.selectReservedDateEnd.value)
+                                                        //                     .month) {
+                                                        //           if (controller
+                                                        //                   .selectReservedPeriodEnd
+                                                        //                   .value ==
+                                                        //               'Evening') {
+                                                        //             controller
+                                                        //                     .selectReservedPeriodStart
+                                                        //                     .value =
+                                                        //                 'Morning';
+                                                        //             controller
+                                                        //                     .selectReservedPeriodEnd
+                                                        //                     .value =
+                                                        //                 'Morning';
+                                                        //           } else {
+                                                        //             controller
+                                                        //                     .selectReservedPeriodStart
+                                                        //                     .value =
+                                                        //                 'Evening';
+                                                        //             controller
+                                                        //                     .selectReservedPeriodEnd
+                                                        //                     .value =
+                                                        //                 'Evening';
+                                                        //           }
+                                                        //           setState(
+                                                        //               () {});
+                                                        //         } else {
+                                                        //           if (controller
+                                                        //                   .selectReservedPeriodEnd ==
+                                                        //               'Evening') {
+                                                        //             controller
+                                                        //                     .selectReservedPeriodEnd
+                                                        //                     .value =
+                                                        //                 'Morning';
+                                                        //           } else {
+                                                        //             controller
+                                                        //                     .selectReservedPeriodEnd
+                                                        //                     .value =
+                                                        //                 'Evening';
+                                                        //           }
+                                                        //           setState(
+                                                        //               () {});
+                                                        //         }
+                                                        //       }
+                                                        //     },
+                                                        //     style: ElevatedButton
+                                                        //         .styleFrom(
+                                                        //             padding:
+                                                        //                 EdgeInsets.all(
+                                                        //                     0)),
+                                                        //     child: Text(
+                                                        //       controller.selectReservedPeriodEnd ==
+                                                        //               'Evening'
+                                                        //           ? 'Morning'
+                                                        //           : 'Evening',
+                                                        //       style: GoogleFonts
+                                                        //           .inter(
+                                                        //               fontSize:
+                                                        //                   12.sp),
+                                                        //     )),
                                                       )
                                                     : Container()
                                               ],
@@ -667,7 +983,11 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                   selectedDayPredicate: (day) {
                     return true;
                   },
-                  rangeSelectionMode: RangeSelectionMode.toggledOn,
+                  // selectedDayPredicate: (day) {
+                  //   return isSameDay(DateTime.now().add(Duration(days: 100)), day);
+                  // },
+
+                  // rangeSelectionMode: RangeSelectionMode.toggledOn,
                   //  selectedDayPredicate: null,
                   availableGestures: AvailableGestures.horizontalSwipe,
 
@@ -700,7 +1020,9 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                   headerStyle: HeaderStyle(
                       titleCentered: true,
                       headerPadding: EdgeInsets.symmetric(horizontal: 15.w)),
+
                   calendarBuilders: CalendarBuilders(
+
                     dowBuilder: (context, day) {
                       final text = DateFormat.E().format(day);
                       if (day.weekday == DateTime.sunday) {
@@ -725,13 +1047,16 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                         ),
                       );
                     },
+
                     disabledBuilder: (context, _datetime, event) {
                       return BoxCalender(
                         _datetime.day.toString(),
                         disable: true,
                       );
                     },
+
                     markerBuilder: (context, _datetime, event) {
+
                       bool morningReserved = false;
                       bool eveningReserved = false;
                       bool morningSelectToReservation = false;
@@ -753,87 +1078,210 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                           .to.chalet.value.chaletReservations.isNotEmpty) {
                         ChaletsGetxController.to.chalet.value.chaletReservations
                             .forEach((element) {
-                          // DateTime startAtDate = DateTime.parse(element.endAt);
-                          // DateTime endAtDate = DateTime.parse(element.startAt);
-                          DateTime startAtDate =
-                              DateTime.now().add(Duration(days: 7));
-                          DateTime endAtDate =
-                              DateTime.now().add(Duration(days: 12));
-                          if (_datetime.isAfter(startAtDate) &&
+                          DateTime startAtDate = DateTime.parse(element.startAt);
+                          DateTime endAtDate = DateTime.parse(element.endAt);
+                          // DateTime startAtDate =
+                          //     DateTime.now().subtract(Duration(days: 5));
+                          // DateTime endAtDate =
+                          //     DateTime.now().add(Duration(days: 6));
+                          if (_datetime.isAfter(startAtDate.add(Duration(days: 1))) &&
                               _datetime.isBefore(endAtDate)) {
                             //.add(Duration(days: 1)
-                            // if (element.id != null) {
-                            //   morningSelectToReservation = true;
-                            //   eveningSelectToReservation = true;
-                            // } else {
                             morningReserved = true;
                             eveningReserved = true;
-                            // }
-                          }
+                          }else  if ((_datetime.year == startAtDate.year &&
+                              _datetime.month == startAtDate.month &&
+                              _datetime.day == startAtDate.day) && (
+                              _datetime.year == endAtDate.year &&
+                                  _datetime.month == endAtDate.month &&
+                                  _datetime.day == endAtDate.day
+                          )) {
+                            if (element.periodStart == 'Morning' && element.periodEnd == 'Evening') {
+                              eveningReserved = true;
+                              morningReserved = true;
+                            } else   if (element.periodStart == 'Morning' && element.periodEnd == 'Morning'){
+                              morningReserved = true;
+                              eveningReserved = false;
+                            }
+                            else   if (element.periodStart == 'Evening' && element.periodEnd == 'Evening'){
+                              morningReserved = false;
+                              eveningReserved = true;
+                            }
+                          } else
                           if (_datetime.year == startAtDate.year &&
                               _datetime.month == startAtDate.month &&
                               _datetime.day == startAtDate.day) {
-                            if (element.periodStart == 'Evening' && element.periodEnd == 'Evening') {
-                              // if (element.id != null) {
-                              //   eveningSelectToReservation = true;
-                              //   morningSelectToReservation = false;
-                              // } else {
+                            if (element.periodStart == 'Evening') {
                               eveningReserved = true;
                               morningReserved = false;
-                              // }
-                            } else  if (element.periodStart == 'Morning' && element.periodEnd == 'Morning'){
-                              // if (element.id != null) {
-                              //   morningSelectToReservation = true;
-                              //   eveningSelectToReservation = true;
-                              // } else {
-                              morningReserved = true;
-                              eveningReserved = false;
-                              // }
-                            }else{
+                            } else {
                               morningReserved = true;
                               eveningReserved = true;
                             }
-                          }
-
-                          if (_datetime.year == endAtDate.year &&
+                          } else if (_datetime.year == endAtDate.year &&
                               _datetime.month == endAtDate.month &&
                               _datetime.day == endAtDate.day) {
                             if (element.periodEnd == 'Evening') {
-                              // if (element.id != null) {
-                              //   morningSelectToReservation = true;
-                              //   eveningSelectToReservation = true;
-                              // } else {
                               morningReserved = true;
                               eveningReserved = true;
-                              // }
 
                               // morningReserved = false;
                             } else {
-                              // if (element.id != null) {
-                              //   morningSelectToReservation = true;
-                              // } else {
                               morningReserved = true;
-                              // }
                             }
                           }
-
-                          // if(ChaletsGetxController.to.selectReservedDateStart.isNotEmpty){
-                          //
-                          // }else{
-                          //   if(_selectedDay == _datetime){
-                          //     morningReserved = true;
-                          //     eveningReserved= true;
-                          //   }
-                          // }
                         });
+
+                        // ChaletsGetxController.to.chalet.value.chaletReservations
+                        //     .forEach((element) {
+                        //   DateTime startAtDate = DateTime.parse(element.startAt);
+                        //   DateTime endAtDate = DateTime.parse(element.endAt);
+                        //   // DateTime startAtDate =
+                        //   //     DateTime.now().add(Duration(days: 7));
+                        //   // DateTime endAtDate =
+                        //   //     DateTime.now().add(Duration(days: 12));
+                        //   if (_datetime.isAfter(startAtDate) &&
+                        //       _datetime.isBefore(endAtDate)) {
+                        //     //.add(Duration(days: 1)
+                        //     // if (element.id != null) {
+                        //     //   morningSelectToReservation = true;
+                        //     //   eveningSelectToReservation = true;
+                        //     // } else {
+                        //     morningReserved = true;
+                        //     eveningReserved = true;
+                        //     // }
+                        //   }else
+                        //   if (_datetime.year == startAtDate.year &&
+                        //       _datetime.month == startAtDate.month &&
+                        //       _datetime.day == startAtDate.day) {
+                        //     if (element.periodStart == 'Evening' &&
+                        //         element.periodEnd == 'Evening') {
+                        //       // if (element.id != null) {
+                        //       //   eveningSelectToReservation = true;
+                        //       //   morningSelectToReservation = false;
+                        //       // } else {
+                        //       eveningReserved = true;
+                        //       morningReserved = false;
+                        //       // }
+                        //     } else if (element.periodStart == 'Morning' &&
+                        //         element.periodEnd == 'Morning') {
+                        //       // if (element.id != null) {
+                        //       //   morningSelectToReservation = true;
+                        //       //   eveningSelectToReservation = true;
+                        //       // } else {
+                        //       morningReserved = true;
+                        //       eveningReserved = false;
+                        //       // }
+                        //     } else {
+                        //       morningReserved = true;
+                        //       eveningReserved = true;
+                        //     }
+                        //   }else if (_datetime.year == endAtDate.year &&
+                        //       _datetime.month == endAtDate.month &&
+                        //       _datetime.day == endAtDate.day) {
+                        //     if (element.periodEnd == 'Evening') {
+                        //       // if (element.id != null) {
+                        //       //   morningSelectToReservation = true;
+                        //       //   eveningSelectToReservation = true;
+                        //       // } else {
+                        //       morningReserved = true;
+                        //       eveningReserved = true;
+                        //       // }
+                        //
+                        //       // morningReserved = false;
+                        //     } else {
+                        //       // if (element.id != null) {
+                        //       //   morningSelectToReservation = true;
+                        //       // } else {
+                        //       morningReserved = true;
+                        //       // }
+                        //     }
+                        //   }
+                        //
+                        //   // if(ChaletsGetxController.to.selectReservedDateStart.isNotEmpty){
+                        //   //
+                        //   // }else{
+                        //   //   if(_selectedDay == _datetime){
+                        //   //     morningReserved = true;
+                        //   //     eveningReserved= true;
+                        //   //   }
+                        //   // }
+                        // });
                       }
 
                       if (ChaletsGetxController
                               .to.selectReservedDateStart.value.isNotEmpty &&
                           ChaletsGetxController
                               .to.selectReservedDateEnd.value.isNotEmpty) {
+                        DateTime selectReservedDateStart = DateTime.parse(
+                            ChaletsGetxController
+                                .to.selectReservedDateStart.value);
+                        DateTime selectReservedDateEnd = DateTime.parse(
+                            ChaletsGetxController
+                                .to.selectReservedDateEnd.value);
+                        if (_datetime.isAfter(selectReservedDateStart.add(Duration(days: 1))) &&
+                            _datetime.isBefore(selectReservedDateEnd)) {
+                          //.add(Duration(days: 1)
+                          morningSelectToReservation = true;
+                          eveningSelectToReservation = true;
+                        }else
+                        if ((_datetime.year == selectReservedDateStart.year &&
+                            _datetime.month == selectReservedDateStart.month &&
+                            _datetime.day == selectReservedDateStart.day) && (
+                            _datetime.year == selectReservedDateEnd.year &&
+                                _datetime.month == selectReservedDateEnd.month &&
+                                _datetime.day == selectReservedDateEnd.day
+                        )) {
+                          if (ChaletsGetxController
+                              .to.selectReservedPeriodStart == 'Morning' &&ChaletsGetxController
+                              .to.selectReservedPeriodEnd == 'Evening') {
+                            eveningSelectToReservation = true;
+                            morningSelectToReservation = true;
+                          } else   if (ChaletsGetxController
+                              .to.selectReservedPeriodStart == 'Morning' &&ChaletsGetxController
+                              .to.selectReservedPeriodEnd == 'Morning'){
+                            morningSelectToReservation = true;
+                            eveningSelectToReservation = false;
+                          }
+                          else   if (ChaletsGetxController
+                              .to.selectReservedPeriodStart == 'Evening' &&ChaletsGetxController
+                              .to.selectReservedPeriodEnd == 'Evening'){
+                            morningSelectToReservation = false;
+                            eveningSelectToReservation = true;
+                          }
+                        } else
+                        if (_datetime.year == selectReservedDateStart.year &&
+                            _datetime.month == selectReservedDateStart.month &&
+                            _datetime.day == selectReservedDateStart.day) {
+                          if (ChaletsGetxController
+                              .to.selectReservedPeriodStart == 'Evening') {
+                            eveningSelectToReservation = true;
+                            morningSelectToReservation = false;
+                          } else {
+                            morningSelectToReservation = true;
+                            eveningSelectToReservation = true;
+                          }
+                        } else if (_datetime.year == selectReservedDateEnd.year &&
+                            _datetime.month == selectReservedDateEnd.month &&
+                            _datetime.day == selectReservedDateEnd.day) {
+                          if (ChaletsGetxController
+                              .to.selectReservedPeriodEnd == 'Morning') {
+                            morningSelectToReservation = true;
+                            eveningSelectToReservation = false;
+
+
+                            // morningReserved = false;
+                          } else if(ChaletsGetxController
+                              .to.selectReservedPeriodEnd == 'Evening'){
+                            morningSelectToReservation = true;
+                            eveningSelectToReservation = true;
+
+                          }
+                        }
+
                         // print(true);
 
+                        /*
                         DateTime selectReservedDateStart = DateTime.parse(
                             ChaletsGetxController
                                 .to.selectReservedDateStart.value);
@@ -878,42 +1326,55 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                         if (_datetime.month == selectReservedDateStart.month &&
                             _datetime.day == selectReservedDateStart.day) {
                           if (ChaletsGetxController
-                                  .to.selectReservedPeriodStart.value ==
-                              'Evening' && ChaletsGetxController
-                              .to.selectReservedPeriodEnd.value ==
-                              'Evening') {
+                                      .to.selectReservedPeriodStart.value ==
+                                  'Evening'
+                              // &&
+                              // ChaletsGetxController
+                              //         .to.selectReservedPeriodEnd.value ==
+                              //     'Evening'
+                          ) {
                             // if (element.id != null) {
                             eveningSelectToReservation = true;
                             morningSelectToReservation = false;
+
+
                             // } else {
                             // eveningReserved = true;
                             // morningReserved = false;
                             // }
-                          // }
-                          // else if (ChaletsGetxController
-                          //             .to.selectReservedPeriodStart.value ==
-                          //         'Morning' &&
-                          //     ChaletsGetxController
-                          //             .to.selectReservedPeriodEnd.value ==
-                          //         'Morning') {
-                          //   // if (element.id != null) {
-                          //   morningSelectToReservation = true;
-                          //   // eveningSelectToReservation = false;
-                          //   // } else {
-                          //   // morningReserved = true;
-                          //   // eveningReserved = true;
-                          //   // }
-                          } else if (ChaletsGetxController
-                              .to.selectReservedPeriodStart.value ==
-                              'Morning' && ChaletsGetxController
-                              .to.selectReservedPeriodEnd.value ==
-                              'Morning') {
-                            morningSelectToReservation = true;
-                            eveningSelectToReservation = false;
+                            // }
+                            // else if (ChaletsGetxController
+                            //             .to.selectReservedPeriodStart.value ==
+                            //         'Morning' &&
+                            //     ChaletsGetxController
+                            //             .to.selectReservedPeriodEnd.value ==
+                            //         'Morning') {
+                            //   // if (element.id != null) {
+                            //   morningSelectToReservation = true;
+                            //   // eveningSelectToReservation = false;
+                            //   // } else {
+                            //   // morningReserved = true;
+                            //   // eveningReserved = true;
+                            //   // }
+
                           }else{
                             morningSelectToReservation = true;
                             eveningSelectToReservation = true;
                           }
+/*
+                          } else if (ChaletsGetxController
+                                      .to.selectReservedPeriodStart.value ==
+                                  'Morning' &&
+                              ChaletsGetxController
+                                      .to.selectReservedPeriodEnd.value ==
+                                  'Morning') {
+                            morningSelectToReservation = true;
+                            eveningSelectToReservation = false;
+                          } else {
+                            morningSelectToReservation = true;
+                            eveningSelectToReservation = true;
+                          }
+                          */
                           /*
                            if (element.periodStart == 'Evening' && element.periodEnd == 'Evening') {
                               // if (element.id != null) {
@@ -936,7 +1397,25 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                               eveningReserved = true;
                             }
                            */
-                        } else if (_datetime.year ==
+                        }else  if (
+                        _datetime.year == selectReservedDateEnd.year &&_datetime.month == selectReservedDateEnd.month &&
+    _datetime.day == selectReservedDateEnd.day) {
+    if (ChaletsGetxController
+        .to.selectReservedPeriodEnd.value ==
+    'Morning' ){
+    //&&
+    // ChaletsGetxController
+    //     .to.selectReservedPeriodEnd.value ==
+    // 'Evening') {
+      // if (element.id != null) {
+      eveningSelectToReservation = false;
+      morningSelectToReservation = true;
+
+    }else{
+      eveningSelectToReservation = true;
+      morningSelectToReservation = true;
+    }
+                       /* else if (_datetime.year ==
                                 selectReservedDateEnd.year &&
                             _datetime.month == selectReservedDateEnd.month &&
                             _datetime.day == selectReservedDateEnd.day) {
@@ -964,6 +1443,7 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                             // morningReserved = true;
                             // }
                           }
+                          */
                           // else{
                           //   morningSelectToReservation = false;
                           //   eveningSelectToReservation = true;
@@ -973,6 +1453,9 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                         // if(startAtDate.isBefore(selectReservedDateStart) || endAtDate.isAtSameMomentAs(selectReservedDateStart)){
                         //   print(true);
                         // }
+
+                        */
+
                       }
 
                       print(
@@ -991,6 +1474,7 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                         // },
                         // isSelected: true,
                       );
+
                       /*
                     } else {
                       return Container();
@@ -1158,11 +1642,10 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                       // ChaletsGetxController.to.selectReservedPeriodEnd.value =
                       //     'Evening';
                       bool allowSelect = true;
-                      for (int i = 0;
-                          i <
-                              ChaletsGetxController
-                                  .to.chalet.value.chaletReservations.length;
-                          i++) {
+                      for (int i = 0; i < ChaletsGetxController.to.chalet.value.chaletReservations.length; i++) {
+                        String  startAt = ChaletsGetxController.to.chalet.value.chaletReservations[i].startAt;
+                        String  endAt = ChaletsGetxController.to.chalet.value.chaletReservations[i].endAt;
+
                         // else if ( (DateTime.parse(ChaletsGetxController
                         //     .to.selectReservedDateStart.value)
                         //     .isBefore(DateTime.now()
@@ -1177,19 +1660,7 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                         //       .to.selectReservedPeriodEnd.value = 'Evening';
                         // }
 
-                        if ((selectedDay.isBefore(
-                                DateTime.now().add(Duration(days: 12))) &&
-                            selectedDay.isAfter(
-                                DateTime.now().add(Duration(days: 7))))) {
-                          print('iiiiiiiiiiii: ${i}');
 
-                          // ChaletsGetxController
-                          //     .to.selectReservedPeriodStart.value = 'Morning';
-                          // ChaletsGetxController
-                          //     .to.selectReservedPeriodEnd.value = 'Evening';
-                          allowSelect = false;
-                          break;
-                        }
                         // else{
                         //   ChaletsGetxController.to.selectReservedDateStart.value =
                         //         FormatDateTimeMassage.getDateTime(selectedDay);
@@ -1205,11 +1676,44 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                         //       ChaletsGetxController
                         //           .to.selectReservedPeriodEnd.value = 'Evening';
                         // }
+                        if ((selectedDay.isBefore(DateTime.parse(endAt)) &&
+                            selectedDay.isAfter(DateTime.parse(startAt)))) {
+                          print('iiiiiiiiiiii: ${i}');
 
+                          // ChaletsGetxController
+                          //     .to.selectReservedPeriodStart.value = 'Morning';
+                          // ChaletsGetxController
+                          //     .to.selectReservedPeriodEnd.value = 'Evening';
+                          if (selectedDay.day ==
+                              DateTime.parse(startAt).day &&
+                              selectedDay.month ==
+                                  DateTime.parse(startAt).month) {
+                            if (ChaletsGetxController.to.chalet.value
+                                .chaletReservations[i].periodStart ==
+                                'Morning'){
+                              allowSelect = false;
+                              break;
+                            }
+                          }else  if (selectedDay.day ==
+                              DateTime.parse(endAt).day &&
+                              selectedDay.month ==
+                                  DateTime.parse(endAt).month) {
+                            if (ChaletsGetxController.to.chalet.value
+                                .chaletReservations[i].periodEnd ==
+                                'Evening'){
+                              allowSelect = false;
+                              break;
+                            }
+                          }else{
+                            allowSelect = false;
+                            break;
+                          }
+
+                        }
                         if (selectedDay.day ==
-                                DateTime.now().add(Duration(days: 7)).day &&
+                            DateTime.parse(startAt).day &&
                             selectedDay.month ==
-                                DateTime.now().add(Duration(days: 7)).month) {
+                                DateTime.parse(startAt).month) {
                           if (ChaletsGetxController.to.chalet.value
                                   .chaletReservations[i].periodStart ==
                               'Evening') {
@@ -1245,10 +1749,11 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                           // }
                         }
                         if (selectedDay.day ==
-                                DateTime.now().add(Duration(days: 12)).day &&
+                            DateTime.parse(endAt).day &&
                             selectedDay.month ==
-                                DateTime.now().add(Duration(days: 12)).month) {
-                          if ('Morning' != 'Evening') {
+                                DateTime.parse(endAt).month) {
+                          if (ChaletsGetxController.to.chalet.value
+                              .chaletReservations[i].periodEnd != 'Evening') {
                             // ChaletsGetxController.to.selectReservedDateEnd.value =
                             //     FormatDateTimeMassage.getDateTime(selectedDay);
                             // allowSelect = false;
@@ -1267,6 +1772,35 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                             break;
                           }
                         }
+
+                        // else
+                        //
+                        // if (selectedDay.day ==
+                        //     DateTime.parse(startAt).day &&
+                        //     selectedDay.month ==
+                        //         DateTime.parse(startAt).month) {
+                        //   if (ChaletsGetxController.to.chalet.value
+                        //       .chaletReservations[i].periodStart == 'Evening') {
+                        //     // ChaletsGetxController.to.selectReservedDateEnd.value =
+                        //     //     FormatDateTimeMassage.getDateTime(selectedDay);
+                        //     // allowSelect = false;
+                        //     // break;
+                        //     print(
+                        //         'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbccccccccc');
+                        //     ChaletsGetxController
+                        //         .to.selectReservedPeriodStart.value = 'Morning';
+                        //     ChaletsGetxController
+                        //         .to.selectReservedPeriodEnd.value = 'Morning';
+                        //     ChaletsGetxController
+                        //         .to.allowChangeStartPeriod.value = false;
+                        //     allowSelect = true;
+                        //     break;
+                        //   } else {
+                        //     // ChaletsGetxController.to.selectReservedPeriodStart.value = 'Morning';
+                        //     allowSelect = false;
+                        //     break;
+                        //   }
+                        // }
                         // else
                         // if (selectedDay.isBefore(
                         //         DateTime.now().add(Duration(days: 12))) &&
@@ -1286,13 +1820,13 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                             FormatDateTimeMassage.getDateTime(selectedDay);
                         if (ChaletsGetxController
                             .to.allowChangeStartPeriod.value) {
-                        ChaletsGetxController
-                            .to.selectReservedPeriodStart.value = 'Morning';
+                          ChaletsGetxController
+                              .to.selectReservedPeriodStart.value = 'Morning';
                         }
                         if (ChaletsGetxController
                             .to.allowChangeEndPeriod.value) {
-                        ChaletsGetxController.to.selectReservedPeriodEnd.value =
-                            'Evening';
+                          ChaletsGetxController
+                              .to.selectReservedPeriodEnd.value = 'Evening';
                         }
                         // ChaletsGetxController
                         //       .to.selectReservedPeriodStart.value = 'Morning';
@@ -1312,29 +1846,52 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                                 ChaletsGetxController
                                     .to.chalet.value.chaletReservations.length;
                             i++) {
+                          String  startAt = ChaletsGetxController.to.chalet.value.chaletReservations[i].startAt;
+                          String  endAt = ChaletsGetxController.to.chalet.value.chaletReservations[i].endAt;
                           // print('iiiiiiiiiiii: ${i}');
                           // ChaletsGetxController
                           //       .to.selectReservedPeriodStart.value = 'Morning';
                           //   ChaletsGetxController
                           //       .to.selectReservedPeriodEnd.value = 'Evening';
+
                           if ((selectedDay.isBefore(
-                                      DateTime.now().add(Duration(days: 12))) &&
+                              DateTime.parse(endAt)) &&
                                   selectedDay.isAfter(
-                                      DateTime.now().add(Duration(days: 7)))) ||
+                                      DateTime.parse(startAt))) ||
                               (DateTime.parse(ChaletsGetxController
                                           .to.selectReservedDateStart.value)
-                                      .isBefore(DateTime.now()
-                                          .add(Duration(days: 7))) &&
-                                  selectedDay.isAfter(DateTime.now()
-                                      .add(Duration(days: 12))))) {
+                                      .isBefore( DateTime.parse(startAt)) &&
+                                  selectedDay.isAfter( DateTime.parse(endAt)))) {
                             print('iiiiiiiiiiii: ${i}');
 
                             // ChaletsGetxController
                             //     .to.selectReservedPeriodStart.value = 'Morning';
                             // ChaletsGetxController
                             //     .to.selectReservedPeriodEnd.value = 'Evening';
-                            allowSelect = false;
-                            break;
+                            if (selectedDay.day ==
+                                DateTime.parse(startAt).day &&
+                                selectedDay.month ==
+                                    DateTime.parse(startAt).month) {
+                              if (ChaletsGetxController.to.chalet.value
+                                  .chaletReservations[i].periodStart ==
+                                  'Morning'){
+                                allowSelect = false;
+                                break;
+                              }
+                            }else  if (selectedDay.day ==
+                                DateTime.parse(endAt).day &&
+                                selectedDay.month ==
+                                    DateTime.parse(endAt).month) {
+                              if (ChaletsGetxController.to.chalet.value
+                                  .chaletReservations[i].periodEnd ==
+                                  'Evening'){
+                                allowSelect = false;
+                                break;
+                              }
+                            }else{
+                              allowSelect = false;
+                              break;
+                            }
                           } else {
                             // else{
                             //   ChaletsGetxController
@@ -1344,10 +1901,125 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                             // }
                           }
 
-                          if (selectedDay.day ==
-                                  DateTime.now().add(Duration(days: 7)).day &&
+
+                          /*
+                          if ((selectedDay.isBefore(
+                              DateTime.parse(endAt).subtract(Duration(days: 1))) &&
+                              selectedDay.isAfter(
+                                  DateTime.parse(startAt).add(Duration(days: 1)))) ||
+                              (DateTime.parse(ChaletsGetxController
+                                  .to.selectReservedDateStart.value)
+                                  .isBefore( DateTime.parse(startAt).add(Duration(days: 1))) &&
+                                  selectedDay.isAfter( DateTime.parse(endAt).subtract(Duration(days: 1)))) ||
+                              (selectedDay
+                                  .isBefore( DateTime.parse(startAt).add(Duration(days: 1))) &&
+                                  DateTime.parse(ChaletsGetxController
+                                      .to.selectReservedDateEnd.value).isAfter( DateTime.parse(endAt).subtract(Duration(days: 1))))) {
+                            print('iiiiiiiiiiii: ${i}');
+                            if ((selectedDay.day ==
+                                DateTime.parse(startAt).day &&
+                                selectedDay.month ==
+                                    DateTime.parse(startAt).month) && (selectedDay.day ==
+                                DateTime.parse(endAt).day &&
+                                selectedDay.month ==
+                                    DateTime.parse(endAt).month)) {
+                              if (ChaletsGetxController.to.chalet.value
+                                  .chaletReservations[i].periodStart ==
+                                  'Evening') {
+                                // ChaletsGetxController.to.selectReservedDateEnd.value =
+                                //     FormatDateTimeMassage.getDateTime(selectedDay);
+                                print(
+                                    'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbccccccccc');
+                                ChaletsGetxController
+                                    .to.selectReservedPeriodEnd.value = 'Morning';
+                                ChaletsGetxController
+                                    .to.allowChangeEndPeriod.value = false;
+                                allowSelect = true;
+                                //  break;
+                              }else{
+                                // ChaletsGetxController
+                                //     .to.selectReservedPeriod.value = 'Evening';
+                              }
+                            }
+                            else
+                            if (selectedDay.day ==
+                                DateTime.parse(startAt).day &&
+                                selectedDay.month ==
+                                    DateTime.parse(startAt).month) {
+                              if (ChaletsGetxController.to.chalet.value
+                                  .chaletReservations[i].periodStart ==
+                                  'Evening') {
+                                // ChaletsGetxController.to.selectReservedDateEnd.value =
+                                //     FormatDateTimeMassage.getDateTime(selectedDay);
+                                print(
+                                    'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbccccccccc');
+                                ChaletsGetxController
+                                    .to.selectReservedPeriodEnd.value = 'Morning';
+                                ChaletsGetxController
+                                    .to.allowChangeEndPeriod.value = false;
+                                allowSelect = true;
+                                //  break;
+                              } else {
+                                // ChaletsGetxController
+                                //     .to.selectReservedPeriodEnd.value =
+                                // 'Evening';
+                                // ChaletsGetxController.to.allowChangeEndPeriod.value = false;
+                                allowSelect = false;
+                                //   break;
+                              }
+                            }else {
+                              // ChaletsGetxController
+                              //     .to.selectReservedPeriodStart.value = 'Morning';
+                              // ChaletsGetxController
+                              //     .to.selectReservedPeriodEnd.value = 'Evening';
+                              allowSelect = false;
+                              break;
+                            }
+                          } else {
+                            // else{
+                            //   ChaletsGetxController
+                            //       .to.selectReservedPeriodStart.value = 'Morning';
+                            //   ChaletsGetxController
+                            //       .to.selectReservedPeriodEnd.value = 'Evening';
+                            // }
+                          }
+                          */
+
+
+
+/*
+                          if ((selectedDay.day ==
+                              DateTime.parse(startAt).day &&
                               selectedDay.month ==
-                                  DateTime.now().add(Duration(days: 7)).month) {
+                                  DateTime.parse(startAt).month) && (selectedDay.day ==
+                              DateTime.parse(endAt).day &&
+                              selectedDay.month ==
+                                  DateTime.parse(endAt).month)) {
+                            if (ChaletsGetxController.to.chalet.value
+                                .chaletReservations[i].periodStart ==
+                                'Evening') {
+                              // ChaletsGetxController.to.selectReservedDateEnd.value =
+                              //     FormatDateTimeMassage.getDateTime(selectedDay);
+                              print(
+                                  'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbccccccccc');
+                              ChaletsGetxController
+                                  .to.selectReservedPeriodEnd.value = 'Morning';
+                              ChaletsGetxController
+                                  .to.allowChangeEndPeriod.value = false;
+                              allowSelect = true;
+                              //  break;
+                            }else{
+                              // ChaletsGetxController
+                              //     .to.selectReservedPeriod.value = 'Evening';
+                            }
+                          }
+                          else
+
+ */
+                          if (selectedDay.day ==
+                              DateTime.parse(startAt).day &&
+                              selectedDay.month ==
+                                  DateTime.parse(startAt).month) {
                             if (ChaletsGetxController.to.chalet.value
                                     .chaletReservations[i].periodStart ==
                                 'Evening') {
@@ -1370,6 +2042,7 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                               //   break;
                             }
                           }
+
 
                           // if (selectedDay.year >=
                           //     DateTime.now().add(Duration(days: 12)).year && selectedDay.day ==
@@ -1567,13 +2240,15 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
               GetX<ChaletsGetxController>(
                   init: ChaletsGetxController(),
                   builder: (ChaletsGetxController controller) {
-                    return  Expanded(
-                        child: controller.showMessageError.value ? Padding(
-                      padding: EdgeInsetsDirectional.only(
-                          bottom: 20.h, start: 40.w),
-                      child:
-                          SvgPicture.asset('assets/images/error_message.svg'),
-                    ): Container()
+                    return Expanded(
+                        child: controller.showMessageError.value
+                            ? Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                    bottom: 20.h, start: 40.w),
+                                child: SvgPicture.asset(
+                                    'assets/images/error_message.svg'),
+                              )
+                            : Container()
                         // child: Container(
                         //   height: 41.h,
                         //   decoration: BoxDecoration(
@@ -1583,8 +2258,8 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                         );
                   }),
               SizedBox(
-                height: 130.h,
-                width: 75.w,
+                height: 140.h,
+                width: 90.w,
                 child: Column(
                   children: [
                     // Center(
@@ -1648,8 +2323,25 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
                       onTap: () {
                         _performDate();
                       },
-                      child:
-                          SvgPicture.asset('assets/images/polygon_btn_go.svg'),
+                      child: Container(
+                        // margin: EdgeInsetsDirectional.only(bottom: 25.h, end: 25.w),
+                        decoration: const BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage("assets/icons/FTBPK.png"),
+                                fit: BoxFit.cover)),
+                        padding: EdgeInsets.only(bottom: 8.h),
+                        height: 70.h,
+                        width: 70.w,
+                        child: Transform.flip(
+                          child: Icon(
+                            Icons.arrow_back_outlined,
+                            size: 33.r,
+                            color: Colors.white,
+                          ),
+                          flipX: true,
+                        ),
+                      ),
+                         // SvgPicture.asset('assets/images/polygon_btn_go.svg'),
                       // Image.asset("assets/icons/btn_go.png"),
                       //SvgPicture.asset('assets/icons/btn_go.svg')
                       // Container(
@@ -1674,11 +2366,8 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
 
   void _performDate() {
     if (_checkDate()) {
-      _reserveChalet();
-
-
+      Get.to(ChaletReservationScreen());
     }
-
   }
 
   bool _checkDate() {
@@ -1689,39 +2378,11 @@ class _ChooseYourReservationDateState extends State<ChooseYourReservationDate> w
       return true;
     }
     ChaletsGetxController.to.showMessageError.value = true;
-   Future.delayed(Duration(seconds: 2), (){
-     ChaletsGetxController.to.showMessageError.value = false;
-   });
+    Future.delayed(Duration(seconds: 2), () {
+      ChaletsGetxController.to.showMessageError.value = false;
+    });
 
     return false;
-  }
-
-  Future<void> _reserveChalet() async {
-    showLoadingDialog(context);
-
-    // Future.delayed(Duration(seconds: 5), () {
-    //   Get.back();
-    // });
-
-    ChaletReservations chaletReservations = ChaletReservations(id: ChaletsGetxController.to.chalet.value.id, startAt:  ChaletsGetxController.to.selectReservedDateStart.value,
-        endAt: ChaletsGetxController.to.selectReservedDateEnd.value, periodStart: ChaletsGetxController.to.selectReservedPeriodStart.value,
-        periodEnd: ChaletsGetxController.to.selectReservedPeriodEnd.value);
-    print(ChaletsGetxController.to.chalet.value.id);
-
-    // ApiResponse result = ChaletsApiController
-    ApiResponse apiResponse = await ChaletsApiController().reserveChalet(chaletReservations: chaletReservations);
-    // showSnackBarByGet(title: apiResponse.message, error: false);
-
-    if (apiResponse.success) {
-      Get.back();
-      Get.back();
-      showSnackBarByGet(title: 'Success', error: apiResponse.success);
-
-      // Get.off(DetailsScreen());
-    } else {
-      Get.back();
-      showSnackBarByGet(title: apiResponse.message, error: apiResponse.success);
-    }
   }
 
   bool isSameMonth(DateTime day1, DateTime day2) {

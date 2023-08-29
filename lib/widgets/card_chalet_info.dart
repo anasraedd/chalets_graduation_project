@@ -150,7 +150,7 @@ class CardChaletInfo extends StatelessWidget {
                             location,
                             style: GoogleFonts.inter(
                               fontWeight: FontWeight.w400,
-                              fontSize: 10.5.sp,
+                              fontSize: 9.5.sp,
                             ),
                           ),
                         ],

@@ -42,7 +42,7 @@ class _MainScreenState extends State<MainScreen> with Helpers {
     BnScreen(title: 'Favourites', widget: FavoriteScreen()),
   ];
 
-  bool isShowEnabledEmail = true;
+  bool isShowEnabledEmail = SharedPrefController().getValueFor<bool>(key: PrefKeys.emailEnabled.name) ?? false;
   bool   loadingSendVerify = false;
 
 
@@ -289,121 +289,192 @@ class _MainScreenState extends State<MainScreen> with Helpers {
                         )
                       : null,
       body: SafeArea(
-        child: Stack(
+        child: Column(
           children: [
-            Padding(
-              padding: EdgeInsets.only(bottom: 80.h),
-              child: _bnScreen[_currentIndex].widget,
-            ),
-            Align(
-              alignment: AlignmentDirectional.bottomCenter,
+            Visibility(
+              visible: isShowEnabledEmail,
               child: Container(
-                height: 65.h,
-                child: BottomNavigationBar(
-                  currentIndex: _currentIndex,
-                  type: BottomNavigationBarType.fixed,
-                  showSelectedLabels: false,
-                  onTap: (int selectedItemIndex) {
-                    if (selectedItemIndex != 2) {
+                width: double.infinity,
+                height: 45.h,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.blueGrey.withOpacity(0.8)),
+                margin: EdgeInsetsDirectional.symmetric(horizontal: 15.w, vertical: 5.h),
+                child: Row(
+                  children: [
+                    Expanded(child: Padding(
+                      padding:  EdgeInsets.symmetric(horizontal: 10.w),
+                      child: Text('Enabled Email', style: GoogleFonts.inter(fontSize: 16.sp, color: Colors.white),),
+                    )),
+                    loadingSendVerify ? Padding(
+                      padding:  EdgeInsetsDirectional.only(end: 30),
+                      child: SizedBox(
+                        height: 20.w,
+                        width: 20.w,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          color: Colors.greenAccent,
+                        ),
+                      ),
+                    ):
+                    TextButton(onPressed: () async {
                       setState(() {
-                        _currentIndex = selectedItemIndex;
+                        loadingSendVerify = true;
                       });
-                    }
-                  },
-                  selectedIconTheme: IconThemeData(color: primaryColor),
-                  showUnselectedLabels: false,
-                  items: [
-                    BottomNavigationBarItem(
-                        activeIcon: Image(
-                          image: const AssetImage(
-                              "assets/icons/profileActive.png"),
-                          height: 24.h,
-                          width: 24.w,
-                        ),
-                        icon: Image(
-                          image: const AssetImage(
-                              "assets/icons/profileUnActive.png"),
-                          height: 24.h,
-                          width: 24.w,
-                        ),
-                        label: ""),
-                    BottomNavigationBarItem(
-                        activeIcon: Image(
-                          image: const AssetImage(
-                              "assets/icons/calenderUnActive.png"),
-                          height: 24.h,
-                          width: 24.w,
-                          color: primaryColor,
-                        ),
-                        icon: Image(
-                          image: const AssetImage(
-                              "assets/icons/calenderUnActive.png"),
-                          height: 24.h,
-                          width: 24.w,
-                        ),
-                        label: ""),
-                    BottomNavigationBarItem(
-                      icon: Container(),
-                      label: "",
-                    ),
-                    BottomNavigationBarItem(
-                        activeIcon: Image(
-                          image:
-                              const AssetImage("assets/icons/chatUnActive.png"),
-                          height: 24.h,
-                          width: 24.w,
-                          color: primaryColor,
-                        ),
-                        icon: Image(
-                          image:
-                              const AssetImage("assets/icons/chatUnActive.png"),
-                          height: 24.h,
-                          width: 24.w,
-                        ),
-                        label: ""),
-                    BottomNavigationBarItem(
-                        activeIcon: Image(
-                          image:
-                              const AssetImage("assets/icons/likeUnActive.png"),
-                          height: 24.h,
-                          width: 24.w,
-                          color: primaryColor,
-                        ),
-                        icon: Image(
-                          image:
-                              const AssetImage("assets/icons/likeUnActive.png"),
-                          height: 24.h,
-                          width: 24.w,
-                        ),
-                        label: ""),
+                      String? email = await  SharedPrefController().getValueFor<String>(key: 'email');
+                      print(email);
+                      if(email != null && email.isNotEmpty) {
+                        ApiResponse apiResponse = await AuthApiController()
+                            .sendEmailVerify(email: email);
+                        print('${apiResponse.message}');
+                        setState(() {
+                          isShowEnabledEmail = false;
+                        });
+                        if (apiResponse.success) {
+                          setState(() {
+                            isShowEnabledEmail = false;
+                            showSnackBarByGet(title: 'An activation message has been sent to your email',);
+
+                            SharedPrefController().enabledEmail(value: true);
+                          });
+                        } else {
+                          setState(() {
+                            // showSnackBarByGet(title: '${apiResponse.message}, make sure your email is correct', error: true);
+                            loadingSendVerify = false;
+                          });
+                        }
+                      }
+
+                    }, child: Padding(
+                      padding:  EdgeInsets.symmetric(horizontal: 10.w),
+                      child: Text('Enable', style: GoogleFonts.inter(fontSize: 15.sp, fontWeight: FontWeight.w700, color: Colors.greenAccent),),
+                    ))
                   ],
-                  backgroundColor: Colors.white,
                 ),
               ),
             ),
-            Align(
-              alignment: AlignmentDirectional.bottomCenter,
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _currentIndex = 2;
-                  });
-                },
-                child: Container(
-                  margin: EdgeInsets.only(bottom: 20.h),
-                  decoration: const BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage("assets/icons/FTBPK.png"),
-                          fit: BoxFit.cover)),
-                  padding: EdgeInsets.only(bottom: 8.h),
-                  height: 70.h,
-                  width: 70.w,
-                  child: Icon(
-                    Icons.home_rounded,
-                    size: 33.r,
-                    color: Colors.white,
+            Expanded(
+              child: Stack(
+
+                children: [
+
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 80.h),
+                    child: _bnScreen[_currentIndex].widget,
                   ),
-                ),
+
+                  Align(
+                    alignment: AlignmentDirectional.bottomCenter,
+                    child: Container(
+                      height: 65.h,
+                      child: BottomNavigationBar(
+                        currentIndex: _currentIndex,
+                        type: BottomNavigationBarType.fixed,
+                        showSelectedLabels: false,
+                        onTap: (int selectedItemIndex) {
+                          if (selectedItemIndex != 2) {
+                            setState(() {
+                              _currentIndex = selectedItemIndex;
+                            });
+                          }
+                        },
+                        selectedIconTheme: IconThemeData(color: primaryColor),
+                        showUnselectedLabels: false,
+                        items: [
+                          BottomNavigationBarItem(
+                              activeIcon: Image(
+                                image: const AssetImage(
+                                    "assets/icons/profileActive.png"),
+                                height: 24.h,
+                                width: 24.w,
+                              ),
+                              icon: Image(
+                                image: const AssetImage(
+                                    "assets/icons/profileUnActive.png"),
+                                height: 24.h,
+                                width: 24.w,
+                              ),
+                              label: ""),
+                          BottomNavigationBarItem(
+                              activeIcon: Image(
+                                image: const AssetImage(
+                                    "assets/icons/calenderUnActive.png"),
+                                height: 24.h,
+                                width: 24.w,
+                                color: primaryColor,
+                              ),
+                              icon: Image(
+                                image: const AssetImage(
+                                    "assets/icons/calenderUnActive.png"),
+                                height: 24.h,
+                                width: 24.w,
+                              ),
+                              label: ""),
+                          BottomNavigationBarItem(
+                            icon: Container(),
+                            label: "",
+                          ),
+                          BottomNavigationBarItem(
+                              activeIcon: Image(
+                                image:
+                                    const AssetImage("assets/icons/chatUnActive.png"),
+                                height: 24.h,
+                                width: 24.w,
+                                color: primaryColor,
+                              ),
+                              icon: Image(
+                                image:
+                                    const AssetImage("assets/icons/chatUnActive.png"),
+                                height: 24.h,
+                                width: 24.w,
+                              ),
+                              label: ""),
+                          BottomNavigationBarItem(
+                              activeIcon: Image(
+                                image:
+                                    const AssetImage("assets/icons/likeUnActive.png"),
+                                height: 24.h,
+                                width: 24.w,
+                                color: primaryColor,
+                              ),
+                              icon: Image(
+                                image:
+                                    const AssetImage("assets/icons/likeUnActive.png"),
+                                height: 24.h,
+                                width: 24.w,
+                              ),
+                              label: ""),
+                        ],
+                        backgroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: AlignmentDirectional.bottomCenter,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _currentIndex = 2;
+                        });
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 20.h),
+                        decoration: const BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage("assets/icons/FTBPK.png"),
+                                fit: BoxFit.cover)),
+                        padding: EdgeInsets.only(bottom: 8.h),
+                        height: 70.h,
+                        width: 70.w,
+                        child: Icon(
+                          Icons.home_rounded,
+                          size: 33.r,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -433,54 +504,54 @@ class _MainScreenState extends State<MainScreen> with Helpers {
       //   ),
       // ),
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: Visibility(
-        visible: isShowEnabledEmail,
-        child: Container(
-          width: double.infinity,
-          height: 45.h,
-          decoration: BoxDecoration(color: Colors.blueGrey),
-          child: Row(
-            children: [
-              Expanded(child: Padding(
-                padding:  EdgeInsets.symmetric(horizontal: 10.w),
-                child: Text('Enabled Email', style: GoogleFonts.inter(fontSize: 16.sp, color: Colors.white),),
-              )),
-              loadingSendVerify ? Padding(
-                padding:  EdgeInsetsDirectional.only(end: 30),
-                child: SizedBox(
-                  height: 20.w,
-                  width: 20.w,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.5,
-                    color: Colors.greenAccent,
-                  ),
-                ),
-              ):
-              TextButton(onPressed: () async {
-              setState(() {
-                  loadingSendVerify = true;
-                });
-              ApiResponse apiResponse = await AuthApiController().sendEmailVerify();
-                print('${apiResponse.message}');
-                if(apiResponse.success){
-                 setState(() {
-                   isShowEnabledEmail = false;
-                    SharedPrefController().enabledEmail(value: true);
-                 });
-                }else{
-                  setState(() {
-                    loadingSendVerify = false;
-                  });
-                }
-
-              }, child: Padding(
-                padding:  EdgeInsets.symmetric(horizontal: 10.w),
-                child: Text('Enable', style: GoogleFonts.inter(fontSize: 15.sp, fontWeight: FontWeight.w700, color: Colors.greenAccent),),
-              ))
-            ],
-          ),
-        ),
-      ),
+      // bottomNavigationBar: Visibility(
+      //   visible: isShowEnabledEmail,
+      //   child: Container(
+      //     width: double.infinity,
+      //     height: 45.h,
+      //     decoration: BoxDecoration(color: Colors.blueGrey),
+      //     child: Row(
+      //       children: [
+      //         Expanded(child: Padding(
+      //           padding:  EdgeInsets.symmetric(horizontal: 10.w),
+      //           child: Text('Enabled Email', style: GoogleFonts.inter(fontSize: 16.sp, color: Colors.white),),
+      //         )),
+      //         loadingSendVerify ? Padding(
+      //           padding:  EdgeInsetsDirectional.only(end: 30),
+      //           child: SizedBox(
+      //             height: 20.w,
+      //             width: 20.w,
+      //             child: CircularProgressIndicator(
+      //               strokeWidth: 2.5,
+      //               color: Colors.greenAccent,
+      //             ),
+      //           ),
+      //         ):
+      //         TextButton(onPressed: () async {
+      //         setState(() {
+      //             loadingSendVerify = true;
+      //           });
+      //         ApiResponse apiResponse = await AuthApiController().sendEmailVerify();
+      //           print('${apiResponse.message}');
+      //           if(apiResponse.success){
+      //            setState(() {
+      //              isShowEnabledEmail = false;
+      //               SharedPrefController().enabledEmail(value: true);
+      //            });
+      //           }else{
+      //             setState(() {
+      //               loadingSendVerify = false;
+      //             });
+      //           }
+      //
+      //         }, child: Padding(
+      //           padding:  EdgeInsets.symmetric(horizontal: 10.w),
+      //           child: Text('Enable', style: GoogleFonts.inter(fontSize: 15.sp, fontWeight: FontWeight.w700, color: Colors.greenAccent),),
+      //         ))
+      //       ],
+      //     ),
+      //   ),
+      // ),
     );
   }
 }

@@ -33,13 +33,41 @@ class ChaletInfoChat {
   late int id;
   late String logo;
   late String name;
+  late String fcmToken;
 
   ChaletInfoChat();
 
   ChaletInfoChat.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    logo = json['logo'];
+    logo = json['logo'] ;
     name = json['name'];
+    fcmToken = json['chalet_owner_fcm_token'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['logo'] = this.logo;
+    data['name'] = this.name;
+    return data;
+  }
+}
+
+
+
+class UserInfoChat {
+  late int id;
+  late String logo;
+  late String name;
+  late String fcmToken;
+
+  UserInfoChat();
+
+  UserInfoChat.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    logo = json['account_picture'] ;
+    name = json['name'];
+    fcmToken = json['fcm_token'];
   }
 
   Map<String, dynamic> toJson() {

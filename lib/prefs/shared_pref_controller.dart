@@ -22,18 +22,17 @@ class SharedPrefController {
 
 
 
-  void save(User user, AccountType accountType) async {
+  Future<void> save(User user, AccountType accountType) async {
     await _sharedPreferences.setBool(PrefKeys.loggedIn.name, true);
     await _sharedPreferences.setInt(PrefKeys.id.name, user.id);
-    await _sharedPreferences.setString(PrefKeys.email.name, user.email!);
+    await _sharedPreferences.setString(PrefKeys.email.name, user.email ?? '');
     await _sharedPreferences.setString(PrefKeys.username.name, user.username!);
     await _sharedPreferences.setString(PrefKeys.mobile.name, user.mobile!);
-    await _sharedPreferences.setString(PrefKeys.gender.name, user.gender!);
-    await _sharedPreferences.setString(PrefKeys.datebirth.name, user.datebirth!);
+    // await _sharedPreferences.setString(PrefKeys.datebirth.name, user.datebirth);
     await _sharedPreferences.setString(PrefKeys.firstName.name, user.firstName);
     await _sharedPreferences.setString(PrefKeys.lastName.name, user.lastName);
     await _sharedPreferences.setString(PrefKeys.accountPicture.name, user.accountPicture);
-    await _sharedPreferences.setInt(PrefKeys.balance.name, user.balance!);
+    await _sharedPreferences.setDouble(PrefKeys.balance.name, user.balance.toDouble());
     await _sharedPreferences.setString(PrefKeys.token.name, 'Bearer ${user.token}');
     await _sharedPreferences.setString(PrefKeys.fcmToken.name, user.fcmToket);
     await _sharedPreferences.setString('account_type', accountType.name);

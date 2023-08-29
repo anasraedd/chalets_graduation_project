@@ -2,8 +2,10 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:chalets/core/api/admin/admin_chalets_api_controller.dart';
 import 'package:chalets/core/api/auth_api_controller.dart';
 import 'package:chalets/core/theme/app_theme.dart';
+import 'package:chalets/get/admin/admin_chalets_getx_Controller.dart';
 import 'package:chalets/models/api_response.dart';
 import 'package:chalets/prefs/shared_pref_controller.dart';
 import 'package:chalets/widgets/admin_widgets/DashedLine.dart';
@@ -143,7 +145,7 @@ mixin Helpers {
                                     ApiResponse apiResponse  = await AuthApiController().logout();
                                    if(apiResponse.success){
                                      Get.back();
-                                     Get.toNamed('/register_or_login_screen');
+                                     Get.offNamed('/register_or_login_screen');
                                      SharedPrefController().clear();
                                    }
 
@@ -172,285 +174,300 @@ mixin Helpers {
         });
   }
 
-  void showCouponDialog(BuildContext context) {
+  void showCouponDialog(BuildContext context, {required String code, required String discountPercentage, required String startAt, required String endAt}) {
     showDialog(
         context: context,
         barrierDismissible: true,
         builder: (BuildContext context) {
-          return Dialog(
-              backgroundColor: Colors.transparent,
-              insetPadding:
-                  EdgeInsets.symmetric(horizontal: 130.w, vertical: 280).h,
-              child: Center(
-                child: Container(
-                  width: 200.w,
-                  height: 350.h,
-                  child: Stack(children: <Widget>[
-                    Positioned.fill(
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                        child: Container(
-                          color: Colors.transparent,
+          return SingleChildScrollView(
+            child: Dialog(
+                backgroundColor: Colors.transparent,
+                insetPadding:
+                    EdgeInsets.symmetric(horizontal: 130.w, vertical: 280).h,
+                child: Center(
+                  child: Container(
+                    width: 200.w,
+                    height: 350.h,
+                    child: Stack(children: <Widget>[
+                      Positioned.fill(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                          child: Container(
+                            color: Colors.transparent,
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
-                      height: 260,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 20.h,
-                          ),
-                          Container(
-                            margin: EdgeInsetsDirectional.symmetric(
-                                horizontal: 20.w),
-                            height: 30.h,
-                            child: Row(
-                              children: [
-                                Align(
-                                    alignment:
-                                        AlignmentDirectional.topStart,
-                                    child: Text(
-                                      'Start at',
-                                      style: GoogleFonts.inter(
-                                          fontSize: 12.sp,
-                                          color: Color(0xFF009900)),
-                                    )),
-                                Align(
-                                    alignment:
-                                        AlignmentDirectional.bottomCenter,
-                                    child: Text('30/9/2023 09:35am',
-                                        style: GoogleFonts.fleurDeLeah(
-                                            fontSize: 10.sp,
-                                            color: Colors.black)))
-                                //flamenco
-                              ],
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsetsDirectional.symmetric(
-                                horizontal: 20.w),
-                            height: 30.h,
-                            child: Row(
-                              children: [
-                                Align(
-                                    alignment:
-                                        AlignmentDirectional.topStart,
-                                    child: Text(
-                                      'End at',
-                                      style: GoogleFonts.inter(
-                                          fontSize: 12.sp,
-                                          color: Color(0xFFFF0000)),
-                                    )),
-                                Align(
-                                    alignment:
-                                        AlignmentDirectional.bottomCenter,
-                                    child: Text('30/9/2023 09:35am',
-                                        style: GoogleFonts.fleurDeLeah(
-                                            fontSize: 10.sp,
-                                            color: Colors.black)))
-                                //flamenco
-                              ],
-                            ),
-                          ),
-
-                          // Padding(
-                          //   padding: EdgeInsets.symmetric(horizontal: 6.w),
-                          //   child: RichText(
-                          //     text: TextSpan(
-                          //       text: '15',
-                          //       style: GoogleFonts.inter(
-                          //         color: Colors.black,
-                          //         fontWeight: FontWeight.bold,
-                          //         fontSize: 10.sp,
-                          //       ),
-                          //       children: [
-                          //         TextSpan(
-                          //             text: 'Day',
-                          //             style: GoogleFonts.indieFlower(
-                          //                 fontSize: 8.sp)
-                          //             // TextStyle(
-                          //             //     color: Colors.black,
-                          //             //     fontWeight: FontWeight.bold,
-                          //             //     fontSize: 14.sp),
-                          //             // recognizer: TapGestureRecognizer()
-                          //             //   ..onTap = () {
-                          //             //     setState(() {
-                          //             //       expanded = true;
-                          //             //     });
-                          //
-                          //             ),
-                          //         TextSpan(
-                          //           text: ': 23 ',
-                          //           style: GoogleFonts.inter(
-                          //             color: Colors.black,
-                          //             fontWeight: FontWeight.bold,
-                          //             fontSize: 10.sp,
-                          //           ),
-                          //         ),
-                          //         TextSpan(
-                          //           text: 'Hour',
-                          //           style: GoogleFonts.indieFlower(
-                          //               color: Colors.black, fontSize: 8.sp
-                          //               // fontWeight: FontWeight.bold,
-                          //               ),
-                          //         ),
-                          //         TextSpan(
-                          //           text: ': 46 ',
-                          //           style: GoogleFonts.inter(
-                          //             color: Colors.black,
-                          //             fontWeight: FontWeight.bold,
-                          //             fontSize: 10.sp,
-                          //           ),
-                          //         ),
-                          //         TextSpan(
-                          //           text: 'Min',
-                          //           style: GoogleFonts.indieFlower(
-                          //               color: Colors.black, fontSize: 8.sp
-                          //               //fontWeight: FontWeight.bold,
-                          //               ),
-                          //         ),
-                          //         TextSpan(
-                          //           text: ': 57 ',
-                          //           style: GoogleFonts.inter(
-                          //             color: Colors.red,
-                          //             fontWeight: FontWeight.bold,
-                          //             fontSize: 10.sp,
-                          //           ),
-                          //         ),
-                          //         TextSpan(
-                          //           text: 'Sec',
-                          //           style: GoogleFonts.indieFlower(
-                          //               color: Colors.black, fontSize: 8.sp
-                          //               // fontWeight: FontWeight.bold,
-                          //               ),
-                          //         ),
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
-
-                          SizedBox(
-                            height: 6.h,
-                          ),
-                          DashedLine(
-                            width: 12,
-                          ),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          Container(
-                            height: 90.h,
-                            child: Stack(
-                              children: [
-                                PositionedDirectional(
-                                    start: 30.w,
-                                    top: 16.h,
-                                    child: Column(
-                                      children: [
-                                        SvgPicture.asset(
-                                            'assets/images/arrow_up.svg'),
-                                        SizedBox(
-                                          height: 16.h,
-                                        ),
-                                        SvgPicture.asset(
-                                            'assets/images/arrow_down.svg'),
-                                      ],
-                                    )),
-                                Center(
-                                    child: SvgPicture.asset(
-                                  'assets/images/box_coupon.svg',
-                                  height: 63.5,
-                                  width: 69,
-                                )),
-                                Center(
-                                    child: Text(
-                                  '15',
-                                  style: GoogleFonts.knewave(
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: 19.sp,
-                                      color: Colors.white),
-                                )),
-                                PositionedDirectional(
-                                  end: 35.w,
-                                  top: 16.h,
-                                  child: Text(
-                                    '%',
-                                    style: GoogleFonts.jollyLodger(
-                                        fontSize: 25.sp,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.orange),
-                                  ),
-                                ),
-                                PositionedDirectional(
-                                  end: 30.w,
-                                  top: 45.h,
-                                  child: Text(
-                                    'off',
-                                    style: GoogleFonts.jollyLodger(
-                                        fontSize: 25.sp,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.red),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          Text(
-                            'RF31COKQ',
-                            style: GoogleFonts.inter(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 30.sp,
-                                color: primaryColor),
-                          ),
-                          SizedBox(
-                            height: 11.5.h,
-                          ),
-
-                          //  Divider(
-                          //    height: 2,
-                          //    color: Colors.black,
-                          //
-                          //  )
-                        ],
-                      ),
-                    ),
-                    PositionedDirectional(
-                      //alignment: AlignmentDirectional.bottomCenter,
-                      top: 260.h,
-                      start: 40,
-                      end: 40,
-                      child: Container(
-                        // margin: EdgeInsetsDirectional.only(bottom: -20.h),
-                        height: 56,
-                        width: 56,
+                      Container(
+                        height: 260,
                         decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          shape: BoxShape.circle,
-                          // borderRadius: BorderRadius.circular(5555),
-                          border: Border.all(
-                              width: 3, color: Colors.black26),
-                          image: DecorationImage(
-                              image: AssetImage("assets/icons/FTBPK.png"),
-                              fit: BoxFit.cover),
-                        ),
-                        child: Icon(
-                          Icons.save,
-                          size: 33.r,
                           color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 20.h,
+                            ),
+                            Container(
+                              margin: EdgeInsetsDirectional.symmetric(
+                                  horizontal: 20.w),
+                              height: 30.h,
+                              child: Row(
+                                children: [
+                                  Align(
+                                      alignment:
+                                          AlignmentDirectional.topStart,
+                                      child: Text(
+                                        'Start at',
+                                        style: GoogleFonts.inter(
+                                            fontSize: 12.sp,
+                                            color: Color(0xFF009900)),
+                                      )),
+                                  Align(
+                                      alignment:
+                                          AlignmentDirectional.bottomCenter,
+                                      child: Text('${startAt} 09:35am',
+                                          style: GoogleFonts.fleurDeLeah(
+                                              fontSize: 10.sp,
+                                              color: Colors.black)))
+                                  //flamenco
+                                ],
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsetsDirectional.symmetric(
+                                  horizontal: 20.w),
+                              height: 30.h,
+                              child: Row(
+                                children: [
+                                  Align(
+                                      alignment:
+                                          AlignmentDirectional.topStart,
+                                      child: Text(
+                                        'End at',
+                                        style: GoogleFonts.inter(
+                                            fontSize: 12.sp,
+                                            color: Color(0xFFFF0000)),
+                                      )),
+                                  Align(
+                                      alignment:
+                                          AlignmentDirectional.bottomCenter,
+                                      child: Text('${endAt} 09:35am',
+                                          style: GoogleFonts.fleurDeLeah(
+                                              fontSize: 10.sp,
+                                              color: Colors.black)))
+                                  //flamenco
+                                ],
+                              ),
+                            ),
+
+                            // Padding(
+                            //   padding: EdgeInsets.symmetric(horizontal: 6.w),
+                            //   child: RichText(
+                            //     text: TextSpan(
+                            //       text: '15',
+                            //       style: GoogleFonts.inter(
+                            //         color: Colors.black,
+                            //         fontWeight: FontWeight.bold,
+                            //         fontSize: 10.sp,
+                            //       ),
+                            //       children: [
+                            //         TextSpan(
+                            //             text: 'Day',
+                            //             style: GoogleFonts.indieFlower(
+                            //                 fontSize: 8.sp)
+                            //             // TextStyle(
+                            //             //     color: Colors.black,
+                            //             //     fontWeight: FontWeight.bold,
+                            //             //     fontSize: 14.sp),
+                            //             // recognizer: TapGestureRecognizer()
+                            //             //   ..onTap = () {
+                            //             //     setState(() {
+                            //             //       expanded = true;
+                            //             //     });
+                            //
+                            //             ),
+                            //         TextSpan(
+                            //           text: ': 23 ',
+                            //           style: GoogleFonts.inter(
+                            //             color: Colors.black,
+                            //             fontWeight: FontWeight.bold,
+                            //             fontSize: 10.sp,
+                            //           ),
+                            //         ),
+                            //         TextSpan(
+                            //           text: 'Hour',
+                            //           style: GoogleFonts.indieFlower(
+                            //               color: Colors.black, fontSize: 8.sp
+                            //               // fontWeight: FontWeight.bold,
+                            //               ),
+                            //         ),
+                            //         TextSpan(
+                            //           text: ': 46 ',
+                            //           style: GoogleFonts.inter(
+                            //             color: Colors.black,
+                            //             fontWeight: FontWeight.bold,
+                            //             fontSize: 10.sp,
+                            //           ),
+                            //         ),
+                            //         TextSpan(
+                            //           text: 'Min',
+                            //           style: GoogleFonts.indieFlower(
+                            //               color: Colors.black, fontSize: 8.sp
+                            //               //fontWeight: FontWeight.bold,
+                            //               ),
+                            //         ),
+                            //         TextSpan(
+                            //           text: ': 57 ',
+                            //           style: GoogleFonts.inter(
+                            //             color: Colors.red,
+                            //             fontWeight: FontWeight.bold,
+                            //             fontSize: 10.sp,
+                            //           ),
+                            //         ),
+                            //         TextSpan(
+                            //           text: 'Sec',
+                            //           style: GoogleFonts.indieFlower(
+                            //               color: Colors.black, fontSize: 8.sp
+                            //               // fontWeight: FontWeight.bold,
+                            //               ),
+                            //         ),
+                            //       ],
+                            //     ),
+                            //   ),
+                            // ),
+
+                            SizedBox(
+                              height: 6.h,
+                            ),
+                            DashedLine(
+                              width: 12,
+                            ),
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            Container(
+                              height: 90.h,
+                              child: Stack(
+                                children: [
+                                  PositionedDirectional(
+                                      start: 30.w,
+                                      top: 16.h,
+                                      child: Column(
+                                        children: [
+                                          SvgPicture.asset(
+                                              'assets/images/arrow_up.svg'),
+                                          SizedBox(
+                                            height: 16.h,
+                                          ),
+                                          SvgPicture.asset(
+                                              'assets/images/arrow_down.svg'),
+                                        ],
+                                      )),
+                                  Center(
+                                      child: SvgPicture.asset(
+                                    'assets/images/box_coupon.svg',
+                                    height: 63.5,
+                                    width: 69,
+                                  )),
+                                  Center(
+                                      child: Text(
+                                        discountPercentage,
+                                    style: GoogleFonts.knewave(
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 19.sp,
+                                        color: Colors.white),
+                                  )),
+                                  PositionedDirectional(
+                                    end: 35.w,
+                                    top: 16.h,
+                                    child: Text(
+                                      '%',
+                                      style: GoogleFonts.jollyLodger(
+                                          fontSize: 25.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.orange),
+                                    ),
+                                  ),
+                                  PositionedDirectional(
+                                    end: 30.w,
+                                    top: 45.h,
+                                    child: Text(
+                                      'off',
+                                      style: GoogleFonts.jollyLodger(
+                                          fontSize: 25.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.red),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            Text(
+                              code,
+                              style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 30.sp,
+                                  color: primaryColor),
+                            ),
+                            SizedBox(
+                              height: 11.5.h,
+                            ),
+
+                            //  Divider(
+                            //    height: 2,
+                            //    color: Colors.black,
+                            //
+                            //  )
+                          ],
                         ),
                       ),
-                    ),
-                  ]),
-                ),
-              ));
+                      PositionedDirectional(
+                        //alignment: AlignmentDirectional.bottomCenter,
+                        top: 260.h,
+                        start: 40,
+                        end: 40,
+                        child: GestureDetector (
+                          onTap: () async {
+                            Random random = Random();
+                            Get.back();
+                         ApiResponse result = await  AdminChaletsApiController().addPriceDiscountCodes(chaletsId: AdminChaletsGetxController.to.chaletForManage.value.id,  percent: int.parse(discountPercentage), startAt: startAt, endAt: endAt);
+// if(result.success){
+//   showSnackBarByGet(title: 'success');
+// }else{
+//   showSnackBarByGet(title: result.message, error: true);
+//
+// }
+                          },
+                          child: Container(
+                            // margin: EdgeInsetsDirectional.only(bottom: -20.h),
+                            height: 56,
+                            width: 56,
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              shape: BoxShape.circle,
+                              // borderRadius: BorderRadius.circular(5555),
+                              border: Border.all(
+                                  width: 3, color: Colors.black26),
+                              image: DecorationImage(
+                                  image: AssetImage("assets/icons/FTBPK.png"),
+                                  fit: BoxFit.cover),
+                            ),
+                            child: Icon(
+                              Icons.save,
+                              size: 33.r,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ]),
+                  ),
+                )),
+          );
         });
   }
 

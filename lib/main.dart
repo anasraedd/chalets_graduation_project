@@ -1,5 +1,9 @@
 import 'dart:async';
+import 'package:chalets/get/chat_getx_controller.dart';
+import 'package:chalets/screens/add_coupon_screen.dart';
 import 'package:chalets/screens/blocked_chalets_screen.dart';
+import 'package:chalets/screens/details_screen.dart';
+import 'package:chalets/screens/maps_screen.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:chalets/anas/test.dart';
 import 'package:chalets/bloc/bloc/chalets_bloc.dart';
@@ -102,11 +106,39 @@ class _MyAppState extends State<MyApp> with FbNotifications {
 
 
   void _handleMessage(RemoteMessage message) {
-    if (message.data['type'] == 'chat') {}
+    //if (message.data['type'] == 'chat') {
+      //print('massage info: ${message.data['sender']}');
 
-    LaunchScreen.route = '/chat_screen';
+
+    //}
+    LaunchScreen.data = message.data;
+    // if(message.data['sender'] == AccountType.Admin.name){
+    //   LaunchScreen.route = '/chat_screen';
+    // }else{
+    //   LaunchScreen.route = '/chat_Admin_screen';
+    //
+    // }
+
      // Get.to(ChatScreen(id: 5));
+
     Get.to(LaunchScreen());
+    if(LaunchScreen.isOpenedChat){
+      Message myMessage = Message();
+      myMessage.idMessage = 228;
+      myMessage.messageBy = 'User';
+      myMessage.textMessage = message.notification!.body!;
+      myMessage.dateTimeMessage = DateTime.now();
+
+      List<Message> messages = List.from(
+          ChatGetxController.to.messages)
+        ..add(myMessage);
+
+      messages.sort((a, b) =>
+          b.dateTimeMessage.compareTo(
+              a.dateTimeMessage));
+
+      ChatGetxController.to.messages.value = messages;
+    }
 
     // Navigator.push(
     //         navigatorKey.currentState!.context,
@@ -213,7 +245,10 @@ class _MyAppState extends State<MyApp> with FbNotifications {
           // home: CouponScreen(), // NotificationsScreen
           // ChaletPicturesScreen(),
           // home: ChatScreen(id: 5,),
-        //  home: RegisterAccountScreen(),
+          // home: DetailsScreen(id: 1,),
+          // home: AddCouponScreen(),
+          // home: CalendarScreen(),
+          // home: RegisterAccountScreen(numberPhone: '97259568659'),
 
           getPages: [
             GetPage(name: '/', page: ()=> LaunchScreen()),
@@ -221,14 +256,14 @@ class _MyAppState extends State<MyApp> with FbNotifications {
             GetPage(
                 name: '/register_or_login_screen',
                 page: () => RegisterOrSignInScreen()),
-            GetPage(
-                name: '/regiter_screen', page: () => RegisterAccountScreen()),
+            // GetPage(
+            //     name: '/regiter_screen', page: () => RegisterAccountScreen()),
             GetPage(
                 name: '/verification_by_mobile_screen',
                 page: () => RegisterAccountScreen2()),
-            GetPage(
-                name: '/code_verification_screen',
-                page: () => RegisterAccountScreen3()),
+            // GetPage(
+            //     name: '/code_verification_screen',
+            //     page: () => RegisterAccountScreen3()),
             GetPage(name: '/login_screen', page: () => LoginScreen()),
             GetPage(name: '/main_screen', page: () => MainScreen()),
             GetPage(name: '/result_research', page: () => ResultResearch()),

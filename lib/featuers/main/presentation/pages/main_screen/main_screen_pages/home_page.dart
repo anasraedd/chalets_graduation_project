@@ -9,8 +9,10 @@ import 'package:chalets/models/chalet/chalet_images.dart';
 import 'package:chalets/models/chalet/random_chalet.dart';
 import 'package:chalets/prefs/shared_pref_controller.dart';
 import 'package:chalets/screens/details_screen.dart';
+import 'package:chalets/widgets/images_chalet_widget.dart';
 import 'package:chalets/widgets/shimmer_loading_widget.dart';
 import 'package:easy_localization/easy_localization.dart' as lang;
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -46,6 +48,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     Get.lazyPut<ChaletsHomeGetxController>(() => ChaletsHomeGetxController());
     ChaletsHomeGetxController.to.read();
+    getFcm();
     // TODO: implement initState
     super.initState();
   }
@@ -66,15 +69,16 @@ class _HomePageState extends State<HomePage> {
           return Column(
             children: [
               Padding(
-                padding: EdgeInsets.all(30.w),
+                padding: EdgeInsetsDirectional.only(
+                    top: 15.h, bottom: 20.h, start: 20.w, end: 20.w),
                 child: Row(
                   children: [
-                    controller.loading.value
-                        ? ShimmerLoadingWidget(
-                      height: 60, width: 60, decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),):
+                    // controller.loading.value
+                    //     ? ShimmerLoadingWidget(
+                    //   height: 60, width: 60, decoration: BoxDecoration(
+                    //     shape: BoxShape.circle,
+                    //   color: Colors.white,
+                    // ),):
                     // Container(
                     //   height: 60.w,
                     //   width: 60.w,
@@ -109,24 +113,29 @@ class _HomePageState extends State<HomePage> {
                       height: 75.w,
                       width: 75.w,
                       decoration: BoxDecoration(
-                          color: Colors.white38,
-                          shape: BoxShape.circle,
+                        color: Colors.white38,
+                        shape: BoxShape.circle,
                       ),
                       child: CachedNetworkImage(
-                        height: 75.w,
-                        width: 75.w,
-                        // height: 228.0,
-                        imageUrl:  SharedPrefController().getValueFor<String>(key: PrefKeys.accountPicture.name) ?? '' ,//'https://firebasestorage.googleapis.com/v0/b/learning---firebase-flutter.appspot.com/o/forProject%2F-qm2h18.jpg?alt=media&token=9b7af4ec-a00b-44d7-8061-dc8b57be48ac',
-                        //'https://firebasestorage.googleapis.com/v0/b/learning---firebase-flutter.appspot.com/o/images%2Fuser-removebg-preview.png?alt=media&token=6af53acd-89ef-4f7c-9772-81d60b0b54a1',
-                        fit: BoxFit.fill,
-
-                        placeholder: (context, url) =>
-                            SpinKitFadingCircle(
-                              color: Colors.grey.shade500,
-                              size: 50.0,
-                            ),
-                          errorWidget: (context, url, error) =>  Center(child: Icon(Icons.account_circle, size: 75.w, color: primaryColor,))
-                      ),
+                          height: 75.w,
+                          width: 75.w,
+                          // height: 228.0,
+                          imageUrl: SharedPrefController().getValueFor<String>(
+                                  key: PrefKeys.accountPicture.name) ??
+                              '',
+                          //'https://firebasestorage.googleapis.com/v0/b/learning---firebase-flutter.appspot.com/o/forProject%2F-qm2h18.jpg?alt=media&token=9b7af4ec-a00b-44d7-8061-dc8b57be48ac',
+                          //'https://firebasestorage.googleapis.com/v0/b/learning---firebase-flutter.appspot.com/o/images%2Fuser-removebg-preview.png?alt=media&token=6af53acd-89ef-4f7c-9772-81d60b0b54a1',
+                          fit: BoxFit.fill,
+                          placeholder: (context, url) => SpinKitFadingCircle(
+                                color: Colors.grey.shade500,
+                                size: 50.0,
+                              ),
+                          errorWidget: (context, url, error) => Center(
+                                  child: Icon(
+                                Icons.account_circle,
+                                size: 75.w,
+                                color: primaryColor,
+                              ))),
                     ),
                     SizedBox(
                       width: 14.w,
@@ -134,7 +143,7 @@ class _HomePageState extends State<HomePage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        controller.loading.value ? ShimmerLoadingWidget(height: 20.h, width: MediaQuery.of(context).size.width /2.w, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10.r))) :
+                        // controller.loading.value ? ShimmerLoadingWidget(height: 20.h, width: MediaQuery.of(context).size.width /2.w, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10.r))) :
                         RichText(
                             text: TextSpan(
                                 text: lang.tr('txtWelcomeHome'),
@@ -144,7 +153,8 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 children: [
                               TextSpan(
-                                text: "${SharedPrefController().getValueFor<String>(key: PrefKeys.firstName.name)} ${SharedPrefController().getValueFor<String>(key: PrefKeys.lastName.name)}",
+                                text:
+                                    "${SharedPrefController().getValueFor<String>(key: PrefKeys.firstName.name)} ${SharedPrefController().getValueFor<String>(key: PrefKeys.lastName.name)}",
                                 style: GoogleFonts.inter(
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.bold,
@@ -155,10 +165,10 @@ class _HomePageState extends State<HomePage> {
                         SizedBox(
                           height: 4.h,
                         ),
-                        controller.loading.value ? ShimmerLoadingWidget(height: 20.h, width: MediaQuery.of(context).size.width /1.7.w, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10.r))) :
+                        // controller.loading.value ? ShimmerLoadingWidget(height: 20.h, width: MediaQuery.of(context).size.width /1.7.w, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10.r))) :
 
                         Text(
-                         lang.tr('weWishYouHappyTimesWithUs'),
+                          lang.tr('weWishYouHappyTimesWithUs'),
                           style:
                               Theme.of(context).textTheme.bodySmall!.copyWith(
                                     color: const Color(0xFFABABAB),
@@ -170,258 +180,270 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
 
-
-              CarouselSlider(
-                options: CarouselOptions(
-                  height: 260,
-                  aspectRatio: 16 / 9,
-                  viewportFraction: 0.85,
-                  initialPage: 0,
-                  enableInfiniteScroll: true,
-                  reverse: false,
-                  autoPlay: true,
-                  autoPlayInterval: const Duration(seconds: 4),
-                  autoPlayAnimationDuration: const Duration(milliseconds: 800),
-                  autoPlayCurve: Curves.fastOutSlowIn,
-                  enlargeCenterPage: true,
-                  enlargeFactor: 0.3,
-                  scrollDirection: Axis.horizontal,
-                ),
-                items: controller.loading.value ? images2.map((e) {
-                  return Stack(
-                    alignment: Alignment.centerRight,
-
-                    children: [
-                      ShimmerLoadingWidget(height: 228, width: double.infinity,  decoration: BoxDecoration(
-                        color: const Color(0x99017C9B),
-                        borderRadius:
-                        BorderRadius.circular(30.r),
-                      ),),
-                      ShimmerLoadingWidget(
-                        height: 140.h,
-                        width: 115.w,
-                        baseColor: Color(0x99017C9B),
-                        margin: EdgeInsetsDirectional.all(25.w),
-                        decoration: BoxDecoration(
-                          color: const Color(0x99017C9B),
-                          borderRadius:
-                          BorderRadius.circular(16.r),
-                        ),
-
-                      ),
-                    ],
-                  );
-          }
-
-                ).toList() : controller.randomChaletsHaveDiscount.map(
-                  (item) {
-
-                    return GestureDetector(
-                      onTap: () {},
-                      child: Stack(
-                        children: [
-                           Container(
-                                  clipBehavior: Clip.hardEdge,
-                                  decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.circular(30.r)),
-                                  child: ShaderMask(
-                                    shaderCallback: (rect) {
-                                      return const LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        colors: [
-                                          // fromLTRB
-                                          Colors.transparent,
-                                          Colors.black,
-                                          Colors.black,
-                                          Colors.transparent,
-                                        ],
-                                        stops: [0, 0, 1, 1],
-                                      ).createShader(
-                                        Rect.fromLTRB(
-                                            0, 0, rect.width, rect.height),
-                                      );
-                                    },
-                                    blendMode: BlendMode.dstIn,
-                                    child: Stack(
-                                      alignment: Alignment.centerRight,
-                                      children: [
-                                        CachedNetworkImage(
-                                          height: 228.0,
-                                          imageUrl: item.chaletImages.isNotEmpty
-                                              ? item.chaletImages[0].image
-                                              : images[0],
-                                          placeholder: (context, url) =>
-                                              ShimmerLoadingWidget(
-                                                  height: 228,
-                                                  width: double.infinity),
-                                          errorWidget: (context, url, error) =>
-                                              ShimmerLoadingWidget(
-                                                  height: 228,
-                                                  width: double.infinity),
-                                          fit: BoxFit.cover,
-                                        ),
-
-                                        Container(
-                                          height: 140.h,
-                                          width: 115.w,
-                                          margin: EdgeInsets.all(25.w),
-                                          decoration: BoxDecoration(
-                                            color: const Color(0x99017C9B),
-                                            borderRadius:
-                                                BorderRadius.circular(16.r),
+              Visibility(
+                visible: controller.randomChaletsHaveDiscount.isNotEmpty,
+                child: CarouselSlider(
+                  options: CarouselOptions(
+                    height: 260,
+                    aspectRatio: 16 / 9,
+                    viewportFraction: 0.85,
+                    initialPage: 0,
+                    enableInfiniteScroll: true,
+                    reverse: false,
+                    autoPlay: true,
+                    autoPlayInterval: const Duration(seconds: 4),
+                    autoPlayAnimationDuration:
+                        const Duration(milliseconds: 800),
+                    autoPlayCurve: Curves.fastOutSlowIn,
+                    enlargeCenterPage: true,
+                    enlargeFactor: 0.3,
+                    scrollDirection: Axis.horizontal,
+                  ),
+                  items: controller.loading.value
+                      ? images2.map((e) {
+                          return Stack(
+                            alignment: Alignment.centerRight,
+                            children: [
+                              ShimmerLoadingWidget(
+                                height: 228,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: const Color(0x99017C9B),
+                                  borderRadius: BorderRadius.circular(30.r),
+                                ),
+                              ),
+                              ShimmerLoadingWidget(
+                                height: 140.h,
+                                width: 115.w,
+                                baseColor: Color(0x99017C9B),
+                                margin: EdgeInsetsDirectional.all(25.w),
+                                decoration: BoxDecoration(
+                                  color: const Color(0x99017C9B),
+                                  borderRadius: BorderRadius.circular(16.r),
+                                ),
+                              ),
+                            ],
+                          );
+                        }).toList()
+                      : controller.randomChaletsHaveDiscount.map(
+                          (item) {
+                            return GestureDetector(
+                              onTap: () {},
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    clipBehavior: Clip.hardEdge,
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(30.r)),
+                                    child: ShaderMask(
+                                      shaderCallback: (rect) {
+                                        return const LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            // fromLTRB
+                                            Colors.transparent,
+                                            Colors.black,
+                                            Colors.black,
+                                            Colors.transparent,
+                                          ],
+                                          stops: [0, 0, 1, 1],
+                                        ).createShader(
+                                          Rect.fromLTRB(
+                                              0, 0, rect.width, rect.height),
+                                        );
+                                      },
+                                      blendMode: BlendMode.dstIn,
+                                      child: Stack(
+                                        alignment: Alignment.centerRight,
+                                        children: [
+                                          CachedNetworkImage(
+                                            height: 228.0,
+                                            imageUrl:
+                                                item.chaletImages.isNotEmpty
+                                                    ? item.chaletImages[0].image
+                                                    : images[0],
+                                            placeholder: (context, url) =>
+                                                ShimmerLoadingWidget(
+                                                    height: 228,
+                                                    width: double.infinity),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    ShimmerLoadingWidget(
+                                                        height: 228,
+                                                        width: double.infinity),
+                                            fit: BoxFit.cover,
                                           ),
-                                          child: Column(
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 8.0,
-                                                    top: 8,
-                                                    right: 3),
-                                                child: Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      item
-                                                          .chaletPrices[0]
-                                                          .chaletPriceDiscountCodes[
-                                                              0]
-                                                          .percent,
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headlineLarge!
-                                                          .copyWith(
-                                                              fontSize: 40.sp,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700,
-                                                              color:
-                                                                  Colors.white),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 4.w,
-                                                    ),
-                                                    Column(
-                                                      children: [
-                                                        Text(
-                                                          lang.tr('discount'),
-                                                          style: Theme.of(
-                                                                  context)
-                                                              .textTheme
-                                                              .headlineLarge!
-                                                              .copyWith(
-                                                                  fontSize:
-                                                                      8.sp,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  color: Colors
-                                                                      .white),
-                                                        ),
-                                                        Text(
-                                                          "%",
-                                                          style: Theme.of(
-                                                                  context)
-                                                              .textTheme
-                                                              .headlineLarge!
-                                                              .copyWith(
-                                                                  fontSize:
-                                                                      25.sp,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  color: Colors
-                                                                      .white),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
+                                          Container(
+                                            height: 140.h,
+                                            width: 115.w,
+                                            margin: EdgeInsets.all(25.w),
+                                            decoration: BoxDecoration(
+                                              color: const Color(0x99017C9B),
+                                              borderRadius:
+                                                  BorderRadius.circular(16.r),
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 8.0,
+                                                          top: 8,
+                                                          right: 3),
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        item
+                                                            .chaletPrices[0]
+                                                            .chaletPriceDiscountCodes[
+                                                                0]
+                                                            .percent,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .headlineLarge!
+                                                            .copyWith(
+                                                                fontSize: 40.sp,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700,
+                                                                color: Colors
+                                                                    .white),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 4.w,
+                                                      ),
+                                                      Column(
+                                                        children: [
+                                                          Text(
+                                                            lang.tr('discount'),
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .headlineLarge!
+                                                                .copyWith(
+                                                                    fontSize:
+                                                                        8.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                    color: Colors
+                                                                        .white),
+                                                          ),
+                                                          Text(
+                                                            "%",
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .headlineLarge!
+                                                                .copyWith(
+                                                                    fontSize:
+                                                                        25.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                    color: Colors
+                                                                        .white),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 8.0, right: 8.0),
-                                                child: Text(
-                                                  "On the Most Beautiful Chalets in Gaza",
-                                                  textAlign: TextAlign.center,
-                                                  style: GoogleFonts.inter(
-                                                      fontSize: 8.sp,
-                                                      fontWeight:
-                                                          FontWeight.w400,
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 8.0,
+                                                          right: 8.0),
+                                                  child: Text(
+                                                    "On the Most Beautiful Chalets in Gaza",
+                                                    textAlign: TextAlign.center,
+                                                    style: GoogleFonts.inter(
+                                                        fontSize: 8.sp,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 5.h,
+                                                ),
+                                                Container(
+                                                  height: 22.h,
+                                                  width: 90.w,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5.r),
                                                       color: Colors.white),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 5.h,
-                                              ),
-                                              Container(
-                                                height: 22.h,
-                                                width: 90.w,
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5.r),
-                                                    color: Colors.white),
-                                                child: Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    Expanded(
-                                                      flex: 2,
-                                                      child: Container(
-                                                        alignment:
-                                                            Alignment.center,
-                                                        child: Text(
-                                                          item.chaletPrices[0].chaletPriceDiscountCodes[0].code,
-                                                          style: GoogleFonts.inter(
-                                                              color:
-                                                                  primaryColor,
-                                                              fontSize: 11.sp,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700),
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Container(
+                                                          alignment:
+                                                              Alignment.center,
+                                                          child: Text(
+                                                            item
+                                                                .chaletPrices[0]
+                                                                .chaletPriceDiscountCodes[
+                                                                    0]
+                                                                .code,
+                                                            style: GoogleFonts.inter(
+                                                                color:
+                                                                    primaryColor,
+                                                                fontSize: 11.sp,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700),
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                    Container(
-                                                      height: double.infinity,
-                                                      width: 2.w,
-                                                      color: primaryColor,
-                                                    ),
-                                                    Expanded(
-                                                      flex: 1,
-                                                      child: Container(
-                                                        alignment:
-                                                            Alignment.center,
-                                                        child: Text(
-                                                          "Code",
-                                                          style: GoogleFonts.inter(
-                                                              color:
-                                                                  primaryColor,
-                                                              fontSize: 8.sp,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400),
+                                                      Container(
+                                                        height: double.infinity,
+                                                        width: 2.w,
+                                                        color: primaryColor,
+                                                      ),
+                                                      Expanded(
+                                                        flex: 1,
+                                                        child: Container(
+                                                          alignment:
+                                                              Alignment.center,
+                                                          child: Text(
+                                                            "Code",
+                                                            style: GoogleFonts.inter(
+                                                                color:
+                                                                    primaryColor,
+                                                                fontSize: 8.sp,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400),
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
-                                            ],
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                        ],
-                      ),
-                    );
-                  },
-                ).toList(),
+                                ],
+                              ),
+                            );
+                          },
+                        ).toList(),
+                ),
               ),
 
               // controller.loading.value
@@ -435,72 +457,69 @@ class _HomePageState extends State<HomePage> {
               //             borderRadius: BorderRadius.circular(20.r)))
               //     :
               Container(
-                      height: 125.h,
-                      margin: EdgeInsets.symmetric(horizontal: 16.w),
-                      decoration: const BoxDecoration(
-                          image: DecorationImage(
-                              fit: BoxFit.fill,
-                              image: AssetImage("assets/images/unknownSape.png",))),
+                height: 120.h,
+                margin: EdgeInsets.symmetric(horizontal: 16.w),
+                decoration: const BoxDecoration(
+                    image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: AssetImage(
+                          "assets/images/unknownSape.png",
+                        ))),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 15.h,
+                    ),
+                    Text(
+                      lang.tr('detailedSearch'),
+                      style: GoogleFonts.inter(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Get.toNamed('/detailed_search_screen');
+                      },
                       child: Container(
-                        height: double.infinity,
-                        width: double.infinity,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                        height: 55.h,
+                        margin: EdgeInsets.symmetric(horizontal: 12.w),
+                        decoration: const BoxDecoration(
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image:
+                                    AssetImage("assets/images/serchTFF.png"))),
+                        padding: EdgeInsets.symmetric(horizontal: 40.w),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            SizedBox(
-                              height: 13.h,
-                            ),
+                            Container(),
                             Text(
-                              lang.tr('detailedSearch'),
+                              lang.tr('txtSearch'),
                               style: GoogleFonts.inter(
-                                fontSize: 20.sp,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                              ),
+                                  color: primaryColor,
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w500),
                             ),
-                            SizedBox(
-                              height: 13.h,
-                            ),
-                            GestureDetector(
-                              onTap: (){
-                                Get.toNamed('/detailed_search_screen');
-                              },
-                              child: Container(
-                                height: 55.h,
-                                margin: EdgeInsets.symmetric(horizontal: 12.w),
-                                decoration: const BoxDecoration(
-                                    image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: AssetImage(
-                                            "assets/images/serchTFF.png"))),
-                                padding: EdgeInsets.symmetric(horizontal: 40.w),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Container(),
-                                    Text(
-                                      lang.tr('txtSearch'),
-                                      style: GoogleFonts.inter(
-                                          color: primaryColor,
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    Icon(
-                                      Icons.search_rounded,
-                                      color: primaryColor,
-                                      size: 27.r,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
+                            Icon(
+                              Icons.search_rounded,
+                              color: primaryColor,
+                              size: 27.r,
+                            )
                           ],
                         ),
                       ),
                     ),
-              controller.loading.value ? ShimmerLoadingWidget(height: 1.6, width: double.infinity, margin: EdgeInsetsDirectional.only(
-                  start: 40.w, end: 40.w, top: 22.h, bottom: 10.h),):
+                  ],
+                ),
+              ),
+              // controller.loading.value ? ShimmerLoadingWidget(height: 1.6, width: double.infinity, margin: EdgeInsetsDirectional.only(
+              //     start: 40.w, end: 40.w, top: 22.h, bottom: 10.h),):
               Container(
                 margin: EdgeInsets.only(
                     left: 40.w, right: 40.w, top: 22.h, bottom: 10.h),
@@ -513,22 +532,27 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               Expanded(
-                child:
+                  child:
+                      // controller.randomChaletsHaveDiscount.isNotEmpty ?
+              controller.randomChaletsHaveDiscount.isNotEmpty ?
                 CarouselSlider(
+
                   options: CarouselOptions(
-                      height: 240,
-                      aspectRatio: 16 / 16,
-                      viewportFraction: 0.58,
+
+                      height: 240.h,
+                      aspectRatio: 10 / 15,
+                      viewportFraction: 0.60,
+
                       initialPage: 0,
                       enableInfiniteScroll: true,
                       reverse: false,
-                      autoPlay: true,
-                      autoPlayInterval: Duration(seconds: 3),
-                      autoPlayAnimationDuration: Duration(milliseconds: 800),
-                      autoPlayCurve: Curves.fastOutSlowIn,
+                      // autoPlay: true,
+                      // autoPlayInterval: Duration(seconds: 3),
+                      // autoPlayAnimationDuration: Duration(milliseconds: 800),
+                      // autoPlayCurve: Curves.fastOutSlowIn,
                       enlargeCenterPage: true,
                       enlargeFactor: 0.4,
-                      scrollDirection: Axis.horizontal,
+                      scrollDirection:  Axis.horizontal,//controller.randomChaletsHaveDiscount.isNotEmpty ? Axis.horizontal : Axis.vertical
                       onPageChanged: (index, s) {
                         controller.indexRandomChalets.value = index;
                         // setState(() {
@@ -538,104 +562,73 @@ class _HomePageState extends State<HomePage> {
                       }),
                   items:
                   controller.loading.value ? images2.map(
-                    (item) {
-                    return  SizedBox(
-                      height: 230.h,
-                      child: Stack(
-                          alignment: Alignment.bottomCenter,
-                          children: [
-                            // controller.randomChalets
-                            //     .value ==
-                            //     images.indexOf(item)
-                            //     ?
-                            Align(
-                              alignment: Alignment.topCenter,
-                              child:
-                              ShimmerLoadingWidget(
-                                height: 20.h,
-                                width: 160.w,
-                                decoration: BoxDecoration(
-                                    color:
-                                    const Color(0xFFD9D3CD),
-                                    borderRadius:
-                                    BorderRadius.only(
-                                      topRight:
-                                      Radius.circular(8.r),
-                                      topLeft:
-                                      Radius.circular(8.r),
-                                    )),
-                              ),
-                            ),
-                            //  : Container(),
+                        (item) {
+                      return  Stack(
+                        // alignment: Alignment.bottomCenter,
+                        children: [
+                          // controller.randomChalets
+                          //     .value ==
+                          //     images.indexOf(item)
+                          //     ?
+                          Align(
+                            alignment: Alignment.topCenter,
+                            child:
                             ShimmerLoadingWidget(
-                              // margin: const EdgeInsets.only(top: 12),
-
-                            height: double.infinity, width: double.infinity, margin: EdgeInsetsDirectional.only( bottom: 25.h, top: 12), decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius:
-                            BorderRadius.circular(30.r)),),
-                            // controller.indexRandomChalets.value ==
-                            //     images.indexOf(item)
-                            //     ?
-                            Align(
-                              alignment: Alignment.topCenter,
-                              child: ShimmerLoadingWidget(
-                                height: 40.h,
-                                width: 140.w,
-                               baseColor: primaryColor,
-                               // alignment: Alignment.center,
-
-                                margin:
-                                EdgeInsetsDirectional.only(top: 4.h),
-                                decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(5), topRight:  Radius.circular(5), bottomLeft:  Radius.circular(15), bottomRight:  Radius.circular(15))
-                                  // image: DecorationImage(
-                                  //     image: AssetImage(
-                                  //         "assets/images/newChaletPK.png"),
-                                  //     fit: BoxFit.fill),
-                                ),
-                                // padding: EdgeInsets.only(
-                                //     bottom: 4.h, left: 10.w, right: 10.w),
-                              //  child: shimmerLoadingWidget(height: 40.h, width: 140.w)
-                              ),
-                            ),
-                            // : Container(),
-                            // controller.indexRandomChalets.value ==
-                            //     images.indexOf(item)
-                            //     ?
-                            Align(
-                              alignment: Alignment.bottomCenter,
-                              child: ShimmerLoadingWidget(
-                                width: 200.w,
-                                height: 25.h,
-                              baseColor:  Color(0xFFC9DCE1),
-                              //  alignment: Alignment.center,
-                                margin: EdgeInsetsDirectional.only(bottom: 35.h),
-                                decoration: BoxDecoration(
+                              height: 20.h,
+                              width: 160.w,
+                              decoration: BoxDecoration(
+                                  color:
+                                  const Color(0xFFD9D3CD),
                                   borderRadius:
                                   BorderRadius.only(
-                                      bottomLeft: Radius
-                                          .circular(10.r),
-                                      bottomRight:
-                                      Radius.circular(
-                                          10.r),
-                                      topRight:
-                                      Radius.circular(
-                                          2.r),
-                                      topLeft:
-                                      Radius.circular(
-                                          2.r)),
-                                  color: Color(0xFFC9DCE1),
-                                ),
-                                // padding: EdgeInsets.symmetric(
-                                //     horizontal: 12.w),
-                               // child: shimmerLoadingWidget(height: 25.h, width: 200.w)
+                                    topRight:
+                                    Radius.circular(8.r),
+                                    topLeft:
+                                    Radius.circular(8.r),
+                                  )),
+                            ),
+                          ),
+                          //  : Container(),
+                          ShimmerLoadingWidget(
+                            // margin: const EdgeInsets.only(top: 12),
+
+                            height: double.infinity, width: double.infinity, margin: EdgeInsetsDirectional.only( bottom: 25.h, top: 12), decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                              BorderRadius.circular(30.r)),),
+                          // controller.indexRandomChalets.value ==
+                          //     images.indexOf(item)
+                          //     ?
+                          Align(
+                            alignment: Alignment.topCenter,
+                            child: ShimmerLoadingWidget(
+                              height: 40.h,
+                              width: 140.w,
+                              baseColor: primaryColor,
+                              // alignment: Alignment.center,
+
+                              margin:
+                              EdgeInsetsDirectional.only(top: 4.h),
+                              decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(5), topRight:  Radius.circular(5), bottomLeft:  Radius.circular(15), bottomRight:  Radius.circular(15))
+                                // image: DecorationImage(
+                                //     image: AssetImage(
+                                //         "assets/images/newChaletPK.png"),
+                                //     fit: BoxFit.fill),
                               ),
-                            )
-                            //  : Container(),
-                          ],
-                        ),
-                    );
+                              // padding: EdgeInsets.only(
+                              //     bottom: 4.h, left: 10.w, right: 10.w),
+                              //  child: shimmerLoadingWidget(height: 40.h, width: 140.w)
+                            ),
+                          ),
+                          // : Container(),
+                          // controller.indexRandomChalets.value ==
+                          //     images.indexOf(item)
+                          //     ?
+
+                          //  : Container(),
+                        ],
+                      );
                       // return shimmerLoadingWidget(
                       //   height: 200, width: double.infinity, margin: EdgeInsets.symmetric( vertical: 25.h), decoration: BoxDecoration(
                       //     color: Colors.white,
@@ -645,34 +638,279 @@ class _HomePageState extends State<HomePage> {
                   ).toList():
                   controller.randomChalets.map(
                         (item) {
-                      return GestureDetector(
-                        onTap: () {
-                          Get.to(() => DetailsScreen(id: item.chaletsId,));//item.chaletsId
-                        },
-                        child: Stack(
-                          children: [
-                            Container(
-                              child: ShaderMask(
-                                shaderCallback: (rect) {
-                                  return const LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      // f r o m L T R B
-                                      Colors.transparent,
-                                      Colors.black,
-                                      Colors.black,
-                                      Colors.transparent,
-                                    ],
-                                    stops: [0, 0, 1, 1],
-                                  ).createShader(
-                                    Rect.fromLTRB(
-                                        0, 0, rect.width, rect.height),
-                                  );
-                                },
-                                blendMode: BlendMode.dstIn,
-                                child: SizedBox(
-                                  height: 230.h,
+                      return Padding(
+                        padding:  EdgeInsets.symmetric(vertical: controller.randomChaletsHaveDiscount.isNotEmpty ? 0: 15.h),
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.to(() => DetailsScreen(id: 251,));//item.chaletsId
+                          },
+                          child:Stack(
+                            // alignment: Alignment.bottomCenter,
+                            children: [
+                              // controller.randomChalets
+                              //     .value ==
+                              //     images.indexOf(item)
+                              //     ?
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child: Container(
+                                  height: 20.h,
+                                  width: double.infinity,
+                                  margin: EdgeInsets.symmetric(horizontal: 30.w),
+                                  decoration: BoxDecoration(
+                                      color:
+                                      const Color(0xFFD9D3CD),
+                                      borderRadius:
+                                      BorderRadius.only(
+                                        topRight:
+                                        Radius.circular(8.r),
+                                        topLeft:
+                                        Radius.circular(8.r),
+                                      )),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(top: 12),
+                                child: ImagesChaletWidget(images: item.chaletImages,),
+                              ),
+
+
+                              //  : Container(),
+                              // Container(
+                              //   width: double.infinity,
+                              //   margin: const EdgeInsets.only(top: 12),
+                              //   clipBehavior: Clip.hardEdge,
+                              //   decoration: BoxDecoration(
+                              //       borderRadius:
+                              //       BorderRadius.circular(30.r)),
+                              //   child: Container(
+                              //     height: double.infinity,
+                              //     child: CachedNetworkImage(
+                              //       imageUrl: item.chaletImages.isNotEmpty
+                              //           ? item.chaletImages[0].image
+                              //           : images2[1],
+                              //       placeholder: (context, url) =>
+                              //           ShimmerLoadingWidget(
+                              //               height: 228,
+                              //               width: double.infinity),
+                              //       errorWidget: (context, url, error) =>
+                              //           ShimmerLoadingWidget(
+                              //               height: 228,
+                              //               width: double.infinity),
+                              //       fit: BoxFit.fill,
+                              //     ),
+                              //   ),
+                              // ),
+                              // controller.indexRandomChalets.value ==
+                              //     images.indexOf(item)
+                              //     ?
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child: Container(
+                                  height: 40.h,
+                                  width: double.infinity,
+                                  // margin: EdgeInsets.symmetric(horizontal: 25.w),
+                                  alignment: Alignment.center,
+
+                                  margin:
+                                  EdgeInsets.only(top: 4.h, right: 25.w, left: 25.w),
+                                  decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            "assets/images/newChaletPK.png"),
+                                        fit: BoxFit.fill),
+                                  ),
+                                  padding: EdgeInsets.only(
+                                      bottom: 4.h, left: 10.w, right: 10.w),
+                                  child: Text(
+                                    item.name,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 10.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              // : Container(),
+                              // controller.indexRandomChalets.value ==
+                              //     images.indexOf(item)
+                              //     ?
+
+                              //  : Container(),
+                            ],
+                          ),
+                          // Stack(
+                          //   children: [
+                          //     Container(
+                          //       child: ShaderMask(
+                          //         shaderCallback: (rect) {
+                          //           return const LinearGradient(
+                          //             begin: Alignment.topCenter,
+                          //             end: Alignment.bottomCenter,
+                          //             colors: [
+                          //               // f r o m L T R B
+                          //               Colors.transparent,
+                          //               Colors.black,
+                          //               Colors.black,
+                          //               Colors.transparent,
+                          //             ],
+                          //             stops: [0, 0, 1, 1],
+                          //           ).createShader(
+                          //             Rect.fromLTRB(
+                          //                 0, 0, rect.width, rect.height),
+                          //           );
+                          //         },
+                          //         blendMode: BlendMode.dstIn,
+                          //         child: SizedBox(
+                          //           height: 230.h,
+                          //           child: Stack(
+                          //             alignment: Alignment.bottomCenter,
+                          //             children: [
+                          //               // controller.randomChalets
+                          //               //     .value ==
+                          //               //     images.indexOf(item)
+                          //               //     ?
+                          //               Align(
+                          //                 alignment: Alignment.topCenter,
+                          //                 child: Container(
+                          //                   height: 20.h,
+                          //                   width: 160.w,
+                          //                   decoration: BoxDecoration(
+                          //                       color:
+                          //                       const Color(0xFFD9D3CD),
+                          //                       borderRadius:
+                          //                       BorderRadius.only(
+                          //                         topRight:
+                          //                         Radius.circular(8.r),
+                          //                         topLeft:
+                          //                         Radius.circular(8.r),
+                          //                       )),
+                          //                 ),
+                          //               ),
+                          //                 //  : Container(),
+                          //               Container(
+                          //                 width: double.infinity,
+                          //                 margin: const EdgeInsets.only(top: 12),
+                          //                 clipBehavior: Clip.hardEdge,
+                          //                 decoration: BoxDecoration(
+                          //                     borderRadius:
+                          //                     BorderRadius.circular(30.r)),
+                          //                 child: Container(
+                          //                   height: double.infinity,
+                          //                   child: CachedNetworkImage(
+                          //                     imageUrl: item.chaletImages.isNotEmpty
+                          //                         ? item.chaletImages[0].image
+                          //                         : images2[1],
+                          //                     placeholder: (context, url) =>
+                          //                         ShimmerLoadingWidget(
+                          //                             height: 228,
+                          //                             width: double.infinity),
+                          //                     errorWidget: (context, url, error) =>
+                          //                         ShimmerLoadingWidget(
+                          //                             height: 228,
+                          //                             width: double.infinity),
+                          //                     fit: BoxFit.fill,
+                          //                   ),
+                          //                 ),
+                          //               ),
+                          //               // controller.indexRandomChalets.value ==
+                          //               //     images.indexOf(item)
+                          //               //     ?
+                          //               Align(
+                          //                 alignment: Alignment.topCenter,
+                          //                 child: Container(
+                          //                   height: 40.h,
+                          //                   width: 140.w,
+                          //                   alignment: Alignment.center,
+                          //
+                          //                   margin:
+                          //                   EdgeInsets.only(top: 4.h),
+                          //                   decoration: const BoxDecoration(
+                          //                     image: DecorationImage(
+                          //                         image: AssetImage(
+                          //                             "assets/images/newChaletPK.png"),
+                          //                         fit: BoxFit.fill),
+                          //                   ),
+                          //                   padding: EdgeInsets.only(
+                          //                       bottom: 4.h, left: 10.w, right: 10.w),
+                          //                   child: Text(
+                          //                     item.name,
+                          //                     style: GoogleFonts.inter(
+                          //                       fontSize: 10.sp,
+                          //                       fontWeight: FontWeight.w500,
+                          //                       color: Colors.white,
+                          //                     ),
+                          //                   ),
+                          //                 ),
+                          //               ),
+                          //                  // : Container(),
+                          //               // controller.indexRandomChalets.value ==
+                          //               //     images.indexOf(item)
+                          //               //     ?
+                          //               Align(
+                          //                 alignment: Alignment.bottomCenter,
+                          //                 child: Container(
+                          //                   width: 200.w,
+                          //                   height: 25.h,
+                          //                   alignment: Alignment.center,
+                          //                   margin: EdgeInsets.symmetric(
+                          //                       horizontal: 18.w,
+                          //                       vertical: 12.h),
+                          //                   decoration: BoxDecoration(
+                          //                     borderRadius:
+                          //                     BorderRadius.only(
+                          //                         bottomLeft: Radius
+                          //                             .circular(10.r),
+                          //                         bottomRight:
+                          //                         Radius.circular(
+                          //                             10.r),
+                          //                         topRight:
+                          //                         Radius.circular(
+                          //                             2.r),
+                          //                         topLeft:
+                          //                         Radius.circular(
+                          //                             2.r)),
+                          //                     color: Color(0xFFC9DCE1),
+                          //                   ),
+                          //                   padding: EdgeInsets.symmetric(
+                          //                       horizontal: 12.w),
+                          //                   child: Text(
+                          //                     item.name,
+                          //                     style: GoogleFonts.inter(
+                          //                         fontSize: 15.sp,
+                          //                         fontWeight:
+                          //                         FontWeight.w600,
+                          //                         color: primaryColor),
+                          //                   ),
+                          //                 ),
+                          //               )
+                          //                 //  : Container(),
+                          //             ],
+                          //           ),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+                        ),
+                      );
+                    },
+                  ).toList(),
+                )
+
+                     :
+                      ListView.builder(
+                        physics: BouncingScrollPhysics(),
+                          itemCount: controller.loading.isTrue
+                              ? 2
+                              : controller.randomChalets.length,
+                          itemBuilder: (context, index) {
+                            if (controller.loading.isTrue) {
+                              return SizedBox(
+                                height: 260.h,
+                                child: Padding(
+                                  padding:  EdgeInsets.symmetric(horizontal: 20.w),
                                   child: Stack(
                                     alignment: Alignment.bottomCenter,
                                     children: [
@@ -682,130 +920,422 @@ class _HomePageState extends State<HomePage> {
                                       //     ?
                                       Align(
                                         alignment: Alignment.topCenter,
-                                        child: Container(
+                                        child: ShimmerLoadingWidget(
                                           height: 20.h,
                                           width: 160.w,
                                           decoration: BoxDecoration(
-                                              color:
-                                              const Color(0xFFD9D3CD),
-                                              borderRadius:
-                                              BorderRadius.only(
-                                                topRight:
-                                                Radius.circular(8.r),
-                                                topLeft:
-                                                Radius.circular(8.r),
+                                              color: const Color(0xFFD9D3CD),
+                                              borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(8.r),
+                                                topLeft: Radius.circular(8.r),
                                               )),
                                         ),
                                       ),
-                                        //  : Container(),
-                                      Container(
-                                        margin: const EdgeInsets.only(top: 12),
-                                        clipBehavior: Clip.hardEdge,
+                                      //  : Container(),
+                                      ShimmerLoadingWidget(
+                                        // margin: const EdgeInsets.only(top: 12),
+
+                                        height: double.infinity,
+                                        width: double.infinity,
+                                        margin: EdgeInsetsDirectional.only(
+                                            bottom: 25.h, top: 12),
                                         decoration: BoxDecoration(
+                                            color: Colors.white,
                                             borderRadius:
-                                            BorderRadius.circular(30.r)),
-                                        child: Container(
-                                          height: double.infinity,
-                                          child: CachedNetworkImage(
-                                            imageUrl: item.chaletImages.isNotEmpty
-                                                ? item.chaletImages[0].image
-                                                : images2[1],
-                                            placeholder: (context, url) =>
-                                                ShimmerLoadingWidget(
-                                                    height: 228,
-                                                    width: double.infinity),
-                                            errorWidget: (context, url, error) =>
-                                                ShimmerLoadingWidget(
-                                                    height: 228,
-                                                    width: double.infinity),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
+                                                BorderRadius.circular(30.r)),
                                       ),
                                       // controller.indexRandomChalets.value ==
                                       //     images.indexOf(item)
                                       //     ?
                                       Align(
                                         alignment: Alignment.topCenter,
-                                        child: Container(
+                                        child: ShimmerLoadingWidget(
                                           height: 40.h,
                                           width: 140.w,
-                                          alignment: Alignment.center,
+                                          baseColor: primaryColor,
+                                          // alignment: Alignment.center,
 
-                                          margin:
-                                          EdgeInsets.only(top: 4.h),
+                                          margin: EdgeInsetsDirectional.only(
+                                              top: 4.h),
                                           decoration: const BoxDecoration(
-                                            image: DecorationImage(
-                                                image: AssetImage(
-                                                    "assets/images/newChaletPK.png"),
-                                                fit: BoxFit.fill),
-                                          ),
-                                          padding: EdgeInsets.only(
-                                              bottom: 4.h, left: 10.w, right: 10.w),
-                                          child: Text(
-                                            item.name,
-                                            style: GoogleFonts.inter(
-                                              fontSize: 10.sp,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.white,
-                                            ),
-                                          ),
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(5),
+                                                  topRight: Radius.circular(5),
+                                                  bottomLeft: Radius.circular(15),
+                                                  bottomRight:
+                                                      Radius.circular(15))
+                                              // image: DecorationImage(
+                                              //     image: AssetImage(
+                                              //         "assets/images/newChaletPK.png"),
+                                              //     fit: BoxFit.fill),
+                                              ),
+                                          // padding: EdgeInsets.only(
+                                          //     bottom: 4.h, left: 10.w, right: 10.w),
+                                          //  child: shimmerLoadingWidget(height: 40.h, width: 140.w)
                                         ),
                                       ),
-                                         // : Container(),
+                                      // : Container(),
                                       // controller.indexRandomChalets.value ==
                                       //     images.indexOf(item)
                                       //     ?
-                                      Align(
-                                        alignment: Alignment.bottomCenter,
-                                        child: Container(
-                                          width: 200.w,
-                                          height: 25.h,
-                                          alignment: Alignment.center,
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: 18.w,
-                                              vertical: 12.h),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                            BorderRadius.only(
-                                                bottomLeft: Radius
-                                                    .circular(10.r),
-                                                bottomRight:
-                                                Radius.circular(
-                                                    10.r),
-                                                topRight:
-                                                Radius.circular(
-                                                    2.r),
-                                                topLeft:
-                                                Radius.circular(
-                                                    2.r)),
-                                            color: Color(0xFFC9DCE1),
-                                          ),
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 12.w),
-                                          child: Text(
-                                            item.name,
-                                            style: GoogleFonts.inter(
-                                                fontSize: 15.sp,
-                                                fontWeight:
-                                                FontWeight.w600,
-                                                color: primaryColor),
-                                          ),
-                                        ),
-                                      )
-                                        //  : Container(),
+
+                                      //  : Container(),
                                     ],
                                   ),
                                 ),
+                              );
+                            } else {
+                              return Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 15.h, horizontal: 20.w),
+                                  child: GestureDetector(
+                                      onTap: () {
+                                        Get.to(() => DetailsScreen(
+                                              id:  controller
+                                                  .randomChalets[index].chaletsId,
+                                            )); //item.chaletsId
+                                      },
+                                      child: Stack(
+                                        // alignment: Alignment.bottomCenter,
+                                        children: [
+                                          // controller.randomChalets
+                                          //     .value ==
+                                          //     images.indexOf(item)
+                                          //     ?
+                                          Align(
+                                            alignment: Alignment.topCenter,
+                                            child: Container(
+                                              height: 20.h,
+                                              width: double.infinity,
+                                              margin: EdgeInsets.symmetric(
+                                                  horizontal: 30.w),
+                                              decoration: BoxDecoration(
+                                                  color:
+                                                      const Color(0xFFD9D3CD),
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                    topRight:
+                                                        Radius.circular(8.r),
+                                                    topLeft:
+                                                        Radius.circular(8.r),
+                                                  )),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 12),
+                                            child: SizedBox(
+                                                height: 230.h,
+                                                width: double.infinity,
+                                                child: ImagesChaletWidget(
+                                                    images: controller
+                                                        .randomChalets[index]
+                                                        .chaletImages)),
+                                          ),
+
+                                          //  : Container(),
+                                          // Container(
+                                          //   width: double.infinity,
+                                          //   margin: const EdgeInsets.only(top: 12),
+                                          //   clipBehavior: Clip.hardEdge,
+                                          //   decoration: BoxDecoration(
+                                          //       borderRadius:
+                                          //       BorderRadius.circular(30.r)),
+                                          //   child: Container(
+                                          //     height: double.infinity,
+                                          //     child: CachedNetworkImage(
+                                          //       imageUrl: item.chaletImages.isNotEmpty
+                                          //           ? item.chaletImages[0].image
+                                          //           : images2[1],
+                                          //       placeholder: (context, url) =>
+                                          //           ShimmerLoadingWidget(
+                                          //               height: 228,
+                                          //               width: double.infinity),
+                                          //       errorWidget: (context, url, error) =>
+                                          //           ShimmerLoadingWidget(
+                                          //               height: 228,
+                                          //               width: double.infinity),
+                                          //       fit: BoxFit.fill,
+                                          //     ),
+                                          //   ),
+                                          // ),
+                                          // controller.indexRandomChalets.value ==
+                                          //     images.indexOf(item)
+                                          //     ?
+
+                                          Align(
+                                            alignment: Alignment.topCenter,
+                                            child: Container(
+                                              height: 40.h,
+                                              width: double.infinity,
+                                              // margin: EdgeInsets.symmetric(horizontal: 25.w),
+                                              alignment: Alignment.center,
+
+                                              margin: EdgeInsets.only(
+                                                  top: 4.h,
+                                                  right: 25.w,
+                                                  left: 25.w),
+                                              decoration: const BoxDecoration(
+                                                image: DecorationImage(
+                                                    image: AssetImage(
+                                                        "assets/images/newChaletPK.png"),
+                                                    fit: BoxFit.fill),
+                                              ),
+                                              padding: EdgeInsets.only(
+                                                  bottom: 4.h,
+                                                  left: 10.w,
+                                                  right: 10.w),
+                                              child: Text(
+                                                controller
+                                                    .randomChalets[index].name,
+                                                style: GoogleFonts.inter(
+                                                  fontSize: 10.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+
+                                          // : Container(),
+                                          // controller.indexRandomChalets.value ==
+                                          //     images.indexOf(item)
+                                          //     ?
+
+                                          //  : Container(),
+                                        ],
+                                      )));
+                            }
+                            /*
+                      if( controller.loading.isTrue){
+                        return  SizedBox(
+                          height: 230.h,
+                          child: Stack(
+                            alignment: Alignment.bottomCenter,
+                            children: [
+                              // controller.randomChalets
+                              //     .value ==
+                              //     images.indexOf(item)
+                              //     ?
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child:
+                                ShimmerLoadingWidget(
+                                  height: 20.h,
+                                  width: 160.w,
+                                  decoration: BoxDecoration(
+                                      color:
+                                      const Color(0xFFD9D3CD),
+                                      borderRadius:
+                                      BorderRadius.only(
+                                        topRight:
+                                        Radius.circular(8.r),
+                                        topLeft:
+                                        Radius.circular(8.r),
+                                      )),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ).toList(),
-                ),
-              )
+                              //  : Container(),
+                              ShimmerLoadingWidget(
+                                // margin: const EdgeInsets.only(top: 12),
+
+                                height: double.infinity, width: double.infinity, margin: EdgeInsetsDirectional.only( bottom: 25.h, top: 12), decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                  BorderRadius.circular(30.r)),),
+                              // controller.indexRandomChalets.value ==
+                              //     images.indexOf(item)
+                              //     ?
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child: ShimmerLoadingWidget(
+                                  height: 40.h,
+                                  width: 140.w,
+                                  baseColor: primaryColor,
+                                  // alignment: Alignment.center,
+
+                                  margin:
+                                  EdgeInsetsDirectional.only(top: 4.h),
+                                  decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.only(topLeft: Radius.circular(5), topRight:  Radius.circular(5), bottomLeft:  Radius.circular(15), bottomRight:  Radius.circular(15))
+                                    // image: DecorationImage(
+                                    //     image: AssetImage(
+                                    //         "assets/images/newChaletPK.png"),
+                                    //     fit: BoxFit.fill),
+                                  ),
+                                  // padding: EdgeInsets.only(
+                                  //     bottom: 4.h, left: 10.w, right: 10.w),
+                                  //  child: shimmerLoadingWidget(height: 40.h, width: 140.w)
+                                ),
+                              ),
+                              // : Container(),
+                              // controller.indexRandomChalets.value ==
+                              //     images.indexOf(item)
+                              //     ?
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: ShimmerLoadingWidget(
+                                  width: 200.w,
+                                  height: 25.h,
+                                  baseColor:  Color(0xFFC9DCE1),
+                                  //  alignment: Alignment.center,
+                                  margin: EdgeInsetsDirectional.only(bottom: 35.h),
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.only(
+                                        bottomLeft: Radius
+                                            .circular(10.r),
+                                        bottomRight:
+                                        Radius.circular(
+                                            10.r),
+                                        topRight:
+                                        Radius.circular(
+                                            2.r),
+                                        topLeft:
+                                        Radius.circular(
+                                            2.r)),
+                                    color: Color(0xFFC9DCE1),
+                                  ),
+                                  // padding: EdgeInsets.symmetric(
+                                  //     horizontal: 12.w),
+                                  // child: shimmerLoadingWidget(height: 25.h, width: 200.w)
+                                ),
+                              )
+                              //  : Container(),
+                            ],
+                          ),
+                        );
+                      }else{
+                        return Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20.w),
+                          child: Stack(
+                            alignment: Alignment.bottomCenter,
+                            children: [
+                              // controller.randomChalets
+                              //     .value ==
+                              //     images.indexOf(item)
+                              //     ?
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child: Container(
+                                  height: 20.h,
+                                  width: 160.w,
+                                  decoration: BoxDecoration(
+                                      color:
+                                      const Color(0xFFD9D3CD),
+                                      borderRadius:
+                                      BorderRadius.only(
+                                        topRight:
+                                        Radius.circular(8.r),
+                                        topLeft:
+                                        Radius.circular(8.r),
+                                      )),
+                                ),
+                              ),
+                              //  : Container(),
+                              Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.only(top: 12),
+                                clipBehavior: Clip.hardEdge,
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(30.r)),
+                                child: Container(
+                                  height: double.infinity,
+                                  child: CachedNetworkImage(
+                                    imageUrl: controller.randomChalets.isNotEmpty
+                                        ? controller.randomChalets[index].chaletImages[0].image
+                                        : images2[1],
+                                    placeholder: (context, url) =>
+                                        ShimmerLoadingWidget(
+                                            height: 228,
+                                            width: double.infinity),
+                                    errorWidget: (context, url, error) =>
+                                        ShimmerLoadingWidget(
+                                            height: 228,
+                                            width: double.infinity),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              // controller.indexRandomChalets.value ==
+                              //     images.indexOf(item)
+                              //     ?
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child: Container(
+                                  height: 40.h,
+                                  width: 140.w,
+                                  alignment: Alignment.center,
+
+                                  margin:
+                                  EdgeInsets.only(top: 4.h),
+                                  decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            "assets/images/newChaletPK.png"),
+                                        fit: BoxFit.fill),
+                                  ),
+                                  padding: EdgeInsets.only(
+                                      bottom: 4.h, left: 10.w, right: 10.w),
+                                  child: Text(
+                                    controller.randomChalets[index].name,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 10.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              // : Container(),
+                              // controller.indexRandomChalets.value ==
+                              //     images.indexOf(item)
+                              //     ?
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Container(
+                                  width: 200.w,
+                                  height: 25.h,
+                                  alignment: Alignment.center,
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 18.w,
+                                      vertical: 12.h),
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.only(
+                                        bottomLeft: Radius
+                                            .circular(10.r),
+                                        bottomRight:
+                                        Radius.circular(
+                                            10.r),
+                                        topRight:
+                                        Radius.circular(
+                                            2.r),
+                                        topLeft:
+                                        Radius.circular(
+                                            2.r)),
+                                    color: Color(0xFFC9DCE1),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 12.w),
+                                  child: Text(
+                                    controller.randomChalets[index].name,
+                                    style: GoogleFonts.inter(
+                                        fontSize: 15.sp,
+                                        fontWeight:
+                                        FontWeight.w600,
+                                        color: primaryColor),
+                                  ),
+                                ),
+                              )
+                              //  : Container(),
+                            ],
+                          ),
+                        );
+
+                      }
+                      */
+                          }))
             ],
           );
           //  }
@@ -1392,6 +1922,7 @@ class _HomePageState extends State<HomePage> {
           // });
         });
   }
+
   //
   // Widget shimmerLoadingWidget(
   //     {required double height,
@@ -1416,4 +1947,9 @@ class _HomePageState extends State<HomePage> {
   //     ),
   //   );
   // }
+
+  void getFcm() async {
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
+    print('fcmToken: $fcmToken');
+  }
 }

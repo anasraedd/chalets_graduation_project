@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class AddCouponScreen extends StatelessWidget {
-  const AddCouponScreen({Key? key}) : super(key: key);
+class AddCouponScreen2 extends StatelessWidget {
+  const AddCouponScreen2({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,18 +1,23 @@
 import 'dart:ui';
 import 'package:chalets/core/theme/app_theme.dart';
 import 'package:chalets/core/utils/context_extetion.dart';
+import 'package:chalets/featuers/main/presentation/pages/main_screen/main_screen.dart';
 import 'package:chalets/featuers/main/presentation/pages/main_screen/main_screen_pages/calender_page.dart';
 import 'package:chalets/featuers/main/presentation/pages/main_screen/main_screen_pages/conversations_page.dart';
 import 'package:chalets/featuers/main/presentation/pages/main_screen/main_screen_pages/favorite_page.dart';
+import 'package:chalets/get/admin/admin_chalets_getx_Controller.dart';
 import 'package:chalets/models/bn_screen.dart';
+import 'package:chalets/screens/app_admin/main_admin_screen/widgets/admin_calender_page.dart';
+import 'package:chalets/screens/app_admin/main_admin_screen/widgets/admin_conversations_page.dart';
 import 'package:chalets/screens/app_admin/main_admin_screen/widgets/admin_home_screen.dart';
 import 'package:chalets/screens/app_admin/main_admin_screen/widgets/notifications_screen.dart';
 import 'package:chalets/widgets/box_calender.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' as lang;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
@@ -32,10 +37,10 @@ class _MainAdminScreenState extends State<MainAdminScreen> {
   void initState() {
   _bnScreen = <BnScreen>[
       BnScreen(title: 'Notifications', widget: NotificationsScreen()),
-      BnScreen(title: 'Conversations', widget: ConversationsPage(isAdmin: true,)),
+      BnScreen(title: 'Conversations', widget: AdminConversationsPage()),
       BnScreen(title: 'Favourites', widget: Container()),
 
-      BnScreen(title: 'Calender', widget: CalenderPage(isAdmin: true,)),
+      BnScreen(title: 'Calender', widget: AdminCalenderPage()),
       BnScreen(title: 'Home', widget: AdminHomeScreen(id: widget.id,)),
 
     ];
@@ -221,7 +226,8 @@ class _MainAdminScreenState extends State<MainAdminScreen> {
       floatingActionButton: GestureDetector(
         onTap: () {
           setState(() {
-            _currentIndex = 2;
+            // _currentIndex = 2;
+            Get.off(MainScreen());
           });
         },
         child: Container(
@@ -230,13 +236,17 @@ class _MainAdminScreenState extends State<MainAdminScreen> {
               image: DecorationImage(
                   image: AssetImage("assets/icons/FTBPK.png"),
                   fit: BoxFit.cover)),
-          padding: EdgeInsets.only(bottom: 8.h),
+          padding: EdgeInsetsDirectional.only(top: 18.w, bottom: 22.w, start: 18.w, end: 18.w),
           height: 70.h,
           width: 70.w,
-          child: Icon(
-            Icons.home_rounded,
-            size: 33.r,
-            color: Colors.white,
+          child:   Center(
+            // height: 40,
+            // width: 40,
+            child: Image(
+              image:
+              AssetImage("assets/images/profileReplace.png",),
+
+            ),
           ),
         ),
       ),
@@ -389,7 +399,7 @@ void _showBlurredDialog(BuildContext context) {
                           child: Align(
                               alignment: AlignmentDirectional.centerStart,
                               child: Text(
-                                'notReserved'.tr(),
+                               lang.tr( 'notReserved'),
                                 style: TextStyle(
                                   fontSize: 14.0,
                                   height:
@@ -414,7 +424,7 @@ void _showBlurredDialog(BuildContext context) {
                           child: Align(
                               alignment: AlignmentDirectional.centerStart,
                               child: Text(
-                                'morningReserved'.tr(),
+                              lang.tr('morningReserved'),
                                 style: TextStyle(
                                   fontSize: 14.0,
                                   height:
@@ -439,7 +449,7 @@ void _showBlurredDialog(BuildContext context) {
                           child: Align(
                               alignment: AlignmentDirectional.centerStart,
                               child: Text(
-                                'eveningReserved'.tr(),
+                                lang.tr('eveningReserved'),
                                 style: TextStyle(
                                   fontSize: 14.0,
                                   height:
@@ -465,7 +475,7 @@ void _showBlurredDialog(BuildContext context) {
                             child: Align(
                               alignment: AlignmentDirectional.centerStart,
                               child: Text(
-                                'morningAndEveningReserved'.tr(),
+                               lang.tr( 'morningAndEveningReserved'),
                                 style: TextStyle(
                                   fontSize: 14.0,
                                   height: 1.2,
@@ -490,7 +500,7 @@ void _showBlurredDialog(BuildContext context) {
                           child: Align(
                               alignment: AlignmentDirectional.centerStart,
                               child: Text(
-                                'chosenDay'.tr(),
+                               lang.tr('chosenDay'),
                                 style: TextStyle(
                                   fontSize: 14.0,
                                   height:
@@ -511,7 +521,7 @@ void _showBlurredDialog(BuildContext context) {
                           child: Align(
                               alignment: AlignmentDirectional.centerStart,
                               child: Text(
-                                'dayNotDisplay'.tr(),
+                                lang.tr('dayNotDisplay'),
                                 style: TextStyle(
                                   fontSize: 14.0,
                                   height:
